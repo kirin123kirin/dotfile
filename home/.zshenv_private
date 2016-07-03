@@ -1,0 +1,19 @@
+# private setting environment
+export PATH=~/Dropbox/bin:$PATH
+#export RUBYHOME=/usr/local
+#export RUBYLIB=$RUBYHOME/lib/ruby/my_ruby/1.8/i686-linux
+#export RUBYHOME=~/Application/redmine-2.6.3/ruby
+#export RUBYLIB=$RUBYHOME/lib/ruby/my_ruby/2.0
+
+export ADTPATH=/Users/yellow/bin/adt-bundle-mac-x86_64-20130219/sdk
+export PATH=$ADTPATH/platform-tools:$PATH
+export PATH=$ADTPATH/tools:$PATH
+export PYTHONPATH=$HOME/Dropbox/data/svnroot/src/myplib
+export MANPATH=/opt/local/man:$MANPATH
+export PYTHONSTARTUP="$HOME/.pythonrc"
+export CLASSPATH="/Library/Java/Extensions:$HOME/Library/Java/Extensions"
+#export JRUBYHOME=$HOME/bin/jruby-1.7.4/bin
+#export PATH=$PATH:$RUBYHOME/bin
+export JAVA_HOME=/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+unset LD_LIBRARY_PATH
+unset DYLD_LIBRARY_PATH
