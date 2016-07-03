@@ -1,6 +1,6 @@
-[submodule "/Users/yellow/.homesick/repos/dotfiles/home/.vim/bundle/unite.vim"]
-	path = /Users/yellow/.homesick/repos/dotfiles/home/.vim/bundle/unite.vim
+[submodule "home/.vim/bundle/unite.vim"]
+	path = home/.vim/bundle/unite.vim
 	url = https://github.com/Shougo/unite.vim.git
-[submodule "/Users/yellow/.homesick/repos/dotfiles/home/.vim/bundle/neobundle.vim"]
-	path = /Users/yellow/.homesick/repos/dotfiles/home/.vim/bundle/neobundle.vim
+[submodule "home/.vim/bundle/neobundle.vim"]
+	path = home/.vim/bundle/neobundle.vim
 	url = https://github.com/Shougo/neobundle.vim.git
