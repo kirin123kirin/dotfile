@@ -159,6 +159,9 @@ hook_source = '''
 
 [[plugins]]
 repo = 'Shougo/unite.vim'
+hook_post_source = '''
+  call unite#custom_default_action(g:config_nvim_home . '/bookmark' , 'vimfiler')
+'''
 
 [[plugins]]
 repo = 'Shougo/denite.nvim'
@@ -292,6 +295,7 @@ hook_source = '''
 	      \ })
 
 	let g:vimfiler_as_default_explorer = 1
+	let g:vimfiler_enable_auto_cd = 1
 	if IsWindows()
 		let g:vimfiler_detect_drives = [
 		      \ 'C:/', 'D:/', 'E:/', 'F:/', 'G:/', 'H:/', 'I:/',
@@ -301,11 +305,11 @@ hook_source = '''
 	else
 		" Like Textmate icons.
 		let g:vimfiler_tree_leaf_icon = ' '
-		let g:vimfiler_tree_opened_icon = '?'
-		let g:vimfiler_tree_closed_icon = '?'
+		let g:vimfiler_tree_opened_icon = '-'
+		let g:vimfiler_tree_closed_icon = '+'
 		let g:vimfiler_file_icon = ' '
-		let g:vimfiler_readonly_file_icon = '?'
-		let g:vimfiler_marked_file_icon = '?'
+		let g:vimfiler_readonly_file_icon = '!'
+		let g:vimfiler_marked_file_icon = '*'
 	endif
 
 	autocmd MyAutoCmd FileType vimfiler call s:vimfiler_my_settings()

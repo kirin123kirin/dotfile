@@ -82,9 +82,18 @@ nmap <silent> <C-F3>  :<C-u>Denite grep<CR>
 nmap <silent> <S-F3>:<C-u>DeniteCursorWord grep<CR>
 nmap <silent> <C-h> :<C-u>Denite file_mru<CR>
 nmap <silent> <C-y> :<C-u>Denite neoyank<CR>
+nmap <silent> <F1>  :<C-u>Denite help<CR>
 nmap <silent> <F8>  :<C-u>Denite -resume<CR>
 nmap <silent> <F9>  :<C-N>Denite -resume -immediately -select=+1<CR>
 nmap <silent> <F10> :<C-P>Denite -resume -immediately -select=-1<CR>
+
+" Unite
+noremap <silent> <F11> :UniteBookmarkAdd<CR>
+noremap <silent> <F12> :Unite bookmark<CR>
+noremap! <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
+noremap! <silent> <F12> <ESC>:Unite bookmark<CR>
+cnoremap <F11> UniteBookmarkAdd<CR>
+cnoremap <F12> Unite bookmark<CR>
 
 " search
 "nnoremap <silent> / :<C-u>Denite -buffer-name=search -auto-resize line<CR>
