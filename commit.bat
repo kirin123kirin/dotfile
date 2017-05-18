@@ -1,4 +1,4 @@
-cd ~%dp0
+cd %~dp0
 
 git pull
 git add *
