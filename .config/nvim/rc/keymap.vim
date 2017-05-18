@@ -89,7 +89,7 @@ nmap <silent> <F10> :<C-P>Denite -resume -immediately -select=-1<CR>
 
 " Unite
 noremap <silent> <F11> :UniteBookmarkAdd<CR>
-noremap <silent> <F12> :Unite bookmark<CR>
+noremap <silent> <F12> :Unite bookmark -buffer-name=bookmark -winwidth=800<CR>
 noremap! <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
 noremap! <silent> <F12> <ESC>:Unite bookmark<CR>
 cnoremap <F11> UniteBookmarkAdd<CR>

@@ -55,6 +55,11 @@ set backspace=indent,eol,start
 " 行頭行末の左右移動で行をまたぐ
 set whichwrap=b,s,h,l,<,>,[,]
 
+" 新しいウィンドウを下に開く
+set splitbelow
+" 新しいウィンドウを右に開く
+set splitright
+
 " カーソルの形状を変える
 "if exists('$ITERM_SESSION_ID')
 	if empty('$TMUX')
