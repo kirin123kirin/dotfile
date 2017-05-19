@@ -71,8 +71,8 @@ inoremap<silent> <S-Insert> <C-R>*
 cnoremap <S-Insert> <C-r>*
 
 " QuickRun
-noremap <silent> <F5> :QuickRun<CR>
-noremap!<silent> <F5> <Esc>:QuickRun<CR>
+noremap <silent> <F5> :QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
+noremap!<silent> <F5> <Esc>:QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
 
 " Denite
 nmap <C-e> :<C-u>Denite directory_rec 
