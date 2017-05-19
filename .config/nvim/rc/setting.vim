@@ -17,8 +17,11 @@ set splitright
 set history=10000
 
 " Clipboard
-"set clipboard+=unnamedplus
-set clipboard=unnamed,unnamedplus
+if has('unnamedplus') && !(has('win32') || has('win64'))
+    set clipboard=unnamedplus,autoselectplus
+else
+    set clipboard=unnamed
+endif
 
 " Open Vim internal help by K command
 set keywordprg=:help
