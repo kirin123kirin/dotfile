@@ -299,7 +299,7 @@ hook_source = '''
 	if IsWindows()
 		let g:vimfiler_detect_drives = [
 		      \ 'C:/', 'D:/', 'E:/', 'F:/', 'G:/', 'H:/', 'I:/',
-		      \ 'J:/', 'K:/', 'L:/', 'M:/', 'N:/']
+		      \ 'J:/', 'K:/', 'L:/', 'M:/', 'N:/', 'Y:', 'Z:']
 		" Use trashbox.
 		let g:unite_kind_file_use_trashbox = 1
 	else
@@ -488,66 +488,12 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'tyru/eskk.vim'
-on_map = {ic = '<Plug>'}
-hook_add = '''
-  imap <C-j>     <Plug>(eskk:toggle)
-  cmap <C-j>     <Plug>(eskk:toggle)
-'''
-hook_source = '''
-  let g:eskk#directory = expand('$CACHE/eskk')
-  let g:eskk#keep_state = 0
-  let g:eskk#debug = 0
-  let g:eskk#show_annotation = 1
-  let g:eskk#rom_input_style = 'msime'
-  let g:eskk#egg_like_newline = 1
-  let g:eskk#egg_like_newline_completion = 1
-  let g:eskk#tab_select_completion = 1
-  let g:eskk#start_completion_length = 2
-  let g:eskk#dictionary = {
-        \   'path': expand('$CACHE/skk-jisyo'),
-        \   'sorted': 0,
-        \   'encoding': 'utf-8',
-        \}
-  let g:eskk#large_dictionary = {
-        \   'path': '/usr/share/skk/SKK-JISYO.L',
-        \   'sorted': 1,
-        \   'encoding': 'euc-jp',
-        \}
-
-  if $TERM !~# '^rxvt' && has('nvim')
-    " Use <> instead of ▽.
-    let g:eskk#marker_henkan = '<>'
-    " Use >> instead of ▼.
-    let g:eskk#marker_henkan_select = '>>'
-  endif
-
-  autocmd MyAutoCmd User eskk-initialize-post
-        \ EskkMap -remap jj <ESC>
-  autocmd MyAutoCmd User eskk-initialize-pre call s:eskk_initial_pre()
-  function! s:eskk_initial_pre() abort "{{{
-    let t = eskk#table#new('rom_to_hira*', 'rom_to_hira')
-    call t.add_map('z ', '　')
-    call t.add_map('~', '?')
-    call t.add_map('zc', 'c')
-    call t.add_map('zr', 'R')
-    call t.add_map('z9', '（')
-    call t.add_map('z0', '）')
-    call eskk#register_mode_table('hira', t)
-  endfunction "}}}
-'''
-
-[[plugins]]
 repo = 'tyru/open-browser.vim'
 
 [[plugins]]
 repo = 'eagletmt/neco-ghc'
 on_ft = 'haskell'
 external_commands = 'ghc-mod'
-
-#[[plugins]]
-#repo = 'eignn/netrw.vim'
-#on_cmd = 'Explore'
 
 [[plugins]]
 repo = 'rhysd/accelerated-jk'
@@ -588,9 +534,6 @@ on_map = {n = '<Plug>'}
 hook_add = '''
   nmap J <Plug>(jplus)
 '''
-
-[[plugins]]
-repo = 'katono/rogue.vim'
 
 [[plugins]]
 repo = 'davidhalter/jedi-vim'
@@ -689,7 +632,7 @@ hook_source = '''
 [[plugins]]
 repo = 'thinca/vim-quickrun'
 on_map = [['nxo', '<Plug>(quickrun)']]
-depends = 'vimproc'
+#depends = 'vimproc'
 hook_add = '''
 	let g:quickrun_config = {
 	\   "_" : {
