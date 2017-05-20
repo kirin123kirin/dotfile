@@ -23,7 +23,7 @@ augroup filetypedetect
   autocmd BufRead,BufNewFile *.hla set ft=hla syntax=hla
 
   " Markdown
-  autocmd BufRead,BufNewFile *.mkd,*.markdown,*.md,*.mdown,*.mkdn
+  autocmd BufRead,BufNewFile *.mkd,*.markdown,*.md,*.mdown,*.mkdn, *.rmd
         \ setlocal filetype=mkd autoindent formatoptions=tcroqn2 comments=n:>
 augroup END
 

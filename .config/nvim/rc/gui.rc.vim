@@ -9,12 +9,12 @@ set ambiwidth=double
 if has('win32') || has('win64')
   " For Windows.
 
-  " set guifontwide=VL\ Gothic:h11
-   set guifontwide=Ricty:h12
+   set guifontwide=VL\ Gothic:h11
+   " set guifontwide=Ricty:h12
 
-   set guifont=Ricty:h12
+  " set guifont=Ricty:h12
   " set guifont=Courier\ New:h11
-  " set guifont=VL\ Gothic:h11
+  set guifont=VL\ Gothic:h11
   " set guifont=Consolas:h12
   " set guifont=Inconsolata:h12
 
@@ -66,7 +66,7 @@ endif
 
 "---------------------------------------------------------------------------
 " Options:"{{{
-set mouse=
+set mouse=a
 set mousemodel=
 
 " Don't focus the window when the mouse pointer is moved.

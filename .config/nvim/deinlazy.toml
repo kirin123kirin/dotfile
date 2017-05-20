@@ -1,9 +1,9 @@
 ﻿[[plugins]]
 repo = 'Shougo/neomru.vim'
 
-[[plugins]]
-repo = 'Shougo/vimproc.vim'
-build = 'make'
+#[[plugins]]
+#repo = 'Shougo/vimproc.vim'
+#build = 'make'
 
 [[plugins]]
 repo = 'Shougo/vimproc'
@@ -31,10 +31,10 @@ hook_add = '''
 
 	let s:vimproc_dll = get(g:, 'vimproc#dll_path', dein#get('vimproc').path . '/lib/'. s:vimproc_dll_basename)
 
-"	if !filereadable(s:vimproc_dll)
-"	  call dein#call_hook('post_update')
-"	  call dein#build('vimproc')
-"	endif
+	if !filereadable(s:vimproc_dll)
+	  call dein#call_hook('post_update')
+	  call dein#build('vimproc')
+	endif
 '''
 hook_post_update = '''
 	if dein#util#_is_windows()
@@ -412,9 +412,6 @@ hook_source = '''
 '''
 
 [[plugins]]
-repo = 'thinca/vim-scouter'
-
-[[plugins]]
 repo = 'thinca/vim-ref'
 on_map = {n = '<Plug>'}
 hook_source = '''
@@ -489,6 +486,11 @@ hook_add = '''
 
 [[plugins]]
 repo = 'tyru/open-browser.vim'
+hook_add = '''
+	let g:netrw_nogx = 1 " disable netrw's gx mapping.
+	nmap <silent> gx <Plug>(openbrowser-smart-search)
+	vmap <silent> gx <Plug>(openbrowser-smart-search)
+'''
 
 [[plugins]]
 repo = 'eagletmt/neco-ghc'
@@ -524,9 +526,12 @@ hook_add = '''
 
 [[plugins]]
 repo = 'kannokanno/previm'
-on_ft = ['markdown', 'rst', 'mkd']
+on_ft = ['markdown', 'rst', 'mkd', 'md']
 on_cmd = 'PrevimOpen'
 #depends = 'open-browser.vim'
+hook_post_source = '''
+let g:previm_open_cmd = shellescape('C:\Program Files (x86)\Mozilla Firefox\firefox.exe')
+'''
 
 [[plugins]]
 repo = 'osyo-manga/vim-jplus'
@@ -639,11 +644,9 @@ hook_add = '''
 	\       "runner" : "vimproc",
 	\       "runner/vimproc/updatetime" : 60
 	\   },
-	    "markdown": {
-        "\   'runner': 'shell',
-        "\   'outputter': 'null',
-        "\   'command': ':PrevimOpen',
-        "\   'exec': '%c',
-        "\},
 	\  }
+	let g:quickrun_config['markdown'] = {
+	  \   'runner' : 'PrevimOpen',
+      \   'outputter': 'browser'
+      \ }
 '''

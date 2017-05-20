@@ -25,6 +25,12 @@ function! IsMac() abort
       \     || (!executable('xdg-open') && system('uname') =~? '^darwin'))
 endfunction
 
+function! s:source_rc(path, ...) abort "{{{
+	execute 'source ' . g:rc_dir . '/' . a:path
+endfunction"}}}
+
+
+
 " Setting of the encoding to use for a save and reading.
 " Make it normal in UTF-8 in Unix.
 if has('vim_starting') && &encoding !=# 'utf-8'
@@ -62,6 +68,8 @@ let g:maplocalleader = 'm'
 nnoremap ;  <Nop>
 nnoremap m  <Nop>
 nnoremap ,  <Nop>
+
+call s:source_rc('filetype.vim')
 
 " }}}
 
@@ -121,14 +129,9 @@ filetype plugin indent on
 " }}}
 
 
-function! s:source_rc(path, ...) abort "{{{
-	execute 'source ' . g:rc_dir . '/' . a:path
-endfunction"}}}
-
 call s:source_rc('view.vim')
 call s:source_rc('setting.vim')
 	call s:source_rc('init.rc.vim')
-call s:source_rc('filetype.vim')
 	call s:source_rc('encoding.rc.vim')
 	""call s:source_rc('options.rc.vim')
 call s:source_rc('keymap.vim')
@@ -146,6 +149,7 @@ call s:source_rc('keymap.vim')
 	endif
 
 call s:source_rc('command.vim')
+call s:source_rc('override.vim')
 
 "---------------------------------------------------------------------------
 "for plugin in glob(g:rc_dir . '/plugins/*', 1, 1)
