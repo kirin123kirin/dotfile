@@ -350,13 +350,8 @@ hook_source = '''
 	autocmd MyAutoCmd FileType vimshell call s:vimshell_settings()
 	function! s:vimshell_settings() abort
 	  if !IsWindows()
-	    " Display user name on Linux.
-	    let g:vimshell_prompt = $USER."% "
-
 	    " Use zsh history.
 	    let g:vimshell_external_history_path = expand('~/.zsh-history')
-	  else
-	    let g:vimshell_prompt = $USERNAME."% "
 	  endif
 
 	  inoremap <buffer><expr>'  pumvisible() ? "\<C-y>" : "'"
@@ -367,6 +362,7 @@ hook_source = '''
 	  call vimshell#set_alias('.', 'source')
 
 	  call vimshell#hook#add('chpwd', 'my_chpwd', s:vimshell_hooks.chpwd)
+	  call deoplate#disable()
 	endfunction
 
 	let s:vimshell_hooks = {}
