@@ -6,6 +6,12 @@
 repo = 'sjl/badwolf'
 
 [[plugins]]
+repo = 'vim-scripts/github-theme'
+
+[[plugins]]
+repo = 'altercation/solarized'
+
+[[plugins]]
 repo    = 'vim-airline/vim-airline'
 depends = ['vim-airline-themes']
 
@@ -13,7 +19,7 @@ depends = ['vim-airline-themes']
 repo = 'vim-airline/vim-airline-themes'
 hook_add = '''
 	let g:airline_powerline_fonts = 1
-	let g:airline_theme = 'badwolf'
+	let g:airline_theme = 'github'
 	set laststatus=2
 '''
 

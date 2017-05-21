@@ -21,8 +21,6 @@ setx XDG_CACHE_HOME %CACHE%
 setx XDG_RUNTIME_DIR %Temp%
 setx XDG_DATA_HOME ""
 
-xcopy %APPROOT%\usr\lib\nvim\vimproc_*.dll %CACHE%\dein\repos\github.com\Shougo\vimproc\lib\
-
 setx Path "%APPROOT%;%APPROOT%\bin;%APPROOT%\cmd;%APPROOT%\usr\bin;%APPROOT%\mingw32\bin;%PYTHONPATH%;%PYTHONPATH%\Scripts;%VIMRUNTIME%;%NODE_PATH%\bin"
 
 

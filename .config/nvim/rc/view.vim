@@ -1,4 +1,5 @@
 ﻿" 表示設定
+"colorscheme github
 colorscheme badwolf
 
 " 背景を黒ベースに
@@ -62,15 +63,15 @@ set splitright
 
 " カーソルの形状を変える
 "if exists('$ITERM_SESSION_ID')
-	if empty('$TMUX')
+	" if empty('$TMUX')
 		let &t_SI = "\e]50;CursorShape=1\x7"
 		let &t_EI = "\e]50;CursorShape=0\x7"
 		let &t_SR = "\e]50;CursorShape=2\x7"
-	else
-		let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-		let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-		let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
-	endif
+	" else
+	" 	let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+	" 	let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+	" 	let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+	" endif
 "endif
 
 " }}}

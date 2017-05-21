@@ -11,7 +11,6 @@ let g:rc_dir = expand(g:config_nvim_home . '/rc')
 let g:plugins_dir = expand(g:config_nvim_home . '/plugins')
 
 let g:python3_host_prog = 'python'
-
 " Common functions {{{
 let s:is_windows = has('win32') || has('win64')
 
@@ -70,6 +69,17 @@ nnoremap m  <Nop>
 nnoremap ,  <Nop>
 
 call s:source_rc('filetype.vim')
+
+if IsWindows()
+	let g:default_browser  = 'C:\Program Files (x86)\Mozilla Firefox\firefox.exe'
+	if !filereadable(g:default_browser)
+		let g:default_browser  = 'C:\Program Files\Mozilla Firefox\firefox.exe'
+	endif
+elseif IsMac()
+	let g:default_browser  = '/Applications/Firefox.app'
+else
+	let g:default_browser  = 'firefox'
+endif
 
 " }}}
 

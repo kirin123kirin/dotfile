@@ -12,7 +12,7 @@ endif
 if !exists('g:colors_name') && !has('gui_running')
   " Use ConEmu 256 color mode.
   " https://conemu.github.io/en/VimXterm.html
-  colorscheme badwolf
+  "colorscheme badwolf
   set t_Co=256
   let &t_AB="\e[48;5;%dm"
   let &t_AF="\e[38;5;%dm"

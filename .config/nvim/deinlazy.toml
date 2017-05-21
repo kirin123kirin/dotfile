@@ -159,8 +159,16 @@ hook_source = '''
 
 [[plugins]]
 repo = 'Shougo/unite.vim'
-hook_post_source = '''
-  call unite#custom_default_action(g:config_nvim_home . '/bookmark' , 'vimfiler')
+hook_add = '''
+  let g:unite_split_rule = 'botright'
+  let g:unite_source_bookmark_directory = g:config_nvim_home . "/bookmark"
+'''
+hook_source = '''
+	" default browser Vimfiler
+	call unite#custom#default_action('directory' , 'cd')
+
+	" default file tabopen
+	call unite#custom#default_action('file' , 'tabdrop')
 '''
 
 [[plugins]]
@@ -284,7 +292,7 @@ repo = 'Shougo/vimfiler.vim'
 on_map = {n = '<Plug>'}
 on_if = "isdirectory(bufname('%'))"
 hook_add = '''
-	nnoremap <F2> :VimFiler -buffer-name=explorer -split -winwidth=45 -toggle -no-quit<Cr>
+	nnoremap <F2> :VimFiler -buffer-name=explorer -split -simple -winwidth=45 -toggle -no-quit<Cr>
 	nnoremap <silent>   [Space]v   :<C-u>VimFiler -invisible<CR>
 '''
 hook_source = '''
@@ -316,6 +324,8 @@ hook_source = '''
 	function! s:vimfiler_my_settings() abort "{{{
 		nmap <buffer> <Tab> <Plug>(vimfiler_switch_to_other_window)
 	endfunction"}}}
+	
+	autocmd FileType vimfiler nmap <buffer> <CR> <Plug>(vimfiler_expand_or_edit)
 '''
 
 [[plugins]]
@@ -374,11 +384,6 @@ repo = 'Shougo/neoinclude.vim'
 on_if = 1
 
 [[plugins]]
-repo = 'Shougo/vinarise.vim'
-on_cmd = 'Vinarise'
-hook_add = 'let g:vinarise_enable_auto_detect = 1'
-
-[[plugins]]
 repo = 'kana/vim-niceblock'
 on_map = {x = '<Plug>'}
 hook_add = '''
@@ -391,10 +396,6 @@ repo = 'vim-jp/vital.vim'
 
 [[plugins]]
 repo = 'ctrlpvim/ctrlp.vim'
-
-[[plugins]]
-repo = 'LeafCage/foldCC'
-on_ft = 'vim'
 
 [[plugins]]
 repo = 'thinca/vim-fontzoom'
@@ -428,39 +429,6 @@ hook_source = '''
     nmap <buffer> [Tag]p  <Plug>(ref-back)
     nnoremap <buffer> <TAB> <C-w>w
   endfunction"}}}
-'''
-
-[[plugins]]
-repo = 'basyura/J6uil.vim'
-on_if = 'has("gui_running")'
-#depends = 'webapi-vim'
-hook_source = '''
-  let g:J6uil_config_dir = expand('$CACHE/J6uil')
-  let g:J6uil_no_default_keymappings = 1
-  let g:J6uil_display_offline  = 0
-  let g:J6uil_display_online   = 0
-  let g:J6uil_echo_presence    = 1
-  let g:J6uil_display_icon     = 1
-  let g:J6uil_display_interval = 0
-  let g:J6uil_updatetime       = 1000
-  let g:J6uil_align_message    = 0
-
-  autocmd MyAutoCmd FileType J6uil call s:j6uil_settings()
-  autocmd MyAutoCmd FileType J6uil_say call s:j6uil_say_settings()
-
-  function! s:j6uil_settings() abort
-    setlocal wrap
-    setlocal nofoldenable
-    setlocal foldcolumn=0
-    nmap <buffer> o <Plug>(J6uil_open_say_buffer)
-    nmap <silent> <buffer> <CR> <Plug>(J6uil_action_enter)
-  endfunction
-
-  function! s:j6uil_say_settings() abort
-    setlocal wrap
-    setlocal nofoldenable
-    setlocal foldcolumn=0
-  endfunction
 '''
 
 [[plugins]]
@@ -637,16 +605,17 @@ hook_source = '''
 [[plugins]]
 repo = 'thinca/vim-quickrun'
 on_map = [['nxo', '<Plug>(quickrun)']]
-depends = 'vimproc'
+depends = ['vimproc', 'previm']
 hook_add = '''
 	let g:quickrun_config = {
 	\   "_" : {
 	\       "runner" : "vimproc",
 	\       "runner/vimproc/updatetime" : 60
 	\   },
-	\  }
-	let g:quickrun_config['markdown'] = {
-	  \   'runner' : 'PrevimOpen',
-      \   'outputter': 'browser'
-      \ }
+	\	'html': {
+	\		'command' :g:default_browser,
+	\		'exec' : '%c %s',
+	\		'outputter': 'browser'
+	\	}
+	\ }	
 '''
