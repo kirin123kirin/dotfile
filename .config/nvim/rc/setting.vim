@@ -6,8 +6,11 @@ set completeopt=menu,menuone,noinsert,noselect
 set pumheight=10
 
 " エディタの分割方向を設定する
+" 新しいウィンドウを下に開く
 set splitbelow
+" 新しいウィンドウを右に開く
 set splitright
+
 
 " 折りたたみ機能
 "set foldcolumn=4

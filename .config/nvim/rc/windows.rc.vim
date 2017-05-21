@@ -31,3 +31,7 @@ if !exists('g:colors_name') && !has('gui_running')
   " hi PmenuSel ctermbg=1
   " hi PmenuSbar ctermbg=0
 endif
+
+let g:neossh#ssh_command = expand($APPROOT) . '/usr/bin/ssh.exe -P PORT HOSTNAME'
+let g:neossh#copy_directory_command = expand($APPROOT) . '/usr/bin/scp.exe -P PORT -q -r $srcs $dest'
+let g:neossh#copy_file_command = expand($APPROOT) . '/usr/bin/scp.exe -P PORT -q $srcs $dest'

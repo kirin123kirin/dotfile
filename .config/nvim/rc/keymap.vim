@@ -7,6 +7,11 @@
  " vmap/vnoremap         -            -              -                  @
  " map!/noremap!         -            @              @                  -
  "---------------------------------------------------------------------------
+" カーソル移動.インサートモード
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
 
 " シフトで多めに移動
 noremap J 20j
@@ -91,7 +96,7 @@ noremap!<silent> <F5> <Esc>:QuickRun -outputter error -outputter/error/success b
 nmap <C-e> :<C-u>Denite directory_rec 
 nmap <silent> <C-f> :<C-u>Denite file_rec<CR>
 nmap <silent> <F3>  :<C-u>Denite line<CR>
-nmap <silent> <C-F3>  :<C-u>Denite grep<CR>
+nmap <silent> <C-F3> :<C-u>Denite grep<CR>
 nmap <silent> <S-F3>:<C-u>DeniteCursorWord grep<CR>
 nmap <silent> <C-h> :<C-u>Denite file_mru<CR>
 nmap <silent> <C-y> :<C-u>Denite neoyank<CR>
@@ -106,7 +111,7 @@ noremap <silent> <F12> <ESC>:Unite bookmark -buffer-name=bookmark -vertical -win
 noremap! <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
 noremap! <silent> <F12> <ESC>:Unite bookmark -buffer-name=bookmark -vertical -winwidth=50<CR>
 cnoremap <F11> UniteBookmarkAdd<CR>
-cnoremap <F12> Unite bookmark<CR>
+cnoremap <F12> Unite bookmark -buffer-name=bookmark -vertical -winwidth=50<CR>
 noremap <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<CR>
 noremap! <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<CR>
 

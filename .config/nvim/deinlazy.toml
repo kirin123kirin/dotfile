@@ -1,5 +1,6 @@
 ﻿[[plugins]]
 repo = 'Shougo/neomru.vim'
+on_if = 1
 
 #[[plugins]]
 #repo = 'Shougo/vimproc.vim'
@@ -7,6 +8,7 @@ repo = 'Shougo/neomru.vim'
 
 [[plugins]]
 repo = 'Shougo/vimproc'
+on_if = 1
 merged = 0
 hook_add = '''
 	if dein#util#_is_windows()
@@ -159,6 +161,7 @@ hook_source = '''
 
 [[plugins]]
 repo = 'Shougo/unite.vim'
+on_if = 1
 hook_add = '''
   let g:unite_split_rule = 'botright'
   let g:unite_source_bookmark_directory = g:config_nvim_home . "/bookmark"
@@ -173,6 +176,7 @@ hook_source = '''
 
 [[plugins]]
 repo = 'Shougo/denite.nvim'
+on_if = 1
 on_cmd = 'Denite'
 hook_add = '''
   nnoremap <silent> ;r
@@ -288,12 +292,14 @@ repo = 'Shougo/context_filetype.vim'
 
 [[plugins]]
 repo = 'Shougo/vimfiler.vim'
+on_if = 1
 #depends = 'unite.vim'
 on_map = {n = '<Plug>'}
 on_if = "isdirectory(bufname('%'))"
 hook_add = '''
+	autocmd VimEnter * VimFiler -buffer-name=explorer -split -simple -winwidth=45 -toggle -no-quit
 	nnoremap <F2> :VimFiler -buffer-name=explorer -split -simple -winwidth=45 -toggle -no-quit<Cr>
-	nnoremap <silent>   [Space]v   :<C-u>VimFiler -invisible<CR>
+	nnoremap <S-F2> :VimFilerDouble -buffer-name=commander -simple -no-quit<Cr>
 '''
 hook_source = '''
 	call vimfiler#custom#profile('default', 'context', {
@@ -315,7 +321,7 @@ hook_source = '''
 		let g:vimfiler_tree_leaf_icon = ' '
 		let g:vimfiler_tree_opened_icon = '-'
 		let g:vimfiler_tree_closed_icon = '+'
-		let g:vimfiler_file_icon = ' '
+		let g:vimfiler_file_icon = '>'
 		let g:vimfiler_readonly_file_icon = '!'
 		let g:vimfiler_marked_file_icon = '*'
 	endif

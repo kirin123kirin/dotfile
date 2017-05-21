@@ -3,7 +3,7 @@
 colorscheme badwolf
 
 " 背景を黒ベースに
-set background=dark
+"set background=dark
 
 " 選択行をハイライトする
 hi CursorLine guifg=#E19972
@@ -56,22 +56,17 @@ set backspace=indent,eol,start
 " 行頭行末の左右移動で行をまたぐ
 set whichwrap=b,s,h,l,<,>,[,]
 
-" 新しいウィンドウを下に開く
-set splitbelow
-" 新しいウィンドウを右に開く
-set splitright
-
 " カーソルの形状を変える
-"if exists('$ITERM_SESSION_ID')
-	" if empty('$TMUX')
+if exists('$ITERM_SESSION_ID')
+	if empty('$TMUX')
 		let &t_SI = "\e]50;CursorShape=1\x7"
 		let &t_EI = "\e]50;CursorShape=0\x7"
 		let &t_SR = "\e]50;CursorShape=2\x7"
-	" else
-	" 	let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-	" 	let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-	" 	let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
-	" endif
-"endif
+	else
+		let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+		let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+		let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+	endif
+endif
 
 " }}}
