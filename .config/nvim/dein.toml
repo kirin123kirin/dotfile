@@ -9,9 +9,6 @@ repo = 'sjl/badwolf'
 repo = 'vim-scripts/github-theme'
 
 [[plugins]]
-repo = 'altercation/solarized'
-
-[[plugins]]
 repo    = 'vim-airline/vim-airline'
 depends = ['vim-airline-themes']
 hook_source = '''

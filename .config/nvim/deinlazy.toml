@@ -340,21 +340,23 @@ on_map = {n = '<Plug>'}
 on_if = "!has('nvim')"
 hook_add = 'nmap [Space]s  <Plug>(vimshell_switch)'
 hook_source = '''
-	let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-	let g:vimshell_right_prompt = ''
-	let g:vimshell_prompt = '% '
+	let g:vimshell_user_prompt = ''
+	let g:vimshell_right_prompt = 'fnamemodify(getcwd(), ":~")'
+	let g:vimshell_prompt = empty($USER) ? $USERNAME.'% ' : $USER.'% '
 	let g:vimshell_split_command = ''
 	let g:vimshell_enable_transient_user_prompt = 1
-	let g:vimshell_force_overwrite_statusline = 1
+	let g:vimshell_force_overwrite_statusline = 2
 
 	autocmd MyAutoCmd FileType vimshell call s:vimshell_settings()
 	function! s:vimshell_settings() abort
 	  if !IsWindows()
 	    " Display user name on Linux.
-	    "let g:vimshell_prompt = $USER."% "
+	    let g:vimshell_prompt = $USER."% "
 
 	    " Use zsh history.
 	    let g:vimshell_external_history_path = expand('~/.zsh-history')
+	  else
+	    let g:vimshell_prompt = $USERNAME."% "
 	  endif
 
 	  inoremap <buffer><expr>'  pumvisible() ? "\<C-y>" : "'"
