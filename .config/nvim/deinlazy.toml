@@ -1,9 +1,11 @@
 ﻿[[plugins]]
 repo = 'Shougo/neomru.vim'
-
-#[[plugins]]
-#repo = 'Shougo/vimproc.vim'
-#build = 'make'
+on_if = 1
+hook_add = '''
+  let g:neomru#update_interval = 300
+ " let g:neomru#file_mru_path = g:cache_home . '/neomru/file'
+  "let g:neomru#directory_mru_path = g:cache_home . '/neomru/directory'
+'''
 
 [[plugins]]
 repo = 'Shougo/vimproc'
