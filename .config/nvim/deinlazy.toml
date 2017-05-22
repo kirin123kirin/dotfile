@@ -1,6 +1,5 @@
 ﻿[[plugins]]
 repo = 'Shougo/neomru.vim'
-on_if = 1
 
 #[[plugins]]
 #repo = 'Shougo/vimproc.vim'
@@ -8,7 +7,6 @@ on_if = 1
 
 [[plugins]]
 repo = 'Shougo/vimproc'
-on_if = 1
 merged = 0
 hook_add = '''
 	if dein#util#_is_windows()
@@ -161,7 +159,6 @@ hook_source = '''
 
 [[plugins]]
 repo = 'Shougo/unite.vim'
-on_if = 1
 hook_add = '''
   let g:unite_split_rule = 'botright'
   let g:unite_source_bookmark_directory = g:config_nvim_home . "/bookmark"
@@ -176,18 +173,17 @@ hook_source = '''
 
 [[plugins]]
 repo = 'Shougo/denite.nvim'
-on_if = 1
 on_cmd = 'Denite'
 hook_add = '''
-  nnoremap <silent> ;r
+  nnoremap <silent> <C-y>
         \ :<C-u>Denite -buffer-name=register
         \ register neoyank<CR>
-  xnoremap <silent> ;r
+  xnoremap <silent> <C-y>
         \ :<C-u>Denite -default-action=replace -buffer-name=register
         \ register neoyank<CR>
 
-  nnoremap <silent> [Window]<Space>
-        \ :<C-u>Denite file_rec:~/.vim/rc<CR>
+  nnoremap <silent> <F3>
+        \ :<C-u>Denite file_rec:g:rc_dir<CR>
   nnoremap <silent> / :<C-u>Denite -buffer-name=search
         \ line<CR>
   nnoremap <silent> * :<C-u>DeniteCursorWord -buffer-name=search
@@ -219,11 +215,11 @@ hook_add = '''
 	" gamy
 	nmap <C-e> :<C-u>Denite directory_rec 
 	nmap <silent> <C-f> :<C-u>Denite file_rec<CR>
-	nmap <silent> <F3>  :<C-u>Denite line<CR>
+	"nmap <silent> <F3>  :<C-u>Denite line<CR>
 	nmap <silent> <C-F3>  :<C-u>Denite grep<CR>
 	nmap <silent> <S-F3>:<C-u>DeniteCursorWord grep<CR>
 	nmap <silent> <C-h> :<C-u>Denite file_mru<CR>
-	nmap <silent> <C-y> :<C-u>Denite neoyank<CR>
+	"nmap <silent> <C-y> :<C-u>Denite neoyank<CR>
 	nmap <silent> <F8>  :<C-u>Denite -resume<CR>
 	nmap <silent> <F9>  :<C-N>Denite -resume -immediately -select=+1<CR>
 	nmap <silent> <F10> :<C-P>Denite -resume -immediately -select=-1<CR>
@@ -292,7 +288,6 @@ repo = 'Shougo/context_filetype.vim'
 
 [[plugins]]
 repo = 'Shougo/vimfiler.vim'
-on_if = 1
 #depends = 'unite.vim'
 on_map = {n = '<Plug>'}
 on_if = "isdirectory(bufname('%'))"
