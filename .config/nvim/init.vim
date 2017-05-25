@@ -1,4 +1,9 @@
-﻿" reset
+﻿
+if &compatible
+  set nocompatible
+endif
+
+" reset
 augroup MyAutoCmd
 	autocmd!
 augroup END
@@ -85,16 +90,11 @@ endif
 
 
 " dein {{{
-
 let s:dein_cache_dir = g:cache_home . '/dein'
-
 let g:dein#install_max_processes = 16
 let g:dein#install_message_type = 'none'
 let g:dein#enable_name_conversion = 1
 let g:dein#enable_notification = 1
-
-
-
 
 if &runtimepath !~# '/dein.vim'
 	let s:dein_repo_dir = s:dein_cache_dir . '/repos/github.com/Shougo/dein.vim'
@@ -103,9 +103,6 @@ if &runtimepath !~# '/dein.vim'
 	endif
 	execute 'set runtimepath^=' . s:dein_repo_dir
 endif
-
-
-
 
 if dein#load_state(s:dein_cache_dir)
 	call dein#add('Shougo/dein.vim')
@@ -127,23 +124,19 @@ if dein#load_state(s:dein_cache_dir)
 	call dein#save_state()
 endif
 
-
-
-
 if has('vim_starting') && dein#check_install()
 	call dein#install()
 endif
 
-
-filetype plugin indent on
 " }}}
 
+filetype plugin indent on
 
 call s:source_rc('view.vim')
 call s:source_rc('setting.vim')
 	call s:source_rc('init.rc.vim')
 	call s:source_rc('encoding.rc.vim')
-	""call s:source_rc('options.rc.vim')
+	call s:source_rc('options.rc.vim')
 call s:source_rc('keymap.vim')
 	if has('nvim')
 		call s:source_rc('neovim.rc.vim')
