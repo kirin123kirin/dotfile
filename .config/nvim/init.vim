@@ -1,4 +1,4 @@
-﻿
+﻿set shellslash
 if &compatible
   set nocompatible
 endif
@@ -46,8 +46,7 @@ if has('vim_starting') && &encoding !=# 'utf-8'
 endif
 
 " Build encodings.
-let &fileencodings = join([
-      \ 'ucs-bom', 'iso-2022-jp-3', 'utf-8', 'euc-jp', 'cp932'])
+let &fileencodings = join([ 'ucs-bom', 'iso-2022-jp-3', 'utf-8', 'euc-jp', 'cp932'])
 
 " Setting of terminal encoding.
 if !has('gui_running') && IsWindows()
@@ -91,7 +90,7 @@ endif
 
 " dein {{{
 let s:dein_cache_dir = g:cache_home . '/dein'
-let g:dein#install_max_processes = 16
+let g:dein#install_max_processes = 8
 let g:dein#install_message_type = 'none'
 let g:dein#enable_name_conversion = 1
 let g:dein#enable_notification = 1
@@ -101,7 +100,8 @@ if &runtimepath !~# '/dein.vim'
 	if !isdirectory(s:dein_repo_dir)
 		call system('git clone https://github.com/Shougo/dein.vim ' . shellescape(s:dein_repo_dir))
 	endif
-	execute 'set runtimepath^=' . s:dein_repo_dir
+	execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p:gs?\\?/?')
+	"execute 'set runtimepath^=' . s:dein_repo_dir
 endif
 
 if dein#load_state(s:dein_cache_dir)
