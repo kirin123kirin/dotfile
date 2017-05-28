@@ -1,7 +1,10 @@
-scriptencoding utf-8
-" Build encodings.
-let &fileencodings = join([
-      \ 'ucs-bom', 'iso-2022-jp-3', 'utf-8', 'euc-jp', 'cp932'])
+"default
+"for vimrc windows kaoriya vim80
+
+set shellslash
+if &compatible
+  set nocompatible
+endif
 
 " reset
 augroup MyAutoCmd
@@ -9,15 +12,19 @@ augroup MyAutoCmd
 augroup END
 
 " env
+let g:app_home = expand($APPROOT)
 let g:cache_home = empty($XDG_CACHE_HOME) ? expand('$HOME/.cache') : $XDG_CACHE_HOME
-let g:config_home = empty($XDG_CONFIG_HOME) ? expand('$HOME/.config') : $XDG_CONFIG_HOME
-let g:config_nvim_home = expand(g:config_home . '/nvim')
-let g:rc_dir = expand(g:config_nvim_home . '/rc')
-let g:plugins_dir = expand(g:config_nvim_home . '/plugins')
+let g:vim_dir = expand($VIM)
+let g:conf_dir = g:vim_dir . '/vimfiles'
+let g:rc_dir   = g:conf_dir . '/rc'
+let g:no_vimrc_example = 1
 
+" python3 http://tonkuma.hatenablog.com/entry/2016/12/24/060000#%E5%89%8D%E6%BA%96%E5%82%99
+set runtimepath+=$VIM
+set pythonthreedll=$PYTHONPATH/python35.dll
 let g:python3_host_prog = 'python'
 
-" Common functions {{{
+" common {{{
 let s:is_windows = has('win32') || has('win64')
 
 function! IsWindows() abort
@@ -34,75 +41,78 @@ function! s:source_rc(path, ...) abort "{{{
 	execute 'source ' . g:rc_dir . '/' . a:path
 endfunction"}}}
 
-" plugins下のディレクトリをruntimepathへ追加する。
-for s:path in split(glob($VIM.'/plugins/*'), '\n')
-  if s:path !~# '\~$' && isdirectory(s:path)
-    let &runtimepath = &runtimepath.','.s:path
-  end
-endfor
-unlet s:path
+if IsWindows()
+	let g:default_browser  = 'C:\Program Files (x86)\Mozilla Firefox\firefox.exe'
+	if !filereadable(g:default_browser)
+		let g:default_browser  = 'C:\Program Files\Mozilla Firefox\firefox.exe'
+	endif
+elseif IsMac()
+	let g:default_browser  = '/Applications/Firefox.app'
+else
+	let g:default_browser  = 'firefox'
+endif
 
-source $VIM/plugins/kaoriya/encode_japan.vim
+" Release keymappings for plug-in.
+nnoremap ;  <Nop>
+nnoremap m  <Nop>
+nnoremap ,  <Nop>
 
-if !(IsWindows() || IsMac()) && has('multi_lang')
-  if !exists('$LANG') || $LANG.'X' ==# 'X'
-    if !exists('$LC_CTYPE') || $LC_CTYPE.'X' ==# 'X'
-      language ctype ja_JP.eucJP
+call s:source_rc('filetype.vim')
+" }}}
+
+" Dein {{{
+let s:dein_dir = expand('~/.cache/dein')
+let g:dein#install_max_processes = 8
+let g:dein#install_message_type = 'none'
+let g:dein#enable_name_conversion = 1
+let g:dein#enable_notification = 1
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+
+if &runtimepath !~# '/dein.vim'
+    if !isdirectory(s:dein_repo_dir)
+        execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
     endif
-    if !exists('$LC_MESSAGES') || $LC_MESSAGES.'X' ==# 'X'
-      language messages ja_JP.eucJP
-    endif
-  endif
+    "execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+    execute 'set runtimepath^=' . s:dein_repo_dir
 endif
 
-if IsMac()
-  set langmenu=japanese
+if dein#load_state(s:dein_dir)
+  call dein#begin(s:dein_dir)
+  let s:toml      = g:conf_dir . '/dein.toml'
+  let s:lazy_toml = g:conf_dir . '/deinlazy.toml'
+  let s:neo_toml = g:conf_dir .  '/deineo.toml'
+  call dein#load_toml(s:toml,      {'lazy': 0})
+  call dein#load_toml(s:lazy_toml, {'lazy': 1})
+  call dein#load_toml(s:neo_toml , {'lazy': 1})
+  call dein#end()
+  call dein#save_state()
+endif
+if dein#check_install()
+  call dein#install()
 endif
 
-if has('keymap')
-  " ローマ字仮名のkeymap
-  "silent! set keymap=japanese
-  "set iminsert=0 imsearch=0
-endif
+" }}}
 
-if !has('gui_running') && &encoding != 'cp932' && &term == 'win32'
-  set termencoding=cp932
-endif
+filetype plugin indent on
+syntax on
 
-if 1 && !filereadable($VIMRUNTIME . '/menu.vim') && has('gui_running')
-  set guioptions+=M
-endif
+call s:source_rc('view.vim')
+call s:source_rc('setting.vim')
+	call s:source_rc('init.rc.vim')
+	call s:source_rc('encoding.rc.vim')
+	call s:source_rc('options.rc.vim')
+call s:source_rc('keymap.vim')
+	if has('nvim')
+		call s:source_rc('neovim.rc.vim')
+	endif
+	if IsWindows()
+		call s:source_rc('windows.rc.vim')
+	else
+		call s:source_rc('unix.rc.vim')
+	endif
 
-set formatoptions+=mM
+	if has('nvim') && has('gui_running')
+		call s:source_rc('gui.rc.vim')
+	endif
 
-if !has('gui_running') && has('xterm_clipboard')
-  set clipboard=exclude:cons\\\|linux\\\|cygwin\\\|rxvt\\\|screen
-endif
-
-if IsWindows() && $PATH !~? '\(^\|;\)' . escape($VIM, '\\') . '\(;\|$\)'
-  let $PATH = $VIM . ';' . $PATH
-endif
-
-if IsMac()
-  set iskeyword=@,48-57,_,128-167,224-235
-endif
-
-"---------------------------------------------------------------------------
-" KaoriYaでバンドルしているプラグインのための設定
-
-" autofmt: 日本語文章のフォーマット(折り返し)プラグイン.
-set formatexpr=autofmt#japanese#formatexpr()
-" vimdoc-ja: 日本語ヘルプを無効化する.
-if kaoriya#switch#enabled('disable-vimdoc-ja')
-  let &rtp = join(filter(split(&rtp, ','), 'v:val !~ "[/\\\\]plugins[/\\\\]vimdoc-ja"'), ',')
-endif
-" vimproc: 同梱のvimprocを無効化する
-if kaoriya#switch#enabled('disable-vimproc')
-  let &rtp = join(filter(split(&rtp, ','), 'v:val !~ "[/\\\\]plugins[/\\\\]vimproc$"'), ',')
-endif
-
-" go-extra: 同梱の vim-go-extra を無効化する
-if kaoriya#switch#enabled('disable-go-extra')
-  let &rtp = join(filter(split(&rtp, ','), 'v:val !~ "[/\\\\]plugins[/\\\\]golang$"'), ',')
-endif
-
+call s:source_rc('command.vim')

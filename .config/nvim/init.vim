@@ -147,9 +147,9 @@ call s:source_rc('keymap.vim')
 		call s:source_rc('unix.rc.vim')
 	endif
 
-	if !has('nvim') && has('gui_running')
+	"if has('nvim') && has('gui_running')
 		call s:source_rc('gui.rc.vim')
-	endif
+	"endif
 
 call s:source_rc('command.vim')
 call s:source_rc('override.vim')
