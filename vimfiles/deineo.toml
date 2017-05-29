@@ -21,7 +21,7 @@ repo = 'Shougo/deoplete.nvim'
 if = "has('nvim')"
 #on_event = 'InsertEnter'
 hook_source = '''
-	let g:deoplete#enable_at_startup = 1
+	"let g:deoplete#enable_at_startup = 1
 	" <TAB>: completion.
 	inoremap <silent><expr> <TAB>
 	      \ pumvisible() ? "\<C-n>" :

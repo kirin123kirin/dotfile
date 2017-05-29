@@ -6,7 +6,8 @@ colorscheme badwolf
 "set background=dark
 
 " 選択行をハイライトする
-hi CursorLine guifg=#E19972
+"hi CursorLine guifg=#E19972
+highlight CursorLine guibg=Yellow guifg = Black
 
 " 行番号を表示する
 set number
@@ -47,7 +48,7 @@ endif
 " カーソル位置のカラムの背景色を変える
 "set cursorcolumn
 
-" カーソル行の背景色を変える
+" カーソル行の背景色を変える。。カーソルが重くなる？？
 set cursorline
 
 " バックスペースキーの有効化

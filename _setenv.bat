@@ -7,7 +7,7 @@ set NODE_PATH=%APPROOT%\usr\lib\node_modules
 set PYTHONPATH=%APPROOT%\usr\lib\python3
 set VIM=%APPROOT%\dotfiles
 set VIMRUNTIME=%APPROOT%\usr\lib\gvim\vim80
-set CACHE=%USERPROFILE%\.cache
+set CACHE=%APPROOT%\.cache
 
 setx APPROOT %APPROOT%
 

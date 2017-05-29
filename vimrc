@@ -61,7 +61,7 @@ call s:source_rc('filetype.vim')
 " }}}
 
 " Dein {{{
-let s:dein_dir = expand('~/.cache/dein')
+let s:dein_dir = g:cache_home . '/dein'
 let g:dein#install_max_processes = 8
 let g:dein#install_message_type = 'none'
 let g:dein#enable_name_conversion = 1
@@ -81,9 +81,12 @@ if dein#load_state(s:dein_dir)
   let s:toml      = g:conf_dir . '/dein.toml'
   let s:lazy_toml = g:conf_dir . '/deinlazy.toml'
   let s:neo_toml = g:conf_dir .  '/deineo.toml'
+  
   call dein#load_toml(s:toml,      {'lazy': 0})
   call dein#load_toml(s:lazy_toml, {'lazy': 1})
-  call dein#load_toml(s:neo_toml , {'lazy': 1})
+  if has('nvim')
+      call dein#load_toml(s:neo_toml , {'lazy': 1})
+  endif
   call dein#end()
   call dein#save_state()
 endif
