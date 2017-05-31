@@ -284,8 +284,7 @@ repo = 'Shougo/vimfiler.vim'
 on_map = {n = '<Plug>'}
 on_if = "isdirectory(bufname('%'))"
 hook_add = '''
-	autocmd VimEnter * VimFiler -buffer-name=explorer -split -simple -winwidth=45 -toggle -no-quit
-	nnoremap <F2> :VimFiler -buffer-name=explorer -split -simple -winwidth=45 -toggle -no-quit<Cr>
+	nnoremap <silent><F2> :VimFiler -buffer-name=explorer -split -simple -winwidth=45 -toggle<Cr>
 	nnoremap <S-F2> :VimFilerDouble -buffer-name=commander -simple -no-quit<Cr>
 '''
 hook_source = '''
@@ -299,8 +298,7 @@ hook_source = '''
 	let g:vimfiler_enable_auto_cd = 1
 	if IsWindows()
 		let g:vimfiler_detect_drives = [
-		      \ 'C:/', 'D:/', 'E:/', 'F:/', 'G:/', 'H:/', 'I:/',
-		      \ 'J:/', 'K:/', 'L:/', 'M:/', 'N:/', 'Y:', 'Z:']
+		      \ 'C:/', 'D:/', 'E:/', 'F:/', 'G:/', 'H:/', 'Y:', 'Z:']
 		" Use trashbox.
 		let g:unite_kind_file_use_trashbox = 1
 	endif
@@ -311,13 +309,6 @@ hook_source = '''
 	let g:vimfiler_file_icon = ' '
 	let g:vimfiler_readonly_file_icon = '!'
 	let g:vimfiler_marked_file_icon = '*'
-
-	autocmd MyAutoCmd FileType vimfiler call s:vimfiler_my_settings()
-	function! s:vimfiler_my_settings() abort "{{{
-		nmap <buffer> <Tab> <Plug>(vimfiler_switch_to_other_window)
-	endfunction"}}}
-	
-	autocmd FileType vimfiler nmap <buffer> <CR> <Plug>(vimfiler_expand_or_edit)
 '''
 
 [[plugins]]
