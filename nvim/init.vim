@@ -1,4 +1,4 @@
-﻿set shellslash
+﻿" set shellslash
 if &compatible
   set nocompatible
 endif
@@ -9,11 +9,9 @@ augroup MyAutoCmd
 augroup END
 
 " env
-let g:cache_home = empty($XDG_CACHE_HOME) ? expand('$HOME/.cache') : $XDG_CACHE_HOME
-let g:config_home = empty($XDG_CONFIG_HOME) ? expand('$HOME/.config') : $XDG_CONFIG_HOME
-let g:config_nvim_home = expand(g:config_home . '/nvim')
-let g:rc_dir = expand(g:config_nvim_home . '/rc')
-let g:plugins_dir = expand(g:config_nvim_home . '/plugins')
+let g:cache_home = empty($XDG_CACHE_HOME) ? expand('$HOME/.cache') : expand($XDG_CACHE_HOME)
+let g:config_home = empty($XDG_CONFIG_HOME) ? expand('$HOME/.config/nvim') : expand($XDG_CONFIG_HOME.'/nvim')
+let g:rc_dir = expand(g:config_home . '/rc')
 
 let g:python3_host_prog = 'python'
 " Common functions {{{
@@ -74,23 +72,12 @@ nnoremap ,  <Nop>
 
 call s:source_rc('filetype.vim')
 
-if IsWindows()
-	let g:default_browser  = 'C:\Program Files (x86)\Mozilla Firefox\firefox.exe'
-	if !filereadable(g:default_browser)
-		let g:default_browser  = 'C:\Program Files\Mozilla Firefox\firefox.exe'
-	endif
-elseif IsMac()
-	let g:default_browser  = '/Applications/Firefox.app'
-else
-	let g:default_browser  = 'firefox'
-endif
 
 " }}}
 
-
 " dein {{{
 let s:dein_cache_dir = g:cache_home . '/dein'
-let g:dein#install_max_processes = 8
+let g:dein#install_max_processes = 4
 let g:dein#install_message_type = 'none'
 let g:dein#enable_name_conversion = 1
 let g:dein#enable_notification = 1
@@ -100,18 +87,17 @@ if &runtimepath !~# '/dein.vim'
 	if !isdirectory(s:dein_repo_dir)
 		call system('git clone https://github.com/Shougo/dein.vim ' . shellescape(s:dein_repo_dir))
 	endif
-	execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p:gs?\\?/?')
-	"execute 'set runtimepath^=' . s:dein_repo_dir
+	execute 'set runtimepath^=' . s:dein_repo_dir
 endif
 
 if dein#load_state(s:dein_cache_dir)
 	call dein#add('Shougo/dein.vim')
 
 	call dein#begin(s:dein_cache_dir)
-		call dein#load_toml(g:config_nvim_home . '/dein.toml', {'lazy': 0})
-		call dein#load_toml(g:config_nvim_home . '/deinlazy.toml', {'lazy': 1})
+		call dein#load_toml(g:config_home . '/dein.toml', {'lazy': 0})
+		call dein#load_toml(g:config_home . '/deinlazy.toml', {'lazy': 1})
 		if has('nvim')
-			call dein#load_toml(g:config_nvim_home . '/deineo.toml', {})
+			call dein#load_toml(g:config_home . '/deineo.toml', {})
 		endif
 
 		if dein#tap('deoplete.nvim') && has('nvim')
@@ -129,6 +115,7 @@ if has('vim_starting') && dein#check_install()
 endif
 
 " }}}
+
 
 filetype plugin indent on
 
@@ -152,10 +139,3 @@ call s:source_rc('keymap.vim')
 	"endif
 
 call s:source_rc('command.vim')
-call s:source_rc('override.vim')
-
-"---------------------------------------------------------------------------
-"for plugin in glob(g:rc_dir . '/plugins/*', 1, 1)
-"	execute "source " . plugin
-"endfor
-

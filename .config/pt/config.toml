@@ -1,4 +1,0 @@
-color = true
-context = 3
-ignore = [".git", ".svn", ".DS_Store"]
-color-path = "1;34"
