@@ -37,12 +37,15 @@ hook_add = '''
 
 	if !filereadable(s:vimproc_dll)
 	  call dein#call_hook('post_update')
-	  call dein#build('vimproc')
+	  call dein#call_hook('build')
 	endif
 '''
 hook_post_update = '''
 	if dein#util#_is_windows()
-	  let cmd = 'tools\\update-dll-mingw'
+		if has('win32')
+			let cmd = 'curl -O https://github.com/Shougo/vimproc.vim/releases/download/ver.9.2/vimproc_win32.dll'
+		elseif has('win64')
+			let cmd = 'curl -O https://github.com/Shougo/vimproc.vim/releases/download/ver.9.2/vimproc_win64.dll'
 	elseif dein#util#_is_cygwin()
 	  let cmd = 'make -f make_cygwin.mak'
 	  if $MSYSTEM == "MINGW32" || $MSYSTEM == "MINGW64"
@@ -62,11 +65,6 @@ repo = 'Shougo/neoyank.vim'
 on_if = 1
 on_event = 'TextYankPost'
 on_source = ['unite.vim', 'denite.nvim']
-
-[[plugins]]
-repo = 'Shougo/echodoc.vim'
-on_event = 'CompleteDone'
-hook_source = 'call echodoc#enable()'
 
 [[plugins]]
 repo = 'Shougo/neocomplete.vim'
@@ -151,9 +149,9 @@ repo = 'Shougo/neosnippet.vim'
 on_event = 'InsertCharPre'
 on_ft = 'snippet'
 hook_source = '''
-	imap <silent>L     <Plug>(neosnippet_jump_or_expand)
-	smap <silent>L     <Plug>(neosnippet_jump_or_expand)
-	xmap <silent>L     <Plug>(neosnippet_expand_target)
+	imap <silent><C-L>     <Plug>(neosnippet_jump_or_expand)
+	smap <silent><C-L>     <Plug>(neosnippet_jump_or_expand)
+	xmap <silent><C-L>     <Plug>(neosnippet_expand_target)
 
 	let g:neosnippet#enable_snipmate_compatibility = 1
 	let g:neosnippet#enable_completed_snippet = 1
@@ -164,7 +162,7 @@ hook_source = '''
 repo = 'Shougo/unite.vim'
 hook_add = '''
   let g:unite_split_rule = 'botright'
-  let g:unite_source_bookmark_directory = g:conf_dir . "/bookmark"
+  let g:unite_source_bookmark_directory = expand($HOME . "/bookmark")
 '''
 hook_source = '''
 	" default browser Vimfiler
@@ -228,12 +226,12 @@ hook_post_source = '''
 	if executable('rg')
 	  call denite#custom#var('file_rec', 'command',
 	        \ ['rg', '--files', '--glob', '!.git'])
-	  " call denite#custom#var('grep', 'command', ['rg', '--threads', '1'])
-	  " call denite#custom#var('grep', 'recursive_opts', [])
-	  " call denite#custom#var('grep', 'final_opts', [])
-	  " call denite#custom#var('grep', 'separator', ['--'])
-	  " call denite#custom#var('grep', 'default_opts',
-	  "       \ ['--vimgrep', '--no-heading'])
+	  call denite#custom#var('grep', 'command', ['rg', '--threads', '1'])
+	  call denite#custom#var('grep', 'recursive_opts', [])
+	  call denite#custom#var('grep', 'final_opts', [])
+	  call denite#custom#var('grep', 'separator', ['--'])
+	  call denite#custom#var('grep', 'default_opts',
+	        \ ['--vimgrep', '--no-heading'])
 	else
 	  call denite#custom#var('file_rec', 'command',
 	        \ ['pt', '--follow', '--nocolor', '--hidden', '--nogroup', '-g', ''])
@@ -274,6 +272,10 @@ hook_post_source = '''
 	      \   'venv/', 'images/', '*.min.*', 'img/', 'fonts/'])
 
 '''
+
+[[plugins]]
+repo = 'osyo-manga/vim-precious'
+depends = ['context_filetype.vim']
 
 [[plugins]]
 repo = 'Shougo/context_filetype.vim'
@@ -349,67 +351,14 @@ hook_source = '''
 '''
 
 [[plugins]]
-repo = 'Shougo/junkfile.vim'
-on_source = 'denite.vim'
-hook_add = '''
-  nnoremap <silent> [Window]e :<C-u>Denite junkfile:new junkfile<CR>
-'''
-
-[[plugins]]
 repo = 'Shougo/neco-vim'
 on_ft = 'vim'
-
-[[plugins]]
-repo = 'Shougo/neoinclude.vim'
-on_if = 1
-
-[[plugins]]
-repo = 'kana/vim-niceblock'
-on_map = {x = '<Plug>'}
-hook_add = '''
-  xmap I  <Plug>(niceblock-I)
-  xmap A  <Plug>(niceblock-A)
-'''
 
 [[plugins]]
 repo = 'vim-jp/vital.vim'
 
 [[plugins]]
 repo = 'ctrlpvim/ctrlp.vim'
-
-[[plugins]]
-repo = 'thinca/vim-fontzoom'
-on_map = {n = '<Plug>'}
-hook_add = '''
-  nmap + <Plug>(fontzoom-larger)
-  nmap _ <Plug>(fontzoom-smaller)
-'''
-
-[[plugins]]
-repo = 'thinca/vim-qfreplace'
-on_ft = ['unite', 'qf']
-hook_source = '''
-  autocmd MyAutoCmd FileType qf nnoremap <buffer> r :<C-u>Qfreplace<CR>
-'''
-
-[[plugins]]
-repo = 'thinca/vim-ref'
-on_map = {n = '<Plug>'}
-hook_source = '''
-  let g:ref_cache_dir = expand('$CACHE/ref')
-  let g:ref_use_vimproc = 1
-  if IsWindows()
-    let g:ref_refe_encoding = 'cp932'
-  endif
-
-  autocmd MyAutoCmd FileType ref call s:ref_my_settings()
-  function! s:ref_my_settings() abort "{{{
-    " Overwrite settings.
-    nmap <buffer> [Tag]t  <Plug>(ref-keyword)
-    nmap <buffer> [Tag]p  <Plug>(ref-back)
-    nnoremap <buffer> <TAB> <C-w>w
-  endfunction"}}}
-'''
 
 [[plugins]]
 repo = 'tyru/caw.vim'
@@ -444,11 +393,6 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'eagletmt/neco-ghc'
-on_ft = 'haskell'
-external_commands = 'ghc-mod'
-
-[[plugins]]
 repo = 'rhysd/accelerated-jk'
 on_map = {n = '<Plug>'}
 hook_add = '''
@@ -457,17 +401,12 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'aharisu/vim-gdev'
-on_ft = 'scheme'
-
-[[plugins]]
 repo = 'fatih/vim-go'
 on_ft = 'go'
 
 [[plugins]]
 repo = 'rhysd/vim-operator-surround'
 #depends = 'vim-operator-user'
-on_map = {n = '<Plug>'}
 hook_add = '''
   nmap <silent>sa <Plug>(operator-surround-append)a
   nmap <silent>sd <Plug>(operator-surround-delete)a
@@ -479,17 +418,6 @@ hook_add = '''
 repo = 'kannokanno/previm'
 on_ft = ['markdown', 'rst', 'mkd', 'md']
 on_cmd = 'PrevimOpen'
-#depends = 'open-browser.vim'
-hook_post_source = '''
-let g:previm_open_cmd = g:default_browser
-'''
-
-[[plugins]]
-repo = 'osyo-manga/vim-jplus'
-on_map = {n = '<Plug>'}
-hook_add = '''
-  nmap J <Plug>(jplus)
-'''
 
 [[plugins]]
 repo = 'davidhalter/jedi-vim'
@@ -501,14 +429,6 @@ hook_source = '''
   let g:jedi#smart_auto_mappings = 0
   let g:jedi#show_call_signatures = 0
 '''
-
-[[plugins]]
-repo = 'rust-lang/rust.vim'
-on_ft = 'rust'
-
-[[plugins]]
-repo = 'rhysd/rust-doc.vim'
-on_ft = 'rust'
 
 [[plugins]]
 repo = 'artur-shaik/vim-javacomplete2'
@@ -552,21 +472,16 @@ repo = 'tweekmonster/impsort.vim'
 on_cmd = 'ImpSort'
 hook_source = 'let g:impsort_highlight_imported = 0'
 
-[[plugins]]
-repo = 'tweekmonster/helpful.vim'
-on_cmd = 'HelpfulVersion'
-
-[[plugins]]
-repo = 'Jagua/vim-denite-ghq'
-on_source = 'denite.nvim'
-
-[[plugins]]
-repo = 'ciaranm/securemodelines'
-on_event = 'BufRead'
 
 [[plugins]]
 repo = 'rhysd/vim-gfm-syntax'
-on_event = 'BufRead'
+on_ft = 'markdown'
+hook_add = '''
+	let g:gfm_syntax_enable_always = 0
+	let g:gfm_syntax_enable_filetypes = ['markdown.gfm']
+	autocmd BufRead,BufNew,BufNewFile 
+	let g:markdown_fenced_languages = ['cpp', 'ruby', 'json']
+'''
 
 [[plugins]]
 repo = 'machakann/vim-vimhelplint'
@@ -574,15 +489,6 @@ on_ft = 'help'
 hook_source = '''
   autocmd MyAutoCmd FileType
   \ help nnoremap <silent><buffer> ,r  :<C-u>VimhelpLint!<CR>
-'''
-
-[[plugins]]
-repo = 'racer-rust/vim-racer'
-on_ft = 'rust'
-hook_source = '''
-  let $RUST_SRC_PATH = expand('~/.multirust/toolchains/'
-  \ .'stable-x86_64-unknown-linux-gnu/'
-  \ .'lib/rustlib/src/rust/src/')
 '''
 
 [[plugins]]
@@ -599,7 +505,7 @@ hook_add = '''
 	\       "runner/vimproc/updatetime" : 60
 	\   },
 	\	'html': {
-	\		'command' :g:default_browser,
+	\		'command' : g:default_browser,
 	\		'exec' : '%c %s',
 	\		'outputter': 'browser'
 	\	}

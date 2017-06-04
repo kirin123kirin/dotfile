@@ -28,23 +28,23 @@ hi LineNr       guifg=#BBBBBB ctermfg=250  guibg=#ECECEC ctermbg=255  gui=NONE c
 hi NonText      guifg=#808080 ctermfg=244  guibg=#ECECEC ctermbg=255  gui=NONE cterm=NONE
 hi VertSplit    guifg=#BBBBBB ctermfg=250  guibg=#BBBBBB ctermbg=250  gui=NONE cterm=NONE
 hi StatusLine   guifg=#404040 ctermfg=238  guibg=#BBBBBB ctermbg=250  gui=BOLD cterm=BOLD
-hi StatusLineNC guifg=#BBBBBB ctermfg=250  guibg=#ECECEC ctermbg=255  gui=ITALIC cterm=NONE
+hi StatusLineNC guifg=#BBBBBB ctermfg=250  guibg=#ECECEC ctermbg=255  gui=NONE cterm=NONE
 hi ModeMsg      guifg=#990000 ctermfg=88   gui=NONE cterm=NONE
 hi MoreMsg      guifg=#990000 ctermfg=88   gui=NONE cterm=NONE
 hi Title        guifg=#EF5939 ctermfg=203  gui=NONE cterm=NONE
 hi WarningMsg   guifg=#EF5939 ctermfg=203  gui=NONE cterm=NONE
-hi SpecialKey   guifg=#FFFFFF ctermfg=231  guibg=#FF1100 ctermbg=196  gui=ITALIC cterm=NONE
+hi SpecialKey   guifg=#FFFFFF ctermfg=231  guibg=#FF1100 ctermbg=196  gui=NONE cterm=NONE
 hi MatchParen   guifg=#000000 ctermfg=16   guibg=#CDCDFD ctermbg=189  gui=NONE cterm=NONE
 hi Underlined   guifg=#000000 ctermfg=16   gui=UNDERLINE cterm=UNDERLINE
 hi Directory    guifg=#990000 ctermfg=88   gui=NONE cterm=NONE
 hi Visual       guifg=#FFFFFF ctermfg=231  guibg=#3465A4 ctermbg=61   gui=NONE cterm=NONE
 hi VisualNOS    guifg=#FFFFFF ctermfg=231  guibg=#204A87 ctermbg=24   gui=NONE cterm=NONE
-hi IncSearch    guifg=#000000 ctermfg=16   guibg=#CDCDFD ctermbg=189  gui=ITALIC cterm=NONE
-hi Search       guifg=#000000 ctermfg=16   guibg=#CDCDFD ctermbg=189  gui=ITALIC cterm=NONE
+hi IncSearch    guifg=#000000 ctermfg=16   guibg=#CDCDFD ctermbg=189  gui=NONE cterm=NONE
+hi Search       guifg=#000000 ctermfg=16   guibg=#CDCDFD ctermbg=189  gui=NONE cterm=NONE
 hi Ignore       guifg=#808080 ctermfg=244  gui=NONE cterm=NONE
 hi Identifier   guifg=#0086B3 ctermfg=31   gui=NONE cterm=NONE
 hi PreProc      guifg=#A0A0A0 ctermfg=247  gui=BOLD cterm=BOLD
-hi Comment      guifg=#AAAAAA ctermfg=248  gui=ITALIC cterm=NONE
+hi Comment      guifg=#AAAAAA ctermfg=248  gui=NONE cterm=NONE
 hi Constant     guifg=#177F80 ctermfg=30   gui=NONE cterm=NONE
 hi String       guifg=#D81745 ctermfg=161  gui=NONE cterm=NONE
 hi Function     guifg=#990000 ctermfg=88   gui=BOLD cterm=BOLD
@@ -62,7 +62,7 @@ hi Structure    guifg=#000000 ctermfg=16   gui=BOLD cterm=BOLD
 hi TypeDef      guifg=#000000 ctermfg=16   gui=BOLD cterm=BOLD
 hi WildMenu     guifg=#7FBDFF ctermfg=111  guibg=#425C78 ctermbg=60   gui=NONE cterm=NONE
 hi Pmenu        guifg=#FFFFFF ctermfg=231  guibg=#808080 ctermbg=244  gui=BOLD cterm=BOLD
-hi PmenuSel     guifg=#000000 ctermfg=16   guibg=#CDCDFD ctermbg=189  gui=ITALIC cterm=NONE
+hi PmenuSel     guifg=#000000 ctermfg=16   guibg=#CDCDFD ctermbg=189  gui=NONE cterm=NONE
 hi PmenuSbar    guifg=#444444 ctermfg=238  guibg=#000000 ctermbg=16   gui=NONE cterm=NONE
 hi PmenuThumb   guifg=#AAAAAA ctermfg=248  guibg=#AAAAAA ctermbg=248  gui=NONE cterm=NONE
 hi TabLine      guifg=#404040 ctermfg=238  guibg=#DDDDDD ctermbg=253  gui=NONE cterm=NONE
