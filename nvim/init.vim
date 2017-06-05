@@ -1,4 +1,5 @@
-﻿set nocompatible
+﻿set shellslash
+set nocompatible
 set packpath=
 
 " reset
@@ -30,14 +31,22 @@ function! IsMac() abort
       \     || (!executable('xdg-open') && system('uname') =~? '^darwin'))
 endfunction
 
-if has('win64')
-    let g:default_browser = 'C:/Program Files (x86)/Mozilla Firefox/firefox.exe'
-elseif has('win32')
-    let g:default_browser = 'C:/Program Files/Mozilla Firefox/firefox.exe'
+let g:loaded_gzip = 1
+
+if IsWindows()
+    let g:zip_unzipcmd='unzip.exe'
+    let g:zip_zipcmd='zip.exe'
+    if has('win64')
+        let g:default_browser = 'C:/Program Files (x86)/Mozilla Firefox/firefox.exe'
+    elseif has('win32')
+        let g:default_browser = 'C:/Program Files/Mozilla Firefox/firefox.exe'
+    endif
 elseif IsMac()
     let g:default_browser = '/Applications/Firefox.app'
 else
     let g:default_browser = 'firefox'
+    let g:zip_unzipcmd='unzip'
+    let g:zip_zipcmd='zip'
 endif
 
 " Dein
@@ -256,7 +265,6 @@ if IsWindows() && !has('clipboard')
 
     tnoremap <silent><expr> <RightMouse> Po()
 endif
-
 
 " 変更があった場合にファイル名の横に+を表示する
 function! LightlineModified()

@@ -44,7 +44,7 @@ hi String       gui=NONE guifg=#4A708B guibg=NONE
 hi Underlined   gui=underline guifg=#63B8FF
 
 hi Boolean      gui=NONE guifg=#CD5555 guibg=NONE
-hi Comment      gui=italic guifg=#0000FF guibg=NONE
+hi Comment      gui=NONE guifg=#0000FF guibg=NONE
 hi Constant     gui=NONE guifg=#FF8C00 guibg=NONE
 hi Cursor       guibg=fg guifg=bg
 hi CursorColumn guibg=#F1F5FA

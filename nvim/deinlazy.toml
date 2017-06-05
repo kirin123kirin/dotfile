@@ -166,8 +166,7 @@ hook_add = '''
 '''
 hook_source = '''
 	" default browser Vimfiler
-	call unite#custom#default_action('directory' , 'cd')
-
+    call unite#custom#default_action('directory' , 'vimfiler')
 	" default file tabopen
 	call unite#custom#default_action('file' , 'tabdrop')
 '''
@@ -284,20 +283,32 @@ repo = 'Shougo/context_filetype.vim'
 repo = 'Shougo/vimfiler.vim'
 #depends = 'unite.vim'
 on_map = {n = '<Plug>'}
-on_if = "isdirectory(bufname('%'))"
+on_if = 1
+"on_if = "isdirectory(bufname('%'))"
 hook_add = '''
-	nnoremap <silent><F2> :VimFiler -buffer-name=explorer -split -simple -winwidth=45 -toggle<Cr>
-	nnoremap <S-F2> :VimFilerDouble -buffer-name=commander -simple -no-quit<Cr>
+	nnoremap <silent><F2> :VimFiler -simple<Cr>
+	nnoremap <silent><S-F2> :VimFilerDouble -buffer-name=commander<Cr>
 '''
 hook_source = '''
 	call vimfiler#custom#profile('default', 'context', {
+	      \ 'direction' : 'topleft',
+                \ 'split': 1,
+                \ 'winwidth' : 45,
+                \ 'no_quit': 1,
+                \ 'force_hide' : 1,
+                \ 'status' : 1,
+                \ 'columns' : 'size:time',
 	      \ 'safe' : 0,
 	      \ 'auto_expand' : 1,
 	      \ 'parent' : 0,
+	      \ 'toggle' : 1,
+	      \ 'sort_type' : 'filename',
+	      \ 'buffer_name' : 'filer',
 	      \ })
+	call vimfiler#set_execute_file('xls,xlsx', "EXCEL.EXE")
 
 	let g:vimfiler_as_default_explorer = 1
-	let g:vimfiler_enable_auto_cd = 1
+	" let g:vimfiler_enable_auto_cd = 1
 	if IsWindows()
 		let g:vimfiler_detect_drives = [
 		      \ 'C:/', 'D:/', 'E:/', 'F:/', 'G:/', 'H:/', 'Y:', 'Z:']
