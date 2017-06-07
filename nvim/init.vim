@@ -1,5 +1,4 @@
-﻿set shellslash
-set nocompatible
+﻿set nocompatible
 set packpath=
 
 " reset
@@ -94,6 +93,7 @@ filetype plugin indent on
 
 " global setting
 " エディタの分割方向を設定する
+set shellslash
 set splitbelow
 set splitright
 
@@ -245,26 +245,26 @@ else
     set clipboard=unnamed
 endif
 
-if has('nvim') && has('clipboard')
-    map! <S-Insert> <C-R>+
-endif
-
-if IsWindows() && !has('clipboard')
-    nnoremap <silent> <Space>y :.w !win32yank.exe -i<CR><CR>
-    vnoremap <silent> <Space>y :w !win32yank.exe -i<CR><CR>
-    nnoremap <silent> <S-Insert> :r !win32yank.exe -o<CR>
-    vnoremap <silent> <S-Insert> :r !win32yank.exe -o<CR>
-    cnoremap <silent> <S-Insert> :r !win32yank.exe -o<CR>
-    nnoremap <silent> <Space>a :%w !win32yank.exe -i<CR><CR>
-
-    tnoremap <silent><expr> <Space>p Po()
-
-    function Po()
-      return system('win32yank.exe -o')
-    endfunction
-
-    tnoremap <silent><expr> <RightMouse> Po()
-endif
+" if has('nvim') && has('clipboard')
+"     map! <S-Insert> <C-R>+
+" endif
+"
+" if IsWindows() && !has('clipboard')
+"     nnoremap <silent> <Space>y :.w !win32yank.exe -i<CR><CR>
+"     vnoremap <silent> <Space>y :w !win32yank.exe -i<CR><CR>
+"     nnoremap <silent> <S-Insert> :r !win32yank.exe -o<CR>
+"     vnoremap <silent> <S-Insert> :r !win32yank.exe -o<CR>
+"     cnoremap <silent> <S-Insert> :r !win32yank.exe -o<CR>
+"     nnoremap <silent> <Space>a :%w !win32yank.exe -i<CR><CR>
+"
+"     tnoremap <silent><expr> <Space>p Po()
+"
+"     function Po()
+"       return system('win32yank.exe -o')
+"     endfunction
+"
+"     tnoremap <silent><expr> <RightMouse> Po()
+" endif
 
 " 変更があった場合にファイル名の横に+を表示する
 function! LightlineModified()
@@ -343,7 +343,7 @@ set whichwrap=b,s,h,l,<,>,[,]
  " vmap/vnoremap         -            -              -                  @
  " map!/noremap!         -            @              @                  -
  "---------------------------------------------------------------------------
-let mapleader = "\<Space>"
+let mapleader = "<Space>"
 
 inoremap {} {}<LEFT>
 inoremap [] []<LEFT>
@@ -358,9 +358,9 @@ inoremap <C-k> <Up>
 inoremap <C-h> <Left>
 inoremap <C-l> <Right>
 
-inoremap <Leader>date <C-R>=strftime('%Y/%m/%d (%a)')<CR>
-inoremap <Leader>time <C-R>=strftime('%H:%M')<CR>
-inoremap <Leader>w3cd <C-R>=strftime('%Y-%m-%dT%H:%M:%S+09:00')<CR>
+inoremap <C-;> <C-R>=strftime('%Y/%m/%d')<CR>
+inoremap <C-:> <C-R>=strftime('%H:%M')<CR>
+inoremap <C-;:> <C-R>=strftime('%Y/%m/%d %H:%M')<CR>
 
 " シフトで多めに移動
 noremap J 20j
@@ -433,8 +433,8 @@ nnoremap + <C-a>
 nnoremap - <C-x>
 
 " <S-Insert>でクリップボード貼りつけ
-noremap <silent> <S-Insert> "*p
-inoremap<silent> <S-Insert> <C-R>*
+noremap <silent> <S-Insert> <LEFT>"*p
+inoremap<silent> <S-Insert> <C-r>*
 cnoremap <S-Insert> <C-r>*
 
 " QuickRun
@@ -442,7 +442,6 @@ noremap <silent> <F5> :QuickRun -outputter error -outputter/error/success buffer
 noremap!<silent> <F5> <Esc>:QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
 
 " Denite
-nmap <C-e> :<C-u>Denite directory_rec 
 nmap <silent> <C-f> :<C-u>Denite file_rec<CR>
 nmap <silent> <F3>  :<C-u>Denite line<CR>
 nmap <silent> <C-F3> :<C-u>Denite grep<CR>
@@ -469,10 +468,6 @@ noremap! <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline
 
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
-
-vnoremap <silent> <TAB> >gv
-vnoremap <silent> <S-TAB> <gv
-ent> < <gv
 
 vnoremap <silent> <TAB> >gv
 vnoremap <silent> <S-TAB> <gv

@@ -58,7 +58,16 @@ hook_post_update = '''
 	endif
 	let g:dein#plugin.build = cmd
 '''
-
+# [[plugins]]
+# repo = 'osyo-manga/vim-precious'
+# depends = 'context_filetype'
+# hook_source = '''
+#     augroup test
+#         autocmd!
+#         autocmd User PreciousFileType      :echo precious#context_filetype()
+#         autocmd User PreciousFiletype_ruby :PreciousSetContextLocal tabstop=8
+#     augroup END
+# '''
 
 [[plugins]]
 repo = 'Shougo/neoyank.vim'
@@ -273,10 +282,6 @@ hook_post_source = '''
 '''
 
 [[plugins]]
-repo = 'osyo-manga/vim-precious'
-depends = ['context_filetype.vim']
-
-[[plugins]]
 repo = 'Shougo/context_filetype.vim'
 
 [[plugins]]
@@ -286,26 +291,32 @@ on_map = {n = '<Plug>'}
 on_if = 1
 "on_if = "isdirectory(bufname('%'))"
 hook_add = '''
-	nnoremap <silent><F2> :VimFiler -simple<Cr>
-	nnoremap <silent><S-F2> :VimFilerDouble -buffer-name=commander<Cr>
+	nnoremap <silent><F2> :VimFilerCurrentDir -winwidth=45 -simple<Cr>
+    nnoremap <silent><S-F2> :VimFilerDouble -reverse -horizontal -direction="bottom" -buffer-name=commander<Cr>
+
+	nnoremap <silent><C-S-F2> :VimFilerBufferDir -winwidth=45 -simple<Cr>
 '''
 hook_source = '''
 	call vimfiler#custom#profile('default', 'context', {
 	      \ 'direction' : 'topleft',
                 \ 'split': 1,
-                \ 'winwidth' : 45,
+                " \ 'winwidth' : 45,
                 \ 'no_quit': 1,
-                \ 'force_hide' : 1,
+                \ 'force_hide' : 0,
                 \ 'status' : 1,
                 \ 'columns' : 'size:time',
 	      \ 'safe' : 0,
 	      \ 'auto_expand' : 1,
+          \ 'auto_cd' : 1,
 	      \ 'parent' : 0,
 	      \ 'toggle' : 1,
 	      \ 'sort_type' : 'filename',
 	      \ 'buffer_name' : 'filer',
 	      \ })
 	call vimfiler#set_execute_file('xls,xlsx', "EXCEL.EXE")
+	call vimfiler#set_execute_file('txt', "notepad")
+    call vimfiler#set_execute_file('avi,mpg,mpeg', "C:/Program Files (x86)/VideoLAN\\VLC/vlc.exe")
+
 
 	let g:vimfiler_as_default_explorer = 1
 	" let g:vimfiler_enable_auto_cd = 1
@@ -521,4 +532,17 @@ hook_add = '''
 	\		'outputter': 'browser'
 	\	}
 	\ }	
+'''
+
+[[plugins]]
+repo = 'chrisbra/csv.vim'
+on_if = 1
+hook_source = '''
+    let g:csv_table_leftalign=1
+
+	aug CSV_Editing
+			au!
+			au BufRead,BufWritePost *.csv :%ArrangeColumn
+			au BufWritePre *.csv :%UnArrangeColumn
+	aug end
 '''
