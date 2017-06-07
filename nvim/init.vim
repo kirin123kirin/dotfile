@@ -113,6 +113,8 @@ set cmdheight=2
 
 " エスケープ後にすぐ入力できるように
 set timeout timeoutlen=1000 ttimeoutlen=50
+" インサートから抜けたら、IME解除
+inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 
 set nowritebackup
 set nobackup
@@ -245,27 +247,6 @@ else
     set clipboard=unnamed
 endif
 
-" if has('nvim') && has('clipboard')
-"     map! <S-Insert> <C-R>+
-" endif
-"
-" if IsWindows() && !has('clipboard')
-"     nnoremap <silent> <Space>y :.w !win32yank.exe -i<CR><CR>
-"     vnoremap <silent> <Space>y :w !win32yank.exe -i<CR><CR>
-"     nnoremap <silent> <S-Insert> :r !win32yank.exe -o<CR>
-"     vnoremap <silent> <S-Insert> :r !win32yank.exe -o<CR>
-"     cnoremap <silent> <S-Insert> :r !win32yank.exe -o<CR>
-"     nnoremap <silent> <Space>a :%w !win32yank.exe -i<CR><CR>
-"
-"     tnoremap <silent><expr> <Space>p Po()
-"
-"     function Po()
-"       return system('win32yank.exe -o')
-"     endfunction
-"
-"     tnoremap <silent><expr> <RightMouse> Po()
-" endif
-
 " 変更があった場合にファイル名の横に+を表示する
 function! LightlineModified()
     if &filetype == "help"
@@ -383,10 +364,10 @@ imap <3-MiddleMouse> <Nop>
 " {{{ http://tamata78.hatenablog.com/entry/2015/10/15/214921
 " ウィンドウ分割を楽にする設定
 nnoremap s <Nop>
-nnoremap ss :<C-u>split<CR> " 水平分割
-nnoremap sv :<C-u>vsplit<CR> " 垂直分割
+nnoremap ss :<C-u>new<CR> " 水平分割
+nnoremap sv :<C-u>vnew<CR> " 垂直分割
 nnoremap sq :<C-u>q<CR> " ウィンドウを閉じる
-nnoremap sQ :<C-u>bd<CR> " バッファを閉じる
+nnoremap sd :<C-u>bd<CR> " バッファを閉じる
 nnoremap sj <C-w>j " 左に移動
 noremap <A-Left> <C-w>h 
 nnoremap sk <C-w>k " 下に移動
