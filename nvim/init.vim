@@ -63,7 +63,12 @@ if &runtimepath !~# '/dein.vim'
     execute 'set runtimepath^=' . s:dein_repo_dir
 endif
 
-let g:python3_host_prog = 'python'
+if IsWindows()
+    let g:python3_host_prog = 'python'
+else 
+    let g:python3_host_prog = 'python3'
+    let g:python2_host_prog = 'python2.6'
+endif
 
 if dein#load_state(s:dein_cache_dir)
     call dein#add('Shougo/dein.vim')
@@ -93,12 +98,14 @@ filetype plugin indent on
 
 " global setting
 " エディタの分割方向を設定する
-set shellslash
+if IsWindows()
+    set shellslash
+endif
 set splitbelow
 set splitright
 
 " 色数の指定 (tmux上でもちゃんとしたカラースキームになるように)
-" set t_Co=256
+set t_Co=256
 
 " シンタックスハイライトの設定
 syntax on
@@ -242,7 +249,11 @@ noremap <Space>gf :Gitv!<CR>
 
 " クリップボード連携
 if has('unnamedplus') && !(has('win32') || has('win64'))
-    set clipboard=unnamedplus,autoselectplus
+    if has('autoselectplus')
+        set clipboard=unnamedplus,autoselectplus
+    else
+        set clipboard=unnamedplus
+    endif
 else
     set clipboard=unnamed
 endif
