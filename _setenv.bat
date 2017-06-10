@@ -23,4 +23,6 @@ setx XDG_RUNTIME_DIR %APPROOT%\tmp
 
 setx Path "%APPROOT%;%APPROOT%\bin;%APPROOT%\usr\bin;%PYTHONPATH%;%PYTHONPATH%\Scripts;%VIMHOME%\bin;%VIMRUNTIME%"
 
+git config --global core.editor "'C:\Program Files (x86)\TeraPad\TeraPad.exe' //cu8"
+
 rem echo source %APPROOT%\dotfiles\vimrc > %USERPROFILE%\_vimrc
