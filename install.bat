@@ -1,90 +1,110 @@
 @echo off
 
-set INSTALLDIR=Y:\home
+set INSTALLDIR=Y:Â¥home
 
-set /P INSTALLDIR="ƒCƒ“ƒXƒg[ƒ‹æƒtƒ‹ƒpƒX‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢[%INSTALLDIR%]: "
+set /P INSTALLDIR="ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«å…ˆãƒ•ãƒ«ãƒ‘ã‚¹ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„[%INSTALLDIR%]: "
 
 call :exists %INSTALLDIR%
 
 set answer="y"
-set /p answer="DTSƒNƒ‰ƒCƒAƒ“ƒg‚Ö‚ÌƒCƒ“ƒXƒg[ƒ‹‚Å‚·‚©(Y/n)H: "
+set /p answer="DTSã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã¸ã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã§ã™ã‹(Y/n)ï¼Ÿ: "
 if %answer%=="Y" set anser="y"
 if "%answer%"=="y" (
 	set suffix="_min"
+    set ZROOT="Z:\home"
+    set PROXYADDR=http://proxy.example.com:8080
+    set MAILADDR=kirin123kirin@gmail.com
+    set COMPFILE=64bit_min.zip
 ) else if "%answer%"=="n" ( 
 	set suffix=""
 )else (
-	echo "¿–â’Ê‚è‚É“š‚¦‚ë‚æ y or n"
+	echo "è³ªå•é€šã‚Šã«ç­”ãˆã‚ã‚ˆ y or n"
 	goto label_error
 )
-
-
-if "%PROCESSOR_ARCHITECTURE%" == "x86" (
-
-	echo "32bit—p‚ÌƒCƒ“ƒXƒg[ƒ‹‚ğs‚¢‚Ü‚·"
-	unzip.exe -o -d %INSTALLDIR% 32bit%suffix%.zip 32bit%suffix%\*
-
-) else (
-
-	echo "64bit—p‚ÌƒCƒ“ƒXƒg[ƒ‹‚ğs‚¢‚Ü‚·"
-	unzip.exe -o -d %INSTALLDIR% 64bit%suffix%.zip 64bit%suffix%\*
-
-)
-
-call :cleanall %INSTALLDIR%\dotfiles
-
-unzip.exe -o -d %INSTALLDIR% dotfiles.zip
 
 if "%answer%"=="y" (
-	call %INSTALLDIR%\dotfiles\dts\install.bat
-	rm -rf %INSTALLDIR%\lib\nvim\bin\win32yank.exe
-	ren %INSTALLDIR%\lib\nvim\bin\win32yank_v0.0.1.exe %INSTALLDIR%\lib\nvim\bin\win32yank.exe
-)else (
-	call %INSTALLDIR%\dotfiles\_setenv.bat
-	del %INSTALLDIR%\lib\nvim\bin\win32yank_v0.0.1.exe
+    rem YDrive
+    call :decompY bin
+    call :decompY dev\bin
+    call :decompY dev\lib
+    call :decompY lib\nvim
+    call :decompY lib\python3
+    call :decompY share
+
+    rem Zdrive
+    call :decompZ data
+    call :decompZ dev\release
+    call :decompZ etc
+    call :decompZ libexec
+    call :decompZ secret
+    call :decompZ ssl
+    call :decompZ tmp
+
+	xcopy /y %INSTALLDIR%Â¥libÂ¥nvimÂ¥binÂ¥win32yank_v0.0.1.exe %INSTALLDIR%Â¥libÂ¥nvimÂ¥binÂ¥win32yank.exe
+    call :proxisettings
+) else if "%PROCESSOR_ARCHITECTURE%" == "x86" (
+	echo "32bit installineg now"
+	unzip.exe -o -d %INSTALLDIR% 32bit%suffix%.zip 32bit%suffix%Â¥*
+) else (
+	echo "64bit installing now"
+	unzip.exe -o -d %INSTALLDIR% 64bit%suffix%.zip 64bit%suffix%Â¥*
 )
 
+del /q %INSTALLDIR%Â¥libÂ¥nvimÂ¥binÂ¥win32yank_v0.0.1.exe
+
+call %INSTALLDIR%Â¥dotfilesÂ¥_setenv.bat
+call :reinstalldotfiles %INSTALLDIR%Â¥dotfiles
+
+rem pip install
 mkdir tmp
-
-unzip.exe -d tmp pip.zip pip\*
-
+unzip.exe -d tmp pip.zip pipÂ¥*
 cd tmp
-
 call install.bat
-
 cd ..
-rm.exe -rf tmp
+rmdir /s /q tmp
 
-REM ƒtƒ@ƒCƒ‹EƒtƒHƒ‹ƒ_‘¶İƒ`ƒFƒbƒN
 :exists
 IF %1 == "" (
-	echo ƒtƒHƒ‹ƒ_‚ğw’è‚µ‚ë‚æ
+	echo ãƒ•ã‚©ãƒ«ãƒ€ã‚’æŒ‡å®šã—ã‚ã‚ˆ
 	goto label_error
 ) ELSE IF NOT EXIST %1 (
-	echo ‚»‚ñ‚ÈƒtƒHƒ‹ƒ_–³‚¢‚æ
+	echo ãã‚“ãªãƒ•ã‚©ãƒ«ãƒ€ç„¡ã„ã‚ˆ
 	goto label_error
 ) ELSE (
 	call :checkdir %1
 )
 
+:reinstalldotfiles
+IF EXIST %1 rmdir /s /q %1
+unzip.exe -o -d %INSTALLDIR% dotfiles.zip
 
-REM ‘¶İ‚µ‚½‚çíœ
-:cleanall
-IF EXIST %1 rm.exe -rf %1
-
-REM ƒtƒ@ƒCƒ‹EƒtƒHƒ‹ƒ_”»’è
 :checkdir
-IF NOT EXIST %1\ (
-	echo ‚±‚êƒtƒHƒ‹ƒ_‚¶‚á‚Ë[‚µ
+IF NOT EXIST %1Â¥ (
+	echo ã“ã‚Œãƒ•ã‚©ãƒ«ãƒ€ã˜ã‚ƒã­ãƒ¼ã—
 	goto label_error
 )
 
-REM ƒGƒ‰[ˆ—
+:proxisettings
+git config --global http.proxy %PROXYADDR%
+git config --global https.proxy %PROXYADDR%
+git config --global user.email %MAILADDR%
+git config --global color.ui auto
+echo "[global]" > %APPDATA%\pip\pip.ini
+echo "proxy = %PROXYADDR%" >> %APPDATA%\pip\pip.ini
+
+:decompY
+unzip.exe -o -d %YROOT% %COMPFILE% 64bit_min\%1
+
+:decompZ
+unzip.exe -o -d %ZROOT% %COMPFILE% 64bit_min\%1
+mklink /J /D %YROOT%\%1 %ZROOT%\%1
+
+REM ã‚¨ãƒ©ãƒ¼å‡¦ç†
 :label_error
-echo ‚Æ‚¢‚¤–ó‚Å’†~‚·‚é
+echo ã¨ã„ã†è¨³ã§ä¸­æ­¢ã™ã‚‹
 goto label_end
 
-REM I—¹ˆ—
+REM çµ‚äº†å‡¦ç†
 :label_end
 pause
 exit
