@@ -1,30 +1,36 @@
 @echo off
 
-set INSTALLDIR=C:\home
+set INSTALLDIR=Y:\home
 
 set /P INSTALLDIR="インストール先フルパスを入力してください[%INSTALLDIR%]: "
 
 call :exists %INSTALLDIR%
 
-set answer="n"
-set /p answer="最小限のインストールにしますか(y/N)？: "
-if %answer%=="Y" set anser="y"
-if "%answer%"=="y" (
-	set suffix=""
-) else if "%answer%"=="n" ( 
-	set suffix="_min"
-)else (
-	echo "質問通りに答えろよ y or n"
-	goto label_error
-)
+set suffix="_min"
+set ZROOT="Z:\home"
+set PROXYADDR=http://proxy.example.com:8080
+set MAILADDR=kirin123kirin@gmail.com
+set COMPFILE=64bit_min.zip
 
-if "%PROCESSOR_ARCHITECTURE%" == "x86" (
-	echo "32bit installineg now"
-	unzip.exe -o -d %INSTALLDIR% 32bit%suffix%.zip 32bit%suffix%\*
-) else (
-	echo "64bit installing now"
-	unzip.exe -o -d %INSTALLDIR% 64bit%suffix%.zip 64bit%suffix%\*
-)
+rem YDrive
+call :decompY bin
+call :decompY dev\bin
+call :decompY dev\lib
+call :decompY lib\nvim
+call :decompY lib\python3
+call :decompY share
+
+rem Zdrive
+call :decompZ data
+call :decompZ dev\release
+call :decompZ etc
+call :decompZ libexec
+call :decompZ secret
+call :decompZ ssl
+call :decompZ tmp
+
+xcopy /y %INSTALLDIR%\lib\nvim\bin\win32yank_v0.0.1.exe %INSTALLDIR%\lib\nvim\bin\win32yank.exe
+call :proxisettings
 
 del /q %INSTALLDIR%\lib\nvim\bin\win32yank_v0.0.1.exe
 
@@ -67,6 +73,13 @@ git config --global user.email %MAILADDR%
 git config --global color.ui auto
 echo "[global]" > %APPDATA%\pip\pip.ini
 echo "proxy = %PROXYADDR%" >> %APPDATA%\pip\pip.ini
+
+:decompY
+unzip.exe -o -d %YROOT% %COMPFILE% 64bit_min\%1
+
+:decompZ
+unzip.exe -o -d %ZROOT% %COMPFILE% 64bit_min\%1
+mklink /J /D %YROOT%\%1 %ZROOT%\%1
 
 REM エラー処理
 :label_error

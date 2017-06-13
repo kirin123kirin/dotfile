@@ -17,8 +17,6 @@ hook_add = '''
 	  let g:vimproc#download_windows_dll = 1
 	  let s:vimproc_dll_basename = has('win64') ?
 	        \ 'vimproc_win64.dll' : 'vimproc_win32.dll'
-	elseif dein#util#_is_cygwin()
-	  let s:vimproc_dll_basename = 'vimproc_cygwin.dll'
 	elseif dein#util#_is_mac()
 	  let s:vimproc_dll_basename = 'vimproc_mac.so'
 	elseif glob('/lib*/ld-linux*64.so.2', 1) != ''
@@ -46,19 +44,13 @@ hook_add = '''
 '''
 hook_post_update = '''
 	if dein#util#_is_windows()
-		if has('win32')
-			let cmd = 'curl -O https://github.com/Shougo/vimproc.vim/releases/download/ver.9.2/vimproc_win32.dll'
-		elseif has('win64')
-			let cmd = 'curl -O https://github.com/Shougo/vimproc.vim/releases/download/ver.9.2/vimproc_win64.dll'
-	elseif dein#util#_is_cygwin()
-	  let cmd = 'make -f make_cygwin.mak'
-	  if $MSYSTEM == "MINGW32" || $MSYSTEM == "MINGW64"
-	    let cmd = "MSYSTEM=MSYS bash --login -c 'cd " . g:dein#plugin.path . ";" . cmd . "'"
-	  endif
+	    cmd = 'tools\\update-dll-mingw.bat'
 	elseif executable('gmake')
 	  let cmd = 'gmake'
+    elseif IsMac()
+      let cmd = 'make -f make_mac.mak'
 	else
-	  let cmd = 'make'
+	  let cmd = 'make -f make_unix.mak'
 	endif
 	let g:dein#plugin.build = cmd
 '''
@@ -295,10 +287,10 @@ on_map = {n = '<Plug>'}
 on_if = 1
 "on_if = "isdirectory(bufname('%'))"
 hook_add = '''
-	nnoremap <silent><F2> :VimFilerCurrentDir -winwidth=45 -simple<Cr>
+	nnoremap <silent><F2> :VimFilerBufferDir -winwidth=45 -simple<Cr>
     nnoremap <silent><S-F2> :VimFilerDouble -reverse -horizontal -direction="bottom" -buffer-name=commander<Cr>
 
-	nnoremap <silent><C-S-F2> :VimFilerBufferDir -winwidth=45 -simple<Cr>
+	nnoremap <silent><C-F2> :VimFilerCurrentDir -winwidth=45 -simple<Cr>
 '''
 hook_source = '''
 	call vimfiler#custom#profile('default', 'context', {
@@ -319,7 +311,7 @@ hook_source = '''
 	      \ })
 	call vimfiler#set_execute_file('xls,xlsx', "EXCEL.EXE")
 	call vimfiler#set_execute_file('txt', "notepad")
-    call vimfiler#set_execute_file('avi,mpg,mpeg', "C:/Program Files (x86)/VideoLAN\\VLC/vlc.exe")
+    call vimfiler#set_execute_file('avi,mpg,mpeg', "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe")
 
 
 	let g:vimfiler_as_default_explorer = 1
