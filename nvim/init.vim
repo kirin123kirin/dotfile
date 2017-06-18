@@ -77,7 +77,7 @@ if dein#load_state(s:dein_cache_dir)
         call dein#load_toml(g:config_home . '/dein.toml', {'lazy': 0})
         call dein#load_toml(g:config_home . '/deinlazy.toml', {'lazy': 1})
         if has('nvim')
-            call dein#load_toml(g:config_home . '/deineo.toml', {'lazy', 1})
+            call dein#load_toml(g:config_home . '/deineo.toml', {'lazy': 1})
         endif
 
         if dein#tap('deoplete.nvim') && has('nvim')
