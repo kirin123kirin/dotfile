@@ -9,4 +9,5 @@ HISTSIZE=10000
 
 # User specific aliases and functions
 . ~/Dropbox/dotfiles/profile
+alias nvim='DISPLAY=none nvim'
 

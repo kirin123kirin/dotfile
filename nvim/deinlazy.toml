@@ -313,10 +313,6 @@ hook_source = '''
 	      \ 'sort_type' : 'filename',
 	      \ 'buffer_name' : 'filer',
 	      \ })
-	call vimfiler#set_execute_file('xls,xlsx', "EXCEL.EXE")
-	call vimfiler#set_execute_file('txt', "notepad")
-    call vimfiler#set_execute_file('avi,mpg,mpeg', "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe")
-
 
 	let g:vimfiler_as_default_explorer = 1
 	" let g:vimfiler_enable_auto_cd = 1
@@ -497,13 +493,7 @@ hook_source = 'let g:impsort_highlight_imported = 0'
 
 [[plugins]]
 repo = 'rhysd/vim-gfm-syntax'
-on_ft = 'markdown'
-hook_add = '''
-	let g:gfm_syntax_enable_always = 0
-	let g:gfm_syntax_enable_filetypes = ['markdown.gfm']
-	autocmd BufRead,BufNew,BufNewFile 
-	let g:markdown_fenced_languages = ['cpp', 'ruby', 'json']
-'''
+on_event = 'BufRead'
 
 [[plugins]]
 repo = 'machakann/vim-vimhelplint'
