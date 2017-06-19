@@ -310,7 +310,7 @@ endif
 
 " View Setting
 colorscheme badwolf
-highlight CursorLine guibg=#E19972
+highlight CursorLine ctermbg=#19972 guibg=#E19972
 set number
 set cmdheight=2
 set laststatus=2

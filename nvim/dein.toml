@@ -40,8 +40,8 @@ repo = 'rcmdnk/vim-markdown'
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
 
-[[plugins]]
-repo = 'vim-jp/vimdoc-ja'
+#[[plugins]]
+#repo = 'vim-jp/vimdoc-ja'
 
 [[plugins]]
 repo = 'Shougo/neossh.vim'

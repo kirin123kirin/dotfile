@@ -13,11 +13,11 @@ repo = 'sbdchd/neoformat'
 repo = 'Shougo/vimproc'
 merged = 0
 hook_add = '''
-	if dein#util#_is_windows()
+	if IsWindows()
 	  let g:vimproc#download_windows_dll = 1
 	  let s:vimproc_dll_basename = has('win64') ?
 	        \ 'vimproc_win64.dll' : 'vimproc_win32.dll'
-	elseif dein#util#_is_mac()
+	elseif IsMac()
 	  let s:vimproc_dll_basename = 'vimproc_mac.so'
 	elseif glob('/lib*/ld-linux*64.so.2', 1) != ''
 	  let s:vimproc_dll_basename = 'vimproc_linux64.so'
@@ -43,8 +43,8 @@ hook_add = '''
 	endif
 '''
 hook_post_update = '''
-	if dein#util#_is_windows()
-	    cmd = 'tools\\update-dll-mingw.bat'
+	if IsWindows()
+	  let cmd = 'tools\\update-dll-mingw.bat'
 	" elseif executable('gmake')
 	"  let cmd = 'gmake'
     elseif IsMac()
@@ -54,16 +54,6 @@ hook_post_update = '''
 	endif
 	let g:dein#plugin.build = cmd
 '''
-# [[plugins]]
-# repo = 'osyo-manga/vim-precious'
-# depends = 'context_filetype'
-# hook_source = '''
-#     augroup test
-#         autocmd!
-#         autocmd User PreciousFileType      :echo precious#context_filetype()
-#         autocmd User PreciousFiletype_ruby :PreciousSetContextLocal tabstop=8
-#     augroup END
-# '''
 
 [[plugins]]
 repo = 'Shougo/neoyank.vim'
@@ -373,12 +363,6 @@ repo = 'Shougo/neco-vim'
 on_ft = 'vim'
 
 [[plugins]]
-repo = 'vim-jp/vital.vim'
-
-[[plugins]]
-repo = 'ctrlpvim/ctrlp.vim'
-
-[[plugins]]
 repo = 'tyru/caw.vim'
 on_map = {nx = '<Plug>'}
 hook_add = '''
@@ -418,35 +402,35 @@ hook_add = '''
   nmap <silent>k <Plug>(accelerated_jk_gk)
 '''
 
-[[plugins]]
-repo = 'fatih/vim-go'
-on_ft = 'go'
+#[[plugins]]
+#repo = 'fatih/vim-go'
+#on_ft = 'go'
 
-[[plugins]]
-repo = 'rhysd/vim-operator-surround'
-#depends = 'vim-operator-user'
-hook_add = '''
-  nmap <silent>sa <Plug>(operator-surround-append)a
-  nmap <silent>sd <Plug>(operator-surround-delete)a
-  nmap <silent>sr <Plug>(operator-surround-replace)a
-  nmap <silent>sc <Plug>(operator-surround-replace)a
-'''
+#[[plugins]]
+#repo = 'rhysd/vim-operator-surround'
+##depends = 'vim-operator-user'
+#hook_add = '''
+#  nmap <silent>sa <Plug>(operator-surround-append)a
+#  nmap <silent>sd <Plug>(operator-surround-delete)a
+#  nmap <silent>sr <Plug>(operator-surround-replace)a
+#  nmap <silent>sc <Plug>(operator-surround-replace)a
+#'''
 
 [[plugins]]
 repo = 'kannokanno/previm'
 on_ft = ['markdown', 'rst', 'mkd', 'md']
 on_cmd = 'PrevimOpen'
 
-[[plugins]]
-repo = 'davidhalter/jedi-vim'
-if = "!has('nvim')"
-on_ft = 'python'
-hook_source = '''
-  let g:jedi#completions_enabled = 0
-  let g:jedi#auto_vim_configuration = 0
-  let g:jedi#smart_auto_mappings = 0
-  let g:jedi#show_call_signatures = 0
-'''
+#[[plugins]]
+#repo = 'davidhalter/jedi-vim'
+#if = "!has('nvim')"
+#on_ft = 'python'
+#hook_source = '''
+#  let g:jedi#completions_enabled = 0
+#  let g:jedi#auto_vim_configuration = 0
+#  let g:jedi#smart_auto_mappings = 0
+#  let g:jedi#show_call_signatures = 0
+#'''
 
 [[plugins]]
 repo = 'artur-shaik/vim-javacomplete2'
@@ -495,13 +479,6 @@ hook_source = 'let g:impsort_highlight_imported = 0'
 repo = 'rhysd/vim-gfm-syntax'
 on_event = 'BufRead'
 
-[[plugins]]
-repo = 'machakann/vim-vimhelplint'
-on_ft = 'help'
-hook_source = '''
-  autocmd MyAutoCmd FileType
-  \ help nnoremap <silent><buffer> ,r  :<C-u>VimhelpLint!<CR>
-'''
 
 [[plugins]]
 repo = 'vim-scripts/vcscommand.vim'
