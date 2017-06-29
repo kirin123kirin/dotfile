@@ -6,6 +6,16 @@ augroup MyAutoCmd
     autocmd!
 augroup END
 
+let g:loaded_rrhelper          = 1
+let g:loaded_2html_plugin      = 1
+let g:loaded_vimballPlugin     = 1
+let g:loaded_getscript         = 1
+let g:loaded_getscriptPlugin   = 1
+let g:loaded_netrw             = 1
+let g:loaded_netrwPlugin       = 1
+let g:loaded_netrwSettings     = 1
+let g:loaded_netrwFileHandlers = 1
+
 " カーソル位置の復元
 augroup restoreCursorPosition
   autocmd BufReadPost *
@@ -29,8 +39,6 @@ function! IsMac() abort
       \ && (has('mac') || has('macunix') || has('gui_macvim')
       \     || (!executable('xdg-open') && system('uname') =~? '^darwin'))
 endfunction
-
-let g:loaded_gzip = 1
 
 if IsWindows()
     let g:zip_unzipcmd='unzip.exe'
@@ -310,7 +318,7 @@ endif
 
 " View Setting
 colorscheme badwolf
-highlight CursorLine ctermbg=#19972 guibg=#E19972
+highlight CursorLine ctermbg=green ctermfg=black guibg=green guifg=black
 set number
 set cmdheight=2
 set laststatus=2
@@ -325,6 +333,27 @@ endif
 set backspace=indent,eol,start
 set whichwrap=b,s,h,l,<,>,[,]
 
+" いい感じに Vim の mkview/loadview 機能を自動化する
+function! s:is_view_available() abort " {{{
+  if !&buflisted || &buftype !=# ''
+    return 0
+  elseif !filewritable(expand('%:p'))
+    return 0
+  endif
+  return 1
+endfunction " }}}
+function! s:mkview() abort " {{{
+  if s:is_view_available()
+    silent! mkview
+  endif
+endfunction " }}}
+function! s:loadview() abort " {{{
+  if s:is_view_available()
+    silent! loadview
+  endif
+endfunction " }}}
+autocmd MyAutoCmd BufWinLeave ?* call s:mkview()
+autocmd MyAutoCmd BufReadPost ?* call s:loadview()
 
  "-------------------------------------------------------------------------------
  " コマンド       ノーマルモード 挿入モード コマンドラインモード ビジュアルモード
@@ -336,6 +365,8 @@ set whichwrap=b,s,h,l,<,>,[,]
  " map!/noremap!         -            @              @                  -
  "---------------------------------------------------------------------------
 let mapleader = "\<Space>"
+set timeoutlen=500
+cabbr w!! w !sudo tee > /dev/null %
 
 inoremap {} {}<LEFT>
 inoremap [] []<LEFT>
@@ -387,14 +418,14 @@ nnoremap sl <C-w>l " 上に移動
 noremap <A-Up> <C-w>k
 nnoremap sh <C-w>h " 右に移動
 noremap <A-Right> <C-w>l
-nnoremap sJ <C-w>J " 画面自体を左に移動
-nnoremap sK <C-w>K " 画面自体を下に移動
-nnoremap sL <C-w>L " 画面自体を上に移動
-nnoremap sH <C-w>H " 画面自体を右に移動
-nnoremap s> <C-w>> " 幅を増やす
-nnoremap s< <C-w>< " 幅を減らす
-nnoremap s+ <C-w>+ " 高さを増やす
-nnoremap s- <C-w>- " 高さを減らす
+nnoremap <silent><S-A-Left> <C-w>J " 画面自体を左に移動
+nnoremap <silent><S-A-Down> <C-w>K " 画面自体を下に移動
+nnoremap <silent><S-A-Up> <C-w>L " 画面自体を上に移動
+nnoremap <silent><S-A-Right> <C-w>H " 画面自体を右に移動
+nnoremap <silent><S-Left>  <C-w><<CR>
+nnoremap <silent><S-Right> <C-w>><CR>
+nnoremap <silent><S-Up>    <C-w>-<CR>
+nnoremap <silent><S-Down>  <C-w>+<CR>
 
 
 "}}}

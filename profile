@@ -5,8 +5,8 @@ export XDG_RUNTIME_DIR=/usr/local/share/nvim/runtime
 export EDITOR=vi
 export LANG="ja_JP.UTF-8"
 
-alias py2='sudo unlink /usr/bin/python;sudo ln -s /usr/bin/python2 /usr/bin/python'
-alias py3='sudo unlink /usr/bin/python;sudo ln -s /usr/bin/python3 /usr/bin/python'
+alias py2='unlink /usr/bin/python;ln -s /usr/bin/python2 /usr/bin/python'
+alias py3='unlink /usr/bin/python;ln -s /usr/bin/python3 /usr/bin/python'
 alias dropbox='python2.6 ~/bin/dropbox.py'
 
 alias du="du -h"
@@ -23,46 +23,71 @@ alias nvim='DISPLAY=none nvim'
 # ------------------------------------
 
 # Get latest container ID
-alias dl="sudo docker ps -l -q"
+alias dl="docker ps -l -q"
+
+cid() {docker ps -aqf "name=$1"}
 
 # Get container process
-alias dps="sudo docker ps"
+alias dps="docker ps"
 
 # Get process included stop container
-alias dpa="sudo docker ps -a"
+alias dpa="docker ps -a"
 
 # Get images
-alias di="sudo docker images"
+alias di="docker images"
 
 # Get container IP
-alias dip="sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}'"
+alias dip="docker inspect --format '{{ .NetworkSettings.IPAddress }}'"
 
 # Run deamonized container, e.g., $dkd base /bin/echo hello
-alias dkd="sudo docker run -d -P"
+alias drd="docker run -d -P"
 
 # Run interactive container, e.g., $dki base /bin/bash
-alias dki="sudo docker run -i -t -P"
+alias dri="docker run -i -t -P"
 
 # Execute interactive container, e.g., $dex base /bin/bash
-alias dex="sudo docker exec -i -t"
+alias dex="docker exec -i -t"
 
 # Stop all containers
-dstop() { sudo docker stop $(docker ps -a -q); }
+dstopa() { docker stop $(docker ps -a -q); }
 
 # Remove all containers
-drm() { sudo docker rm $(docker ps -a -q); }
+drma() { docker rm $(docker ps -a -q); }
+
+# Stop all containers
+dstop() { docker stop $(cid $1); }
+
+# Remove all containers
+drm() { docker rm $(cid $1); }
 
 # Stop and Remove all containers
-alias drmf='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
+drmf() { docker rm -f $(cid $1); }
+
+# Stop and Remove all containers
+alias drmfa='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
 
 # Remove all images
-dri() { sudo docker rmi $(docker images -q); }
+drmia() { docker rmi $(docker images -q); }
 
 # Dockerfile build, e.g., $dbu tcnksm/test 
-dbu() { sudo docker build -t=$1 .; }
+dbuild() { docker build -t=$1 .; }
 
 # Show all alias related docker
 dalias() { alias | grep 'docker' | sed "s/^\([^=]*\)=\(.*\)/\1 => \2/"| sed "s/['|\']//g" | sort; }
 
 # Bash into running container
-dbash() { sudo docker exec -it $(docker ps -aqf "name=$1") bash; }
+dbash() { docker exec -it $(cid $1) bash; }
+
+dcommit() {docker commit $(cid $1); }
+
+dsave() {docker save $1 > `basename $1`.tar.gz }
+
+alias dload='docker load -i'
+
+usermake () {
+    USERNAME=$1
+    PASSWORD=$2
+    GROUP=admin
+    useradd -m -p $PASSWORD -G $GROUP $USERNANME
+    echo -e "${PASSWORD}\n${PASSWORD}" | pdbedit -a -t -u $USERNAME
+}

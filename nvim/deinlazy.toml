@@ -387,7 +387,6 @@ hook_add = '''
 repo = 'tyru/open-browser.vim'
 on_if = 1
 hook_add = '''
-	let g:netrw_nogx = 1
 	nmap <silent> gx <Plug>(openbrowser-smart-search)
 	vmap <silent> gx <Plug>(openbrowser-smart-search)
 	vmap <silent> gs <Plug>(openbrowser-search)
@@ -425,11 +424,17 @@ on_cmd = 'PrevimOpen'
 #repo = 'davidhalter/jedi-vim'
 #if = "!has('nvim')"
 #on_ft = 'python'
-#hook_source = '''
-#  let g:jedi#completions_enabled = 0
-#  let g:jedi#auto_vim_configuration = 0
-#  let g:jedi#smart_auto_mappings = 0
-#  let g:jedi#show_call_signatures = 0
+#hook_add = '''
+#  let g:jedi#use_tabs_not_buffers = 1 
+#  let g:jedi#popup_select_first = 0
+#  let g:jedi#popup_on_dot = 0
+#  let g:jedi#goto_command = "<leader>d"
+#  let g:jedi#goto_assignments_command = "<leader>g"
+#  let g:jedi#goto_definitions_command = ""
+#  let g:jedi#documentation_command = "K"
+#  let g:jedi#usages_command = "<leader>n"
+#  let g:jedi#rename_command = "<leader>R"
+#  autocmd FileType python setlocal completeopt-=preview 
 #'''
 
 [[plugins]]
