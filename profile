@@ -91,4 +91,4 @@ usermake () {
     GROUP=admin
     useradd -m -p $PASSWORD -G $GROUP $USERNANME
     echo -e "${PASSWORD}\n${PASSWORD}" | pdbedit -a -t -u $USERNAME
-;}
+}
