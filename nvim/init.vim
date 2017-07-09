@@ -82,11 +82,12 @@ if dein#load_state(s:dein_cache_dir)
     call dein#add('Shougo/dein.vim')
 
     call dein#begin(s:dein_cache_dir)
-        call dein#load_toml(g:config_home . '/dein.toml', {'lazy': 0})
-        call dein#load_toml(g:config_home . '/deinlazy.toml', {'lazy': 1})
-        if has('nvim')
-            call dein#load_toml(g:config_home . '/deineo.toml', {'lazy': 1})
-        endif
+        call dein#load_toml(g:config_home . '/dein_new.toml', {'lazy': 0})
+        " call dein#load_toml(g:config_home . '/dein.toml', {'lazy': 0})
+        " call dein#load_toml(g:config_home . '/deinlazy.toml', {'lazy': 1})
+        " if has('nvim')
+        "     call dein#load_toml(g:config_home . '/deineo.toml', {'lazy': 1})
+        " endif
 
         if dein#tap('deoplete.nvim') && has('nvim')
           call dein#disable('neocomplete.vim')
@@ -117,7 +118,7 @@ set t_Co=256
 
 " シンタックスハイライトの設定
 syntax on
-colorscheme badwolf
+"colorscheme badwolf
 
 "highlight Normal ctermbg=none
 
@@ -317,7 +318,7 @@ endif
 
 
 " View Setting
-colorscheme badwolf
+"colorscheme badwolf
 highlight CursorLine ctermbg=green ctermfg=black guibg=green guifg=black
 set number
 set cmdheight=2

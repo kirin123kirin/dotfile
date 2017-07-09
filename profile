@@ -17,6 +17,7 @@ alias od='od -Ax -tx1z'
 alias hexdump='hexdump -C'
 
 alias nvim='DISPLAY=none nvim'
+alias vim='nvim'
 
 # ------------------------------------
 # Docker alias and function
@@ -25,7 +26,7 @@ alias nvim='DISPLAY=none nvim'
 # Get latest container ID
 alias dl="docker ps -l -q"
 
-cid() {docker ps -aqf "name=$1"}
+cid() { docker ps -aqf "name=$1" ;}
 
 # Get container process
 alias dps="docker ps"
@@ -49,38 +50,38 @@ alias dri="docker run -i -t -P"
 alias dex="docker exec -i -t"
 
 # Stop all containers
-dstopa() { docker stop $(docker ps -a -q); }
+dstopa() { docker stop $(docker ps -a -q) ;}
 
 # Remove all containers
-drma() { docker rm $(docker ps -a -q); }
+drma() { docker rm $(docker ps -a -q) ;}
 
 # Stop all containers
-dstop() { docker stop $(cid $1); }
+dstop() { docker stop $(cid $1) ;}
 
 # Remove all containers
-drm() { docker rm $(cid $1); }
+drm() { docker rm $(cid $1) ;}
 
 # Stop and Remove all containers
-drmf() { docker rm -f $(cid $1); }
+drmf() { docker rm -f $(cid $1) ;}
 
 # Stop and Remove all containers
 alias drmfa='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
 
 # Remove all images
-drmia() { docker rmi $(docker images -q); }
+drmia() { docker rmi $(docker images -q) ;}
 
 # Dockerfile build, e.g., $dbu tcnksm/test 
-dbuild() { docker build -t=$1 .; }
+dbuild() { docker build -t=$1 . ;}
 
 # Show all alias related docker
-dalias() { alias | grep 'docker' | sed "s/^\([^=]*\)=\(.*\)/\1 => \2/"| sed "s/['|\']//g" | sort; }
+dalias() { alias | grep 'docker' | sed "s/^\([^=]*\)=\(.*\)/\1 => \2/"| sed "s/['|\']//g" | sort ;}
 
 # Bash into running container
-dbash() { docker exec -it $(cid $1) bash; }
+dbash() { docker exec -it $(cid $1) bash ;}
 
-dcommit() {docker commit $(cid $1); }
+dcommit() { docker commit $(cid $1) ;}
 
-dsave() {docker save $1 > `basename $1`.tar.gz }
+dsave() { docker save $1 > `basename $1`.tar.gz ;}
 
 alias dload='docker load -i'
 
@@ -90,4 +91,4 @@ usermake () {
     GROUP=admin
     useradd -m -p $PASSWORD -G $GROUP $USERNANME
     echo -e "${PASSWORD}\n${PASSWORD}" | pdbedit -a -t -u $USERNAME
-}
+;}
