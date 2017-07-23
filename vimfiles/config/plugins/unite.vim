@@ -1,5 +1,8 @@
 scriptencoding utf-8
 call unite#custom#source('codesearch', 'max_candidates', 30)
+call unite#custom#default_action('directory' , 'vimfiler')
+call unite#custom#default_action('file' , 'tabdrop')
+
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 call unite#custom#profile('default', 'context', {
@@ -356,8 +359,6 @@ function! s:unite_my_settings()
   " Runs "split" action by <C-s>.
   imap <silent><buffer><expr> <C-s>     unite#do_action('split')
   " Default action
-  call unite#custom#default_action('directory' , 'vimfiler')
-  call unite#custom#default_action('file' , 'tabdrop')
 endfunction
 
 " vim:set et sw=2 cc=80:

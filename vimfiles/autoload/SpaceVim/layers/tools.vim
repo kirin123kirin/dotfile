@@ -47,9 +47,9 @@ function! SpaceVim#layers#tools#plugins() abort
 endfunction
 
 function! SpaceVim#layers#tools#config() abort
-  call SpaceVim#mapping#space#def('nnoremap', ['a', 'c'], 'Calendar', 'vim calendar', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['a', 'c'], 'Calendar', 'カレンダー', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['e', 'a'], 'FencAutoDetect',
-        \ 'Auto detect the file encoding', 1)
+        \ '文字コード自動検出で開きなおす', 1)
   nmap mm <Plug>BookmarkToggle
   nmap mi <Plug>BookmarkAnnotate
   nmap ma <Plug>BookmarkShowAll

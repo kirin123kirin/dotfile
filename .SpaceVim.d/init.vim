@@ -3,7 +3,8 @@
 let g:spacevim_default_indent = 4
 let g:spacevim_max_column     = 120
 
-let g:spacevim_vim_help_language = 'ja_JP.UTF8'
+set helplang=ja,en
+" let g:spacevim_vim_help_language = 'ja_JP.UTF8'
 " let g:spacevim_language = 'ja_JP.UTF-8'
 " Change the default directory where all miscellaneous persistent files go.
 " By default it is ~/.cache/vimfiles/.
@@ -79,10 +80,10 @@ if has('win32')
   " 行幅間隔の設定
   set ambiwidth=double
   " Windows用
-  " set guifont=MS_Gothic:h12:cSHIFTJIS
-  set guifont=DejaVu_Sans_Mono:h12
-  " set guifont=MeiryoKe_Console:h12:w6.9:cSHIFTJIS
-  set guifontwide=MeiryoKe_Console:cSHIFTJIS:w6.7
+  set guifont=DejaVu_Sans_Mono_for_Powerline:h11
+  " set guifont=Droid_Sans_Mono_Slashed_for_Powerline:h11
+  " set guifontwide=MeiryoKe_Console:cSHIFTJIS:w6.7
+  set guifontwide=MS_Gothic:cSHIFTJIS
 
 elseif has('mac')
   set guifont=Osaka－等幅:h14
@@ -154,10 +155,10 @@ let g:unite_source_bookmark_directory = expand($APPDATA . "/bookmark")
 filetype plugin indent on
 
 " global setting
-" エディタの分割方向を設定する
 if IsWindows()
     set shellslash
 endif
+" エディタの分割方向を設定する
 set splitbelow
 set splitright
 
@@ -335,13 +336,7 @@ noremap n nzzzv
 noremap N Nzzzv
 
 
-" vim上でGitを使うキーバインド設定
-noremap <Space>gp :Gpush<CR>
-noremap <Space>gc :Gcommit<CR>
-noremap <Space>ga :write<CR>:Git add -A<CR>
-noremap <Space>gv :Agit<CR>
-noremap <Space>gs :Gstatus<CR>
-noremap <Space>gf :Gitv!<CR>
+noremap <Space>gs :VimShellBufferDir<CR>
 
 " クリップボード連携
 if has('unnamedplus') && !(has('win32') || has('win64'))
@@ -386,12 +381,14 @@ set wildmenu
  " map!/noremap!         -            @              @                  -
  "---------------------------------------------------------------------------
 
-set timeoutlen=300
+set timeoutlen=200
 cabbr w!! w !sudo tee > /dev/null %
 
 " 自然な正規表現検索にするため
 noremap / /\v
 
+imap <C-;> <Nop>
+imap <C-:> <Nop>
 imap <C-;> <C-R>=strftime('%Y/%m/%d')<CR>
 imap <C-:> <C-R>=strftime('%H:%M')<CR>
 imap <C-;:> <C-R>=strftime('%Y/%m/%d %H:%M')<CR>
@@ -409,18 +406,18 @@ noremap H 10h
 
 " {{{ http://tamata78.hatenablog.com/entry/2015/10/15/214921
 " ウィンドウ分割を楽にする設定
-noremap <A-Left> <C-w>h 
-noremap <A-Down> <C-w>j
-noremap <A-Up> <C-w>k
-noremap <A-Right> <C-w>l
+" noremap <A-Left> <C-w>h 
+" noremap <A-Down> <C-w>j
+" noremap <A-Up> <C-w>k
+" noremap <A-Right> <C-w>l
 nnoremap <silent><S-A-Left> <C-w>J " 画面自体を左に移動
 nnoremap <silent><S-A-Down> <C-w>K " 画面自体を下に移動
 nnoremap <silent><S-A-Up> <C-w>L " 画面自体を上に移動
 nnoremap <silent><S-A-Right> <C-w>H " 画面自体を右に移動
-nnoremap <silent><S-Left>  <C-w><<CR>
-nnoremap <silent><S-Right> <C-w>><CR>
-nnoremap <silent><S-Up>    <C-w>-<CR>
-nnoremap <silent><S-Down>  <C-w>+<CR>
+nnoremap <silent><A-Left>  <C-w><<CR>
+nnoremap <silent><A-Right> <C-w>><CR>
+nnoremap <silent><A-Up>    <C-w>-<CR>
+nnoremap <silent><A-Down>  <C-w>+<CR>
 
 
 "}}}
@@ -441,6 +438,11 @@ imap jj <Esc>
 
 " <Y>: 行末までヤンク
 nnoremap Y y$
+
+" 編集を楽にする
+imap <silent><C-d> <ESC>yypi
+nmap <silent><C-d> m`YP``
+vmap <silent><C-d> YPgv
 
 " + と - で数字を変化させる?
 " nnoremap + <C-a>

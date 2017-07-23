@@ -36,9 +36,9 @@ function! SpaceVim#mapping#space#init() abort
   call SpaceVim#mapping#space#def('nnoremap', ['w', '+'], 
         \ 'call call('
         \ . string(function('s:windows_layout_toggle'))
-        \ . ', [])', 'windows-layout-toggle', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['w', 'c'], 'Goyo', 'centered-buffer-mode', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['w', 'C'], 'ChooseWin | Goyo', 'centered-buffer-mode(other windows)', 1)
+        \ . ', [])', '画面レイアウトトグル', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['w', 'c'], 'Goyo', '現在バッファのセンタリング', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['w', 'C'], 'ChooseWin | Goyo', '他のバッファセンタリング', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['w', 'd'], 'close', '画面を閉じる', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['w', 'D'], 'ChooseWin | close | wincmd w', '閉じる画面を選択', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['w', 'F'], 'tabnew', '新規タブを作成', 1)

@@ -9,9 +9,11 @@ let g:vimfiler_file_icon = get(g:, 'vimfiler_file_icon', '')
 let g:vimfiler_readonly_file_icon = get(g:, 'vimfiler_readonly_file_icon', '!')
 let g:vimfiler_marked_file_icon = get(g:, 'vimfiler_marked_file_icon', '*')
 let g:vimfiler_direction = get(g:, 'vimfiler_direction', 'below')
+let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_preview_action = 'auto_preview'
 let g:vimfiler_ignore_pattern = get(g:, 'vimfiler_ignore_pattern', [
       \ '^\.git$',
+      \ '^\.svn$',
       \ '^\.DS_Store$',
       \ '^\.init\.vim-rplugin\~$',
       \ '^\.netrwhist$',
@@ -34,7 +36,7 @@ function! s:setcolum() abort
   elseif g:spacevim_enable_vimfiler_filetypeicon && g:spacevim_enable_vimfiler_gitstatus
     return 'filetypeicon:gitstatus'
   else
-    return ''
+    return 'size'
   endif
 endfunction
 "try
@@ -47,7 +49,6 @@ call vimfiler#custom#profile('default', 'context', {
       \ 'auto_cd' : 1,
       \ 'direction' : g:vimfiler_direction,
       \ 'explorer_columns' : s:setcolum(),
-      \ 'columns' : 'size:time',
       \ 'parent': 0,
       \ 'status' : 1,
       \ 'safe' : 0,

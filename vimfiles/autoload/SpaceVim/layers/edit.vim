@@ -43,38 +43,38 @@ function! SpaceVim#layers#edit#config() abort
     "noremap <SPACE> <Plug>(wildfire-fuel)
     vnoremap <C-SPACE> <Plug>(wildfire-water)
     let g:wildfire_objects = ["i'", 'i"', 'i)', 'i]', 'i}', 'ip', 'it']
-    let g:_spacevim_mappings_space.i = {'name' : '+Insertion'}
-    let g:_spacevim_mappings_space.i.l = {'name' : '+Lorem-ipsum'}
-    let g:_spacevim_mappings_space.i.p = {'name' : '+Passwords'}
+    let g:_spacevim_mappings_space.i = {'name' : '+入力支援'}
+    let g:_spacevim_mappings_space.i.l = {'name' : '+ダミーテキスト'}
+    let g:_spacevim_mappings_space.i.p = {'name' : '+パスワード'}
     let g:_spacevim_mappings_space.i.U = {'name' : '+UUID'}
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 1], 'call call('
                 \ . string(s:_function('s:insert_simple_password')) . ', [])',
-                \ 'insert simple password', 1)
+                \ '簡易パスワード生成', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 2], 'call call('
                 \ . string(s:_function('s:insert_stronger_password')) . ', [])',
-                \ 'insert stronger password', 1)
+                \ '複雑パスワード生成', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 3], 'call call('
                 \ . string(s:_function('s:insert_paranoid_password')) . ', [])',
-                \ 'insert password for paranoids', 1)
+                \ '超複雑なパスワード生成', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 'p'], 'call call('
                 \ . string(s:_function('s:insert_phonetically_password')) . ', [])',
-                \ 'insert a phonetically easy password', 1)
+                \ '読み上げ易いパスワード生成', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 'n'], 'call call('
                 \ . string(s:_function('s:insert_numerical_password')) . ', [])',
-                \ 'insert a numerical password', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['i', 'u'], 'Unite unicode', 'search and insert unicode', 1)
+                \ '数値型パスワード生成', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['i', 'u'], 'Unite unicode', 'ユニコード文字生成', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'U', 'U'], 'call call('
                 \ . string(s:_function('s:uuidgen_U')) . ', [])',
                 \ 'uuidgen-4', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'l', 'l'], 'call call('
                 \ . string(s:_function('s:insert_lorem_ipsum_list')) . ', [])',
-                \ 'insert lorem-ipsum list', 1)
+                \ 'ダミーテキスト行', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'l', 'p'], 'call call('
                 \ . string(s:_function('s:insert_lorem_ipsum_paragraph')) . ', [])',
-                \ 'insert lorem-ipsum paragraph', 1)
+                \ 'ダミーテキスト段落', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'l', 's'], 'call call('
                 \ . string(s:_function('s:insert_lorem_ipsum_sentence')) . ', [])',
-                \ 'insert lorem-ipsum sentence', 1)
+                \ 'ダミーテキスト文章', 1)
 endfunction
 let s:local_lorem_ipsum = [
             \ 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.',

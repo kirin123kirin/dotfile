@@ -291,20 +291,30 @@ function! SpaceVim#default#SetMappings() abort
   nnoremap <silent><M-Left> :<C-U>call <SID>tobur("bprev")<CR>
 
   call SpaceVim#mapping#def('nnoremap <silent>','<M-x>',':call chat#qq#OpenMsgWin()<cr>',
-        \ 'Open qq chatting room','call chat#chatting#OpenMsgWin()')
+        \ 'qq チャットルームを開く','call chat#chatting#OpenMsgWin()')
+        " \ 'Open qq chatting room','call chat#chatting#OpenMsgWin()')
   call SpaceVim#mapping#def('nnoremap <silent>','<M-w>',':call chat#weixin#OpenMsgWin()<cr>',
-        \ 'Open weixin chatting room','call chat#chatting#OpenMsgWin()')
+        \ 'weixn チャットルームを開く','call chat#chatting#OpenMsgWin()')
+        " \ 'Open weixin chatting room','call chat#chatting#OpenMsgWin()')
   call SpaceVim#mapping#def('nnoremap <silent>','<M-c>',':call chat#chatting#OpenMsgWin()<cr>',
-        \ 'Open chatting room','call chat#chatting#OpenMsgWin()')
+        \ 'チャットルームを開く','call chat#chatting#OpenMsgWin()')
+        " \ 'Open chatting room','call chat#chatting#OpenMsgWin()')
 
-  call SpaceVim#mapping#def('nnoremap <silent>','g=',':call zvim#format()<cr>','format current buffer','call zvim#format')
+  call SpaceVim#mapping#def('nnoremap <silent>','g=',':call zvim#format()<cr>',
+        \ '現在バッファの自動フォーマット','call zvim#format')
+        " \ 'format current buffer','call zvim#format')
 
   call SpaceVim#mapping#def('nnoremap <silent>', '<C-c>', ':<c-u>call zvim#util#CopyToClipboard()<cr>',
-        \ 'Copy buffer absolute path to X11 clipboard','call zvim#util#CopyToClipboard()')
-  call SpaceVim#mapping#def('nnoremap <silent>', '<Tab>', ':wincmd w<CR>', 'Switch to next window or tab','wincmd w')
-  call SpaceVim#mapping#def('nnoremap <silent>', '<S-Tab>', ':wincmd p<CR>', 'Switch to previous window or tab','wincmd p')
+        \ 'バッファの絶対パスをコピー','call zvim#util#CopyToClipboard()')
+        " \ 'Copy buffer absolute path to X11 clipboard','call zvim#util#CopyToClipboard()')
+  call SpaceVim#mapping#def('nnoremap <silent>', '<Tab>', ':wincmd w<CR>',
+        \ '次のウィンドウ、タブに移動','wincmd w')
+        " \ 'Switch to next window or tab','wincmd w')
+  call SpaceVim#mapping#def('nnoremap <silent>', '<S-Tab>', ':wincmd p<CR>',
+        \ '前のウィンドウ、タブに移動','wincmd p')
+        " \ 'Switch to previous window or tab','wincmd p')
   call SpaceVim#mapping#def('nnoremap <silent>', 'q', ':<C-u>call zvim#util#SmartClose()<cr>',
-        \ 'Smart close windows',
+        \ 'ウィンドウを閉じるby SmartClose',
         \ 'call zvim#util#SmartClose()')
 endfunction
 

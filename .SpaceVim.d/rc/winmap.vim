@@ -82,12 +82,12 @@ cnoremap <C-Tab> <C-C><C-W>w
 onoremap <C-Tab> <C-C><C-W>w
 
 " CTRL-PageDown is Next window
-map <C-PageUp> :tabp
-imap <C-PageUp> :tabp
-cmap <C-PageUp> :tabp
-map <C-PageDown> :tabn
-imap <C-PageDown> :tabn
-cmap <C-PageDown> :tabn
+map <silent><C-PageUp> :tabp<CR>
+imap <silent><C-PageUp> <ESC>:tabp<CR>
+cmap <silent><C-PageUp> <ESC>:tabp<CR>
+map <silent><C-PageDown> :tabn<CR>
+imap <silent><C-PageDown> <ESC>:tabn<CR>
+cmap <silent><C-PageDown> <ESC>:tabn<CR>
 
 if has("gui")
   " CTRL-F is the search dialog

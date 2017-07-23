@@ -97,10 +97,10 @@ function! SpaceVim#layers#default#config() abort
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'D'],
                 \ 'call SpaceVim#mapping#kill_visible_buffer_choosewin()',
                 \ '現在のバッファを強制終了', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', '<C-d>'], 'call SpaceVim#mapping#clearBuffers()', 'kill-other-buffers', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', '<C-d>'], 'call SpaceVim#mapping#clearBuffers()', '現在バッファ以外全終了', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'e'], 'call call('
                 \ . string(s:_function('s:safe_erase_buffer')) . ', [])',
-                \ 'safe-erase-buffer', 1)
+                \ '現在のバッファを空にする', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'h'], 'Startify', 'ホーム画面へ', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'm'], 'call call('
                 \ . string(s:_function('s:open_message_buffer')) . ', [])',
@@ -108,7 +108,7 @@ function! SpaceVim#layers#default#config() abort
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'P'], 'normal! ggdG"+P', 'バッファ内全てをコピー', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'R'], 'call call('
                 \ . string(s:_function('s:safe_revert_buffer')) . ', [])',
-                \ 'safe-revert-buffer', 1)
+                \ 'バッファ全体を元に戻す', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'Y'], 'normal! ggVG"+y``', 'バッファ内全てをヤンク', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'w'], 'setl readonly!', '読取専用モード', 1)
     let g:_spacevim_mappings_space.b.N = {'name' : '新しい空バッファを開く'}
@@ -125,7 +125,7 @@ function! SpaceVim#layers#default#config() abort
     call SpaceVim#mapping#space#def('nnoremap', ['f', 'C', 'u'], 'update | e ++ff=dos | setlocal ff=unix | w', 'CRLFからLF', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['f', 'D'], 'call call('
                 \ . string(s:_function('s:delete_current_buffer_file')) . ', [])',
-                \ 'delete-current-buffer-file', 1)
+                \ '現在開いているファイルを削除する', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['f', 'F'], 'normal! gf', 'カーソル上のファイルを開く', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['f', 'r'], 'Unite file_mru', '最近開いたファイルを開く', 1)
     if g:spacevim_filemanager ==# 'vimfiler'
