@@ -77,7 +77,8 @@ function! SpaceVim#layers#tools#config() abort
     exec 'normal! A'
   endfunction
   if g:spacevim_filemanager ==# 'nerdtree'
-    noremap <silent> <F3> :NERDTreeToggle<CR>
+    " noremap <silent> <F3> :NERDTreeToggle<CR>
+    noremap <silent> <F2> :NERDTreeToggle<CR>
   endif
   let g:NERDTreeWinPos=get(g:,'NERDTreeWinPos','right')
   let g:NERDTreeWinSize=get(g:,'NERDTreeWinSize',31)

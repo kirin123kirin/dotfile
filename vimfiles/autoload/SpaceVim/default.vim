@@ -30,7 +30,7 @@ function! SpaceVim#default#SetOptions() abort
 
   " set fillchar
   hi VertSplit ctermbg=NONE guibg=NONE
-  set fillchars+=vert:│
+  " set fillchars+=vert:│
 
   " hide cmd
   set noshowcmd
