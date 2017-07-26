@@ -2,6 +2,7 @@
 " file for all possible options:
 let g:spacevim_default_indent = 4
 let g:spacevim_max_column     = 120
+autocmd FileType vimfiler call unite#custom_default_action('directory', 'cd')
 
 set helplang=ja,en
 " let g:spacevim_vim_help_language = 'ja_JP.UTF8'
@@ -21,10 +22,10 @@ let g:spacevim_plugin_manager = 'dein'  " neobundle or dein or vim-plug
 let g:spacevim_windows_leader = 's'
 
 " Set unite work flow shortcut leader [Unite], default is `f`
-let g:spacevim_unite_leader = 'F'
+let g:spacevim_unite_leader = 'f'
 
 " Set Denite work flow shortcut leader [Denite], default is `F`
-let g:spacevim_denite_leader = 'f'
+let g:spacevim_denite_leader = 'F'
 
 " By default, language specific plugins are not loaded. This can be changed
 " with the following, then the plugins for go development will be loaded.
@@ -53,7 +54,7 @@ call SpaceVim#layers#load('lang#xml')
 call SpaceVim#layers#load('shell')   
 "call SpaceVim#layers#load('tools#screensaver')
 let g:spacevim_enable_vimfiler_welcome = 1
-let g:deoplete#auto_complete_delay = 150
+let g:deoplete#auto_complete_delay = 300
 let g:spacevim_enable_tabline_filetype_icon = 1
 let g:spacevim_enable_os_fileformat_icon = 1
 let g:spacevim_buffer_index_type = 1
@@ -61,10 +62,6 @@ let g:spacevim_buffer_index_type = 1
 let g:spacevim_filemanager = 'vimfiler'
 let g:spacevim_sidebar_width = 30
 
-if has('python3')
-    let g:ctrlp_map = ''
-    nnoremap <silent> <C-p> :Denite file_rec<CR>
-endif
 let g:clang2_placeholder_next = ''
 let g:clang2_placeholder_prev = ''
 
@@ -82,8 +79,8 @@ if has('win32')
   " Windows用
   set guifont=DejaVu_Sans_Mono_for_Powerline:h11
   " set guifont=Droid_Sans_Mono_Slashed_for_Powerline:h11
-  " set guifontwide=MeiryoKe_Console:cSHIFTJIS:w6.7
-  set guifontwide=MS_Gothic:cSHIFTJIS
+  set guifontwide=MeiryoKe_Console:cSHIFTJIS:w6.5
+  " set guifontwide=MS_Gothic:cSHIFTJIS
 
 elseif has('mac')
   set guifont=Osaka－等幅:h14
@@ -103,11 +100,11 @@ let g:spacevim_custom_plugins = [
   \ ['chrisbra/csv.vim'],
   \ ['vim-airline/vim-airline'],
   \ ['vim-airline/vim-airline-themes'],
+  \ ['fholgado/minibufexpl.vim'],
   \ ]
 let g:airline#extensions#tagbar#enabled = 0
 
 set nocompatible
-set packpath=
 
 " reset
 augroup MyAutoCmd
@@ -223,7 +220,6 @@ autocmd MyAutoCmd BufReadPost * call s:ReCheck_FENC()
 
 " Default fileformat.
 set fileformat=unix
-set fileformats=unix,dos,mac
 
 " Build encodings.
 " set fileencodings=utf-8,sjis,cp932,iso-2022-jp,euc-jp
@@ -405,11 +401,7 @@ noremap H 10h
 "nnoremap Q <Nop>
 
 " {{{ http://tamata78.hatenablog.com/entry/2015/10/15/214921
-" ウィンドウ分割を楽にする設定
-" noremap <A-Left> <C-w>h 
-" noremap <A-Down> <C-w>j
-" noremap <A-Up> <C-w>k
-" noremap <A-Right> <C-w>l
+" ウィンドウ操作を楽にする設定
 nnoremap <silent><S-A-Left> <C-w>J " 画面自体を左に移動
 nnoremap <silent><S-A-Down> <C-w>K " 画面自体を下に移動
 nnoremap <silent><S-A-Up> <C-w>L " 画面自体を上に移動
@@ -441,8 +433,7 @@ nnoremap Y y$
 
 " 編集を楽にする
 imap <silent><C-d> <ESC>yypi
-nmap <silent><C-d> m`YP``
-vmap <silent><C-d> YPgv
+map <silent><C-d> yypi
 
 " + と - で数字を変化させる?
 " nnoremap + <C-a>
@@ -475,11 +466,10 @@ noremap <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<
 noremap! <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<CR>
 
 " vimfiler
-nnoremap <silent><S-F2> :VimFilerDouble -reverse -horizontal -direction="bottom" -buffer-name=commander -columns="size:time"<Cr>
+nnoremap <silent><S-F2> :VimFilerDouble -create -no-explorer -winwidth=`winwidth(0)/2` -reverse -horizontal -direction="bottom"<CR>
 
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
 
 vnoremap <silent> <TAB> >gv
 vnoremap <silent> <S-TAB> <gv
-

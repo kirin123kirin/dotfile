@@ -1,7 +1,7 @@
 scriptencoding utf-8
 let g:vimfiler_as_default_explorer = get(g:, 'vimfiler_as_default_explorer', 1)
 let g:vimfiler_restore_alternate_file = get(g:, 'vimfiler_restore_alternate_file', 1)
-let g:vimfiler_tree_indentation = get(g:, 'vimfiler_tree_indentation', 1)
+let g:vimfiler_tree_indentation = get(g:, 'vimfiler_tree_indentation', 2)
 let g:vimfiler_tree_leaf_icon = get(g:, 'vimfiler_tree_leaf_icon', '')
 let g:vimfiler_tree_opened_icon = get(g:, 'vimfiler_tree_opened_icon', '▼')
 let g:vimfiler_tree_closed_icon = get(g:, 'vimfiler_tree_closed_icon', '▷')
@@ -9,7 +9,6 @@ let g:vimfiler_file_icon = get(g:, 'vimfiler_file_icon', '')
 let g:vimfiler_readonly_file_icon = get(g:, 'vimfiler_readonly_file_icon', '!')
 let g:vimfiler_marked_file_icon = get(g:, 'vimfiler_marked_file_icon', '*')
 let g:vimfiler_direction = get(g:, 'vimfiler_direction', 'below')
-let g:vimfiler_enable_auto_cd = 1
 let g:vimfiler_preview_action = 'auto_preview'
 let g:vimfiler_ignore_pattern = get(g:, 'vimfiler_ignore_pattern', [
       \ '^\.git$',
@@ -24,7 +23,7 @@ if has('mac')
   let g:vimfiler_quick_look_command =
         \ '/Applications//Sublime\ Text.app/Contents/MacOS/Sublime\ Text'
 elseif has('win32') || has('win64')
-  let g:vimfiler_quick_look_command = "Y:/home/CustomApps/Seer/Seer.exe"
+  let g:vimfiler_quick_look_command = "Y:/app.min/home/high/Seer/Seer.exe"
 else
   let g:vimfiler_quick_look_command = 'gloobus-preview'
 endif
@@ -48,7 +47,8 @@ call vimfiler#custom#profile('default', 'context', {
       \ 'auto_expand': 1,
       \ 'auto_cd' : 1,
       \ 'direction' : g:vimfiler_direction,
-      \ 'explorer_columns' : s:setcolum(),
+      \ 'exploler_columns' : s:setcolum(),
+      \ 'columns' : 'size:time',
       \ 'parent': 0,
       \ 'status' : 1,
       \ 'safe' : 0,
@@ -88,18 +88,18 @@ function! s:vimfilerinit()
   nnoremap <silent><buffer><expr> sv  vimfiler#do_action('vsplit')
   nnoremap <silent><buffer><expr> ss  vimfiler#do_action('split')
   nnoremap <silent><buffer><expr> st  vimfiler#do_action('tabswitch')
-  " nmap <buffer> gx      <Plug>(vimfiler_execute_vimfiler_associated)
-  nmap <buffer> X      <Plug>(vimfiler_execute_vimfiler_associated)
+  nmap <buffer> gx      <Plug>(vimfiler_execute_vimfiler_associated)
+  nmap <buffer> X       <Plug>(vimfiler_execute_vimfiler_associated)
   nmap <buffer> ,       <Plug>(vimfiler_toggle_mark_current_line)
   nmap <buffer> v       <Plug>(vimfiler_quick_look)
-  " nmap <buffer> p       <Plug>(vimfiler_preview_file)
+  nmap <buffer> p       <Plug>(vimfiler_preview_file)
   nmap <buffer> V       <Plug>(vimfiler_clear_mark_all_lines)
   nmap <buffer> i       <Plug>(vimfiler_switch_to_history_directory)
   nmap <buffer> <Tab>   <Plug>(vimfiler_switch_to_other_window)
   nmap <buffer> <C-r>   <Plug>(vimfiler_redraw_screen)
   nmap <buffer> <Left>  <Plug>(vimfiler_smart_h)
   nmap <buffer> <Right> <Plug>(vimfiler_smart_l)
-
+  
   call vimfiler#set_execute_file('rdp', 'mstsc')
 endf
 
