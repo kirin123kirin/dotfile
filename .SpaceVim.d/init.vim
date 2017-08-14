@@ -1,17 +1,18 @@
-﻿" Here are some basic customizations, please refer to the ~/.SpaceVim.d/init.vim
+﻿"let g:spacevim_automatic_update = 0
+
+" Here are some basic customizations, please refer to the ~/.SpaceVim.d/init.vim
 " file for all possible options:
 let g:spacevim_default_indent = 4
 let g:spacevim_max_column     = 120
-autocmd FileType vimfiler call unite#custom_default_action('directory', 'cd')
-
+" let g:spacevim_guifont = 'DejaVu\ Sans\ Mono\ for\ Powerline:h11:cANSI:qDRAFT'
 set helplang=ja,en
-" let g:spacevim_vim_help_language = 'ja_JP.UTF8'
+" let g:spacevim_vim_help_language = 'ja,en'
 " let g:spacevim_language = 'ja_JP.UTF-8'
 " Change the default directory where all miscellaneous persistent files go.
 " By default it is ~/.cache/vimfiles/.
 let g:spacevim_plugin_bundle_dir = '~/.cache/vimfiles/'
 
-" set SpaceVim colorscheme
+" set SpaceVim colorscheme 
 let g:spacevim_colorscheme = 'PaperColor'
 let g:spacevim_colorscheme_bg = 'light'
 
@@ -22,10 +23,10 @@ let g:spacevim_plugin_manager = 'dein'  " neobundle or dein or vim-plug
 let g:spacevim_windows_leader = 's'
 
 " Set unite work flow shortcut leader [Unite], default is `f`
-let g:spacevim_unite_leader = 'f'
+let g:spacevim_unite_leader = 'F'
 
 " Set Denite work flow shortcut leader [Denite], default is `F`
-let g:spacevim_denite_leader = 'F'
+let g:spacevim_denite_leader = 'f'
 
 " By default, language specific plugins are not loaded. This can be changed
 " with the following, then the plugins for go development will be loaded.
@@ -54,45 +55,35 @@ call SpaceVim#layers#load('lang#xml')
 call SpaceVim#layers#load('shell')   
 "call SpaceVim#layers#load('tools#screensaver')
 let g:spacevim_enable_vimfiler_welcome = 1
+let g:spacevim_autocomplete_method = 'deoplete'
 let g:deoplete#auto_complete_delay = 300
-let g:spacevim_enable_tabline_filetype_icon = 1
-let g:spacevim_enable_os_fileformat_icon = 1
-let g:spacevim_buffer_index_type = 1
-"let g:neomake_vim_enabled_makers = ['vimlint', 'vint']
+let g:spacevim_buffer_index_type = 4
+" let g:neomake_vim_enabled_makers = ['vimlint']
 let g:spacevim_filemanager = 'vimfiler'
-let g:spacevim_sidebar_width = 30
+let g:spacevim_sidebar_width = 35
+let g:spacevim_enable_os_fileformat_icon = 0
+let g:spacevim_enable_vimfiler_filetypeicon = 0
+let g:spacevim_enable_tabline_filetype_icon = 0
+
+let g:spacevim_enable_powerline_fonts = 1
 
 let g:clang2_placeholder_next = ''
 let g:clang2_placeholder_prev = ''
 
+let g:vimfiler_tree_indentation = 2
 
 " If there is a particular plugin you don't like, you can define this
 " variable to disable them entirely:
-" let g:spacevim_disabled_plugins=[
-"     \ ['Shougo/neobundle.vim'],
-"     \ ]
-
-" font setting
-if has('win32')
-  " 行幅間隔の設定
-  set ambiwidth=double
-  " Windows用
-  set guifont=DejaVu_Sans_Mono_for_Powerline:h11
-  " set guifont=Droid_Sans_Mono_Slashed_for_Powerline:h11
-  set guifontwide=MeiryoKe_Console:cSHIFTJIS:w6.5
-  " set guifontwide=MS_Gothic:cSHIFTJIS
-
-elseif has('mac')
-  set guifont=Osaka－等幅:h14
-elseif has('xfontset')
-  " UNIX用 (xfontsetを使用)
-  set guifontset=a14,r14,k14
-endif
+let g:spacevim_disabled_plugin = [
+  \ ['vim-youdao-translate'],
+  \ ['eskk.vim'],
+  \ ]
 
 let g:spacevim_custom_plugins = [
   \ ['vim-jp/vimdoc-ja'],
   \ ['Shougo/neossh.vim'],
   \ ['Shougo/context_filetype.vim'],
+  \ ['Shougo/echodoc.vim'],
   \ ['Shougo/vimshell.vim'],
   \ ['tyru/caw.vim'],
   \ ['kannokanno/previm'],
@@ -100,9 +91,10 @@ let g:spacevim_custom_plugins = [
   \ ['chrisbra/csv.vim'],
   \ ['vim-airline/vim-airline'],
   \ ['vim-airline/vim-airline-themes'],
-  \ ['fholgado/minibufexpl.vim'],
+  \ ['ConradIrwin/vim-bracketed-paste'],
   \ ]
 let g:airline#extensions#tagbar#enabled = 0
+
 
 set nocompatible
 
@@ -125,6 +117,7 @@ function! IsMac() abort
 endfunction
 
 if IsWindows()
+    set shellslash
     let g:zip_unzipcmd='unzip.exe'
     let g:zip_zipcmd='zip.exe'
     if has('win64')
@@ -152,9 +145,7 @@ let g:unite_source_bookmark_directory = expand($APPDATA . "/bookmark")
 filetype plugin indent on
 
 " global setting
-if IsWindows()
-    set shellslash
-endif
+
 " エディタの分割方向を設定する
 set splitbelow
 set splitright
@@ -164,7 +155,7 @@ execute "source " . expand('<sfile>:p:h') . "/rc/winmap.vim"
 
 " 色数の指定 (tmux上でもちゃんとしたカラースキームになるように)
 set t_Co=256
-
+" set ambiwidth=auto
 
 "highlight Normal ctermbg=none
 
@@ -203,8 +194,10 @@ set norelativenumber
 " デフォルトで保存するときの文字エンコード
 if has('vim_starting') && &encoding !=# 'utf-8'
     if IsWindows() && !has('gui_running')
+        let &termencoding = &encoding
         set encoding=cp932
     else
+        let &termencoding = &encoding
         set encoding=utf-8
     endif
 endif
@@ -308,7 +301,6 @@ set mouse=a
 " backspace and cursor keys wrap to previous/next line
 set backspace=indent,eol,start whichwrap+=<,>,[,]
 set virtualedit+=block
-set laststatus=2
 set vb t_vb=
 set noerrorbells
 set autoread
@@ -317,9 +309,11 @@ set autoread
 "set termguicolors
 
 " 補完時プレビューウィンドウを表示しない
-"set completeopt-=preview
-"set completeopt=preview,menu
-"set pumheight=10
+set completeopt=menu,menuone,noselect
+" set completeopt-=preview
+set pumheight=15
+" 自動でプレビューウィンドウを閉じる
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " qfというファイルタイプの時にバッファに名前をつける
 autocmd! FileType qf :file locationlist
@@ -346,7 +340,7 @@ else
 endif
 
 if has('gui_running')
-    set guioptions=gtmre
+    set guioptions=gtme
 endif
 
 
@@ -381,13 +375,11 @@ set timeoutlen=200
 cabbr w!! w !sudo tee > /dev/null %
 
 " 自然な正規表現検索にするため
-noremap / /\v
+nmap / /\v
 
-imap <C-;> <Nop>
-imap <C-:> <Nop>
-imap <C-;> <C-R>=strftime('%Y/%m/%d')<CR>
-imap <C-:> <C-R>=strftime('%H:%M')<CR>
-imap <C-;:> <C-R>=strftime('%Y/%m/%d %H:%M')<CR>
+imap <silent><C-;> <C-R>=strftime('%Y/%m/%d')<CR>
+imap <silent><C-:> <C-R>=strftime('%H:%M')<CR>
+imap <silent><C-;>: <C-R>=strftime('%Y/%m/%d %H:%M')<CR>
 
 " シフトで多めに移動
 noremap J 20j
@@ -440,36 +432,39 @@ map <silent><C-d> yypi
 " nnoremap - <C-x>
 
 " QuickRun
-noremap <silent> <F5> :QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
-noremap!<silent> <F5> <Esc>:QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
+map <silent> <F5> :QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
+map!<silent> <F5> <Esc>:QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
 
 " Denite
-nmap <silent> <C-F><C-F> :<C-u>Denite file_rec<CR>
-nmap <silent> <C-g>  :<C-u>Denite line<CR>
-nmap <silent> <C-g><C-g> :<C-u>Denite grep<CR>
-nmap <silent> <C-/>:<C-u>DeniteCursorWord grep<CR>
-nmap <silent> <C-h> :<C-u>Denite file_mru<CR>
-nmap <silent> <C-y><C-y> :<C-u>Denite neoyank<CR>
-nmap <silent> <F1>  :<C-u>Denite help<CR>
-nmap <silent> <C-h><C-h>  :<C-u>Denite command_history<CR>
-nmap <silent> <F9>  :<C-N>Denite -resume -immediately -select=+1<CR>
-nmap <silent> <F10> :<C-P>Denite -resume -immediately -select=-1<CR>
+map <silent> <C-F><C-F> :<C-u>Denite file_rec<CR>
+cmap <silent> <C-F><C-F> :<C-u>Denite file_rec<CR>
+map <silent> <C-g>  :<C-u>Denite line<CR>
+map <silent> <C-g><C-g> :<C-u>Denite grep<CR>
+map <silent> <C-/>:<C-u>DeniteCursorWord grep<CR>
+map <silent> <C-h> :<C-u>Denite file_mru<CR>
+map <silent> <C-y><C-y> :<C-u>Denite neoyank<CR>
+map <silent> <F1>  :<C-u>Denite help<CR>
+map <silent> <C-h><C-h>  :<C-u>Denite command_history<CR>
+map <silent> <F9>  :<C-N>Denite -resume -immediately -select=+1<CR>
+map <silent> <F10> :<C-P>Denite -resume -immediately -select=-1<CR>
 
 " Unite
-noremap <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
-noremap <silent> <F12> <ESC>:Unite bookmark -buffer-name=bookmark -winheight=20 -start-insert<CR>
-noremap! <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
-noremap! <silent> <F12> <ESC>:Unite bookmark -buffer-name=bookmark -vertical -winheight=20 -start-insert<CR>
-cnoremap <F11> UniteBookmarkAdd<CR>
-cnoremap <F12> Unite bookmark -buffer-name=bookmark -vertical -winheight=20 -start-insert<CR>
-noremap <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<CR>
-noremap! <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<CR>
+map <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
+map <silent> <F12> <ESC>:Unite bookmark -buffer-name=bookmark -winheight=20 -start-insert<CR>
+map! <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
+map! <silent> <F12> <ESC>:Unite bookmark -buffer-name=bookmark -vertical -winheight=20 -start-insert<CR>
+cmap <F11> UniteBookmarkAdd<CR>
+cmap <F12> Unite bookmark -buffer-name=bookmark -vertical -winheight=20 -start-insert<CR>
+map <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<CR>
+map! <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<CR>
 
 " vimfiler
-nnoremap <silent><S-F2> :VimFilerDouble -create -no-explorer -winwidth=`winwidth(0)/2` -reverse -horizontal -direction="bottom"<CR>
+map <silent><S-F2> :VimFilerDouble -toggle -create -no-explorer -winwidth=`winwidth(0)/2` -reverse -horizontal -direction="bottom"<CR>
 
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
 
 vnoremap <silent> <TAB> >gv
 vnoremap <silent> <S-TAB> <gv
+
+

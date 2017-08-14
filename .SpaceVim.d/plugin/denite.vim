@@ -2,12 +2,12 @@ call denite#custom#option('default', 'winheight', 60*winheight(0)/100)
 
 if IsWindows()
     call denite#custom#var('directory_rec', 'command',
-        \ ['dir', '/s', '/d', '/b'])
+        \ ['dir', '/s', '/ad', '/b'])
 endif
 if executable('rg')
     call denite#custom#var('file_rec', 'command',
         \ ['rg', '--path-separator', '/', '--hidden', '--files', '--glob', '!.git'])
-    call denite#custom#var('grep', 'command', ['rg', '--threads', '1'])
+    call denite#custom#var('grep', 'command', ['rg', '--threads', '2'])
     call denite#custom#var('grep', 'recursive_opts', [])
     call denite#custom#var('grep', 'final_opts', [])
     call denite#custom#var('grep', 'separator', ['--'])

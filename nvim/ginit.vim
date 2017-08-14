@@ -1,40 +1,20 @@
-﻿" フォント設定:
-"
-if IsWindows()
-  " Windows用
-  GuiFont! FixedSys:h12
-  set linespace=1
-  if has('kaoriya')
-    set ambiwidth=auto
+if exists('g:GuiLoaded')
+  if empty(g:spacevim_guifont)
+    exe 'Guifont! DejaVu Sans Mono for Powerline:h11:cANSI:qDRAFT'
+  else
+    exe 'Guifont! ' . g:spacevim_guifont
   endif
-elseif IsMac()
-  let g:Guifont='Osaka－等幅:h14'
-elseif has('xfontset')
-  let g:Guifont='a14,r14,k14'
-endif
-
-"---------------------------------------------------------------------------
-" 日本語入力に関する設定:
-if has('multi_byte_ime') || has('xim')
-  highlight CursorIM guibg=Purple guifg=NONE
-  set iminsert=0 imsearch=0
-  if has('xim') && has('GUI_GTK')
-    "set imactivatekey=s-space
+  if count(g:spacevim_plugin_groups, 'colorscheme') && g:spacevim_colorscheme !=# '' "{{{
+    try
+      exec 'set background=' . g:spacevim_colorscheme_bg
+      exec 'colorscheme ' . g:spacevim_colorscheme
+    catch
+      exec 'colorscheme '. g:spacevim_colorscheme_default
+    endtry
+  else
+    exec 'colorscheme '. g:spacevim_colorscheme_default
   endif
-  " 挿入モードでのIME状態を記憶させない場合、次行のコメントを解除
-  inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 endif
 
-"---------------------------------------------------------------------------
-" マウスに関する設定:
-set mouse=a
-set nomousefocus
-" 入力時にマウスポインタを隠す (nomousehide:隠さない)
-set mousehide
-"set guioptions+=a
+" vim:set et sw=2:
 
-"---------------------------------------------------------------------------
-" メニューに関する設定:
-if &guioptions =~# 'M'
-  let &guioptions = substitute(&guioptions, '[mT]', '', 'g')
-endif
