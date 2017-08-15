@@ -27,7 +27,9 @@ call unite#custom#profile('source/neobundle/update', 'context', {
       \   'start_insert' : 0,
       \ })
 
-let g:unite_source_bookmark_directory = expand($HOME . "/bookmark")
+let g:unite_source_bookmark_directory = get(g:, 
+      \ 'unite_source_bookmark_directory' ,
+      \ expand($HOME . "/bookmark"))
 
 let g:unite_source_codesearch_ignore_case = get(g:,
       \ 'unite_source_codesearch_ignore_case', 1)
