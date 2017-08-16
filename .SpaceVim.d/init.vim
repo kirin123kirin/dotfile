@@ -1,4 +1,17 @@
-﻿"let g:spacevim_automatic_update = 0
+﻿set nocompatible
+set encoding=utf-8
+set noautochdir
+set foldopen=all
+set history=10000
+set maxmem=2000000
+set maxmempattern=2000000
+set maxmemtot=2000000
+set isfname+=&
+set mouseshape=beam
+set mousemodel=popup_setpos
+" set guicursor=n-c:block-blinkon10,o:hor50-blinkon10,i-ci:hor15-blinkon10,r-cr:hor30-blinkon10,sm:block-blinkon10
+
+"let g:spacevim_automatic_update = 0
 
 " Here are some basic customizations, please refer to the ~/.SpaceVim.d/init.vim
 " file for all possible options:
@@ -96,8 +109,6 @@ let g:spacevim_custom_plugins = [
 let g:airline#extensions#tagbar#enabled = 0
 
 
-set nocompatible
-
 " reset
 augroup MyAutoCmd
     autocmd!
@@ -140,8 +151,6 @@ else
     let g:python2_host_prog = 'python2.6'
 endif
 
-let g:unite_source_bookmark_directory = expand($APPDATA . "/bookmark")
-
 filetype plugin indent on
 
 " global setting
@@ -172,12 +181,7 @@ inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 set nowritebackup
 set nobackup
 set noswapfile
-
-" 保存されていないファイルがあるときでも別のファイルを開くことが出来る
-set hidden
-
-" 外部でファイルに変更がされた場合は読みなおす
-set autoread
+set nohidden
 
 " ファイル文末の改行を勝手に変更しない
 if exists('+fixeol')
@@ -293,7 +297,6 @@ set hlsearch
 set incsearch
 set ignorecase
 set smartcase
-set wrap
 set gdefault
 
 set mouse=a
@@ -303,6 +306,7 @@ set backspace=indent,eol,start whichwrap+=<,>,[,]
 set virtualedit+=block
 set vb t_vb=
 set noerrorbells
+set belloff
 set autoread
 
 " True Color用設定
@@ -449,6 +453,9 @@ map <silent> <F9>  :<C-N>Denite -resume -immediately -select=+1<CR>
 map <silent> <F10> :<C-P>Denite -resume -immediately -select=-1<CR>
 
 " Unite
+if IsWindows()
+    let g:unite_source_bookmark_directory = "Y:/bookmark"
+endif
 map <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
 map <silent> <F12> <ESC>:Unite bookmark -buffer-name=bookmark -winheight=20 -start-insert<CR>
 map! <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
@@ -460,6 +467,18 @@ map! <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<CR>
 
 " vimfiler
 map <silent><S-F2> :VimFilerDouble -toggle -create -no-explorer -winwidth=`winwidth(0)/2` -reverse -horizontal -direction="bottom"<CR>
+
+" previmopen
+let g:previm_open_cmd = fnameescape(g:default_browser)
+augroup PrevimSettings
+    autocmd!
+    autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+augroup END
+
+"neossh
+let g:neossh#ssh_command = 'plink.exe -P PORT HOSTNAME'
+let g:neossh#copy_directory_command = 'pscp.exe -P PORT -q -r $srcs $dest'
+let g:neossh#copy_file_command = 'pscp.exe -P PORT -q $srcs $dest'
 
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv

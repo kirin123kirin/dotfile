@@ -16,8 +16,6 @@ let g:deoplete#auto_refresh_delay = get(g:,'deoplete#auto_refresh_delay', 0)
 let g:deoplete#file#enable_buffer_path = get(g:,'deoplete#file#enable_buffer_path',1)
 let g:deoplete#max_list = get(g:, 'deoplete#max_list', 15)
 
-call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
-let g:deoplete#ignore_sources._ = get(g:deoplete#ignore_sources, '_', ['around'])
 inoremap <expr><C-h> deoplete#close_popup()."\<C-h>"
 inoremap <expr><BS> deoplete#close_popup()."\<BS>"
 
