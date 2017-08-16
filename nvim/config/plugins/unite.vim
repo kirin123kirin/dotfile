@@ -34,11 +34,11 @@ let g:unite_source_bookmark_directory = get(g:,
 let g:unite_source_codesearch_ignore_case = get(g:,
       \ 'unite_source_codesearch_ignore_case', 1)
 let g:unite_source_buffer_time_format = get(g:,
-      \ 'unite_source_buffer_time_format', '(%m-%d-%Y %H:%M:%S) ')
+      \ 'unite_source_buffer_time_format', '(%y/%m/%d %H:%M) ')
 let g:unite_source_file_mru_time_format = get(g:,
-      \ 'unite_source_file_mru_time_format', '(%m-%d-%Y %H:%M:%S) ')
+      \ 'unite_source_file_mru_time_format', '(%y/%m/%d %H:%M) ')
 let g:unite_source_directory_mru_time_format = get(g:,
-      \ 'unite_source_directory_mru_time_format', '(%m-%d-%Y %H:%M:%S) ')
+      \ 'unite_source_directory_mru_time_format', '(%y/%m/%d %H:%M) ')
 let g:unite_source_directory_mru_limit = get(g:,
       \ 'unite_source_directory_mru_limit', 80)
 let g:unite_source_file_rec_max_depth = get(g:,

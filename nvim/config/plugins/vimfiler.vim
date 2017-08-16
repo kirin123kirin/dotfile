@@ -67,6 +67,7 @@ augroup END
 function! s:vimfilerinit()
   setl nonumber
   setl norelativenumber
+  setl nosplitright
 
   silent! nunmap <buffer> <Space>
   silent! nunmap <buffer> C
