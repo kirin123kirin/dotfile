@@ -3,9 +3,9 @@ set encoding=utf-8
 set noautochdir
 set foldopen=all
 set history=10000
-set maxmem=2000000
-set maxmempattern=2000000
-set maxmemtot=2000000
+set maxmem=1000000
+set maxmempattern=1000000
+set maxmemtot=1000000
 set isfname+=&
 set mouseshape=beam
 set mousemodel=popup_setpos
@@ -306,7 +306,6 @@ set backspace=indent,eol,start whichwrap+=<,>,[,]
 set virtualedit+=block
 set vb t_vb=
 set noerrorbells
-set belloff
 set autoread
 
 " True Color用設定
