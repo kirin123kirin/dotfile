@@ -43,7 +43,7 @@ function! SpaceVim#layers#edit#config() abort
     "noremap <SPACE> <Plug>(wildfire-fuel)
     vnoremap <C-SPACE> <Plug>(wildfire-water)
     let g:wildfire_objects = ["i'", 'i"', 'i)', 'i]', 'i}', 'ip', 'it']
-    let g:_spacevim_mappings_space.x = {'name' : '+入力支援'}
+    let g:_spacevim_mappings_space.x = {'name' : '+Text'}
     let g:_spacevim_mappings_space.x.a = {'name' : '+align'}
     let g:_spacevim_mappings_space.x.d = {'name' : '+delete'}
     let g:_spacevim_mappings_space.x.i = {'name' : '+change symbol style'}
@@ -90,38 +90,38 @@ function! SpaceVim#layers#edit#config() abort
                 \ 'change symbol style to kebab-case', 1)
 
 
-    let g:_spacevim_mappings_space.i = {'name' : '+入力支援系'}
-    let g:_spacevim_mappings_space.i.l = {'name' : '+ダミーデータ生成'}
-    let g:_spacevim_mappings_space.i.p = {'name' : '+パスワード文字列生成'}
+    let g:_spacevim_mappings_space.i = {'name' : '+Insertion'}
+    let g:_spacevim_mappings_space.i.l = {'name' : '+Lorem-ipsum'}
+    let g:_spacevim_mappings_space.i.p = {'name' : '+Passwords'}
     let g:_spacevim_mappings_space.i.U = {'name' : '+UUID'}
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 1], 'call call('
                 \ . string(s:_function('s:insert_simple_password')) . ', [])',
-                \ '簡易パスワード生成', 1)
+                \ 'insert simple password', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 2], 'call call('
                 \ . string(s:_function('s:insert_stronger_password')) . ', [])',
-                \ '複雑パスワード生成', 1)
+                \ 'insert stronger password', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 3], 'call call('
                 \ . string(s:_function('s:insert_paranoid_password')) . ', [])',
-                \ '超複雑なパスワード生成', 1)
+                \ 'insert password for paranoids', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 'p'], 'call call('
                 \ . string(s:_function('s:insert_phonetically_password')) . ', [])',
-                \ '読み上げ易いパスワード生成', 1)
+                \ 'insert a phonetically easy password', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 'n'], 'call call('
                 \ . string(s:_function('s:insert_numerical_password')) . ', [])',
-                \ '数値型パスワード生成', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['i', 'u'], 'Unite unicode', 'ユニコード文字生成', 1)
+                \ 'insert a numerical password', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['i', 'u'], 'Unite unicode', 'search and insert unicode', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'U', 'U'], 'call call('
                 \ . string(s:_function('s:uuidgen_U')) . ', [])',
                 \ 'uuidgen-4', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'l', 'l'], 'call call('
                 \ . string(s:_function('s:insert_lorem_ipsum_list')) . ', [])',
-                \ 'ダミー単語', 1)
+                \ 'insert lorem-ipsum list', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'l', 'p'], 'call call('
                 \ . string(s:_function('s:insert_lorem_ipsum_paragraph')) . ', [])',
-                \ 'ダミー段落', 1)
+                \ 'insert lorem-ipsum paragraph', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['i', 'l', 's'], 'call call('
                 \ . string(s:_function('s:insert_lorem_ipsum_sentence')) . ', [])',
-                \ 'ダミー文章', 1)
+                \ 'insert lorem-ipsum sentence', 1)
     let g:_spacevim_mappings_space.x.g = {'name' : '+translate'}
     call SpaceVim#mapping#space#def('nnoremap', ['x', 'g', 't'], 'Ydc', 'translate current word', 1)
 

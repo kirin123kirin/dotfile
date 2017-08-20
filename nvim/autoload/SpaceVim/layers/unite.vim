@@ -49,7 +49,7 @@ function! SpaceVim#layers#unite#plugins() abort
                 \ ['sgur/unite-everything'],
                 \ ['wsdjeg/unite-dwm'],
                 \ ['raw1z/unite-projects'],
-                \ ['voi/unite-ctags'],
+                \ ['SpaceVim/unite-ctags'],
                 \ ['Shougo/unite-session'],
                 \ ['osyo-manga/unite-quickfix'],
                 \ ['ujihisa/unite-colorscheme'],
@@ -80,5 +80,5 @@ function! SpaceVim#layers#unite#plugins() abort
 endfunction
 
 function! SpaceVim#layers#unite#config() abort
-        call SpaceVim#mapping#space#def('nnoremap', ['!'], 'Unite output/shellcmd -no-start-insert', 'コマンド実行', 1)
+        call SpaceVim#mapping#space#def('nnoremap', ['!'], 'Unite output/shellcmd -no-start-insert', 'shell cmd', 1)
 endfunction

@@ -30,52 +30,52 @@ function! SpaceVim#layers#ui#config() abort
     let g:indentLine_fileTypeExclude = ['help', 'startify', 'vimfiler']
     let g:signify_disable_by_default = 0
     let g:signify_line_highlight = 0
-    noremap <silent> <F9> :TagbarToggle<CR>
+    noremap <silent> <F2> :TagbarToggle<CR>
     " Ui toggles
     call SpaceVim#mapping#space#def('nnoremap', ['t', '8'], 'call call('
                 \ . string(s:_function('s:toggle_fill_column')) . ', [])',
-                \ 'カラムカラースキーマ切替', 1)
+                \ 'toggle-colorcolume', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['t', 'b'], 'call ToggleBG()',
-                \ '背景色切替', 1)
+                \ 'toggle background', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['t', 't'], 'call SpaceVim#plugins#tabmanager#open()',
-                \ 'タブマネージャを開く', 1)
+                \ 'Open tabs manager', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['t', 'f'], 'call call('
                 \ . string(s:_function('s:toggle_colorcolumn')) . ', [])',
-                \ 'カラースキーマ切替', 1)
+                \ 'toggle-colorcolume', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['t', 'h', 'h'], 'set cursorline!',
-                \ '現在行ハイライト切替', 1)
+                \ 'toggle highlight of the current line', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['t', 'h', 'i'], 'call call('
                 \ . string(s:_function('s:toggle_indentline')) . ', [])',
-                \ 'インデントレベルハイライト切替', 1)
+                \ 'toggle highlight indentation levels', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['t', 'h', 'c'], 'set cursorcolumn!',
-                \ '現在カラムインデントハイライト切替', 1)
+                \ 'toggle highlight indentation current column', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['t', 'h', 's'], 'call call('
                 \ . string(s:_function('s:toggle_syntax_hi')) . ', [])',
-                \ 'シンタックスハイライト', 1)
+                \ 'toggle syntax highlighting', 1)
 
-    call SpaceVim#mapping#space#def('nnoremap', ['T', 'F'], '<C-F11>',
-                \ 'フレーム全画面', 0)
+    call SpaceVim#mapping#space#def('nnoremap', ['T', 'F'], '<F11>',
+                \ 'fullscreen-frame', 0)
     call SpaceVim#mapping#space#def('nnoremap', ['T', 'm'], 'call call('
                 \ . string(s:_function('s:toggle_menu_bar')) . ', [])',
-                \ 'メニューバー切替', 1)
+                \ 'toggle-menu-bar', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['T', 'f'], 'call call('
                 \ . string(s:_function('s:toggle_win_fringe')) . ', [])',
-                \ 'フリンジ切替', 1)
+                \ 'toggle-win-fringe', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['T', 't'], 'call call('
                 \ . string(s:_function('s:toggle_tool_bar')) . ', [])',
-                \ 'ツールバー切替', 1)
+                \ 'toggle-tool-bar', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['T', '~'], 'call call('
                 \ . string(s:_function('s:toggle_end_of_buffer')) . ', [])',
-                \ 'フリンジ切替 空行', 1)
+                \ 'display ~ in the fringe on empty lines', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['t', 's'], 'call call('
                 \ . string(s:_function('s:toggle_syntax_checker')) . ', [])',
-                \ 'シンタックスチェッカー切替', 1)
+                \ 'toggle syntax checker', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['t', 'S'], 'call call('
                 \ . string(s:_function('s:toggle_spell_check')) . ', [])',
-                \ 'スペルチェッカー切替', 1)
+                \ 'toggle syntax checker', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['t', 'w'], 'call call('
                 \ . string(s:_function('s:toggle_whitespace')) . ', [])',
-                \ '空白強調設定切替', 1)
+                \ 'toggle the whitespace', 1)
 endfunction
 " function() wrapper
 if v:version > 703 || v:version == 703 && has('patch1170')

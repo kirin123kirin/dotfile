@@ -3,6 +3,7 @@ let g:deoplete#enable_at_startup = get(g:, 'deoplete#enable_at_startup', 1)
 let g:deoplete#enable_ignore_case = get(g:, 'deoplete#enable_ignore_case', 1)
 let g:deoplete#enable_smart_case = get(g:, 'deoplete#enable_smart_case', 1)
 let g:deoplete#enable_camel_case = get(g:, 'deoplete#enable_camel_case', 1)
+let g:deoplete#enable_refresh_always = get(g:, 'deoplete#enable_refresh_always', 1)
 let g:deoplete#max_abbr_width = get(g:, 'deoplete#max_abbr_width', 0)
 let g:deoplete#max_menu_width = get(g:, 'deoplete#max_menu_width', 0)
 " init deoplet option dict
@@ -73,8 +74,10 @@ let g:deoplete#ignore_sources.rust = get(g:deoplete#ignore_sources, 'rust', ['om
 call deoplete#custom#set('racer', 'mark', '')
 
 " public settings
-call deoplete#custom#set('_', 'matchers', ['matcher_fuzzy'])
+call deoplete#custom#set('_', 'matchers', ['matcher_full_fuzzy'])
 let g:deoplete#ignore_sources._ = get(g:deoplete#ignore_sources, '_', ['around'])
+inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
 set isfname-==
 
 " vim:set et sw=2:

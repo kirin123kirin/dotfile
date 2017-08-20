@@ -17,16 +17,16 @@ endfunction
 
 
 function! SpaceVim#layers#checkers#config() abort
-  call SpaceVim#mapping#space#def('nnoremap', ['e', 'c'], 'sign unplace *', '全エラー消去', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['e', 'h'], '', 'シンタックスチェッカーの説明', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['e', 'c'], 'sign unplace *', 'clear all errors', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['e', 'h'], '', 'describe a syntax checker', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['e', 'v'], '', 'verify syntax checker setup', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['e', 'n'], 'lnext', '次のエラーへ', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['e', 'l'], 'lopen', 'エラーリスト表示トグル', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['e', 'p'], 'lprevious', '前のエラーへ', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['e', 'n'], 'lnext', 'next-error', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['e', 'l'], 'lopen', 'toggle showing the error list', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['e', 'p'], 'lprevious', 'previous-error', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['e', 'N'], 'lNext', 'previous-error', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['e', '.'], 'call call('
                 \ . string(s:_function('s:error_transient_state')) . ', [])',
-                \ 'エラー過渡状態', 1)
+                \ 'error-transient-state', 1)
 endfunction
 
 function! s:error_transient_state() abort

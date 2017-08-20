@@ -34,11 +34,11 @@ function! SpaceVim#mapping#leader#defindglobalMappings() abort
 
   " Fast saving
   call SpaceVim#mapping#def('nnoremap', '<Leader>w', ':w<CR>',
-        \ '現在のファイルを保存',
+        \ 'Save current file',
         \ 'w',
         \ 'Save current file')
   call SpaceVim#mapping#def('vnoremap', '<Leader>w', '<Esc>:w<CR>',
-        \ '現在のファイルを保存',
+        \ 'Save current file',
         \ 'w',
         \ 'Save current file')
 
@@ -50,34 +50,34 @@ function! SpaceVim#mapping#leader#defindglobalMappings() abort
   nmap <Leader>tw :setlocal wrap! breakindent!<CR>
 
   " Location list movement
-  let g:_spacevim_mappings.l = {'name' : 'Locationリスト移動'}
+  let g:_spacevim_mappings.l = {'name' : 'Location list movement'}
   call SpaceVim#mapping#def('nnoremap', '<Leader>lj', ':lnext<CR>',
-        \ '次のLocationリスト位置',
+        \ 'Jump to next location list position',
         \ 'lnext',
-        \ '次のLocationリスト')
+        \ 'Next location list')
   call SpaceVim#mapping#def('nnoremap', '<Leader>lk', ':lprev<CR>',
-        \ '前のLocationリスト位置',
+        \ 'Jump to previous location list position',
         \ 'lprev',
-        \ '前のLocationリスト')
+        \ 'Previous location list')
   call SpaceVim#mapping#def('nnoremap', '<Leader>lq', ':lclose<CR>',
-        \ 'Locationリスト画面を閉じる',
+        \ 'Close the window showing the location list',
         \ 'lclose',
-        \ 'Locationリスト画面を閉じる')
+        \ 'Close location list window')
 
   " quickfix list movement
-  let g:_spacevim_mappings.q = {'name' : 'Quickfixリスト移動'}
+  let g:_spacevim_mappings.q = {'name' : 'Quickfix list movement'}
   call SpaceVim#mapping#def('nnoremap', '<Leader>qj', ':cnext<CR>',
-        \ '次のQuickfixリスト位置',
+        \ 'Jump to next quickfix list position',
         \ 'cnext',
-        \ '次のQuickfixリスト')
+        \ 'Next quickfix list')
   call SpaceVim#mapping#def('nnoremap', '<Leader>qk', ':cprev<CR>',
-        \ '前のQuickfixリスト位置',
+        \ 'Jump to previous quickfix list position',
         \ 'cprev',
-        \ '前のQuickfixリスト')
+        \ 'Previous quickfix list')
   call SpaceVim#mapping#def('nnoremap', '<Leader>qq', ':cclose<CR>',
-        \ ' Quickfixリスト画面を閉じる',
+        \ 'Close quickfix list window',
         \ 'cclose',
-        \ 'Quickfixリスト画面を閉じる')
+        \ 'Close quickfix list window')
   call SpaceVim#mapping#def('nnoremap <silent>', '<Leader>qr', 'q',
         \ 'Toggle recording',
         \ '',
@@ -110,12 +110,12 @@ function! SpaceVim#mapping#leader#defindglobalMappings() abort
 
   call SpaceVim#mapping#def('nnoremap <silent>', '<Leader>sv',
         \ ':call SpaceVim#mapping#split_previous_buffer()<CR>',
-        \ '水平分割で前のバッファを開く',
+        \ 'Open previous buffer in split window',
         \ 'call SpaceVim#mapping#split_previous_buffer()',
-        \ '水平分割で前のバッファを開く')
+        \ 'Split previout buffer')
   call SpaceVim#mapping#def('nnoremap <silent>', '<Leader>sg',
         \ ':call SpaceVim#mapping#vertical_split_previous_buffer()<CR>',
-        \ '垂直分割で前のバッファを開く' ,
+        \ 'Open previous buffer in vsplit window' ,
         \ 'call SpaceVim#mapping#vertical_split_previous_buffer()')
 endfunction
 
@@ -128,29 +128,29 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
 
     call zvim#util#defineMap('nnoremap <silent>', '[Window]p',
           \ ':<C-u>vsplit<CR>:wincmd w<CR>',
-          \ 'ウィンドウを左右に分割し、次のウィンドウにフォーカス移動','vsplit | wincmd w')
+          \ 'vsplit vertically,switch to next window','vsplit | wincmd w')
     call zvim#util#defineMap('nnoremap <silent>', '[Window]v',
-          \ ':<C-u>split<CR>', 'ウィンドウを上下に分割', 'split')
+          \ ':<C-u>split<CR>', 'split window', 'split')
     call zvim#util#defineMap('nnoremap <silent>', '[Window]g',
-          \ ':<C-u>vsplit<CR>', 'ウィンドウを左右に分割', 'vsplit')
+          \ ':<C-u>vsplit<CR>', 'vsplit window', 'vsplit')
     call zvim#util#defineMap('nnoremap <silent>', '[Window]t',
-          \ ':<C-u>tabnew<CR>', '新しいタブを開く', 'tabnew')
+          \ ':<C-u>tabnew<CR>', 'Create new tab', 'tabnew')
     call zvim#util#defineMap('nnoremap <silent>', '[Window]o',
-          \ ':<C-u>only<CR>', 'ウィンドウ最大化', 'only')
+          \ ':<C-u>only<CR>', 'Close other windows', 'only')
     call zvim#util#defineMap('nnoremap <silent>', '[Window]x',
           \ ':<C-u>call zvim#util#BufferEmpty()<CR>',
-          \ '現在のバッファを空にする', 'call zvim#util#BufferEmpty()')
+          \ 'Empty current buffer', 'call zvim#util#BufferEmpty()')
     call zvim#util#defineMap('nnoremap <silent>', '[Window]\',
-          \ ':<C-u>b#<CR>', '前回のバッファに移動','b#')
+          \ ':<C-u>b#<CR>', 'Switch to the last buffer','b#')
     call zvim#util#defineMap('nnoremap <silent>', '[Window]q',
-          \ ':<C-u>close<CR>', '現在のウィンドウを閉じる','close')
+          \ ':<C-u>close<CR>', 'Close current windows','close')
     call zvim#util#defineMap('nnoremap <silent>', '[Window]Q',
           \ ':<C-u>call SpaceVim#mapping#close_current_buffer()<CR>',
-          \ '現在のバッファを強制的に閉じる',
+          \ 'delete current windows',
           \ 'call SpaceVim#mapping#close_current_buffer()')
     call zvim#util#defineMap('nnoremap <silent>', '[Window]c',
           \ ':<C-u>call SpaceVim#mapping#clearBuffers()<CR>',
-          \ '全バッファクリア', 'call SpaceVim#mapping#clearBuffers()')
+          \ 'Clear all the buffers', 'call SpaceVim#mapping#clearBuffers()')
   endif
 endfunction
 
@@ -166,25 +166,25 @@ function! SpaceVim#mapping#leader#defindDeniteLeader(key) abort
     nnoremap <silent> [denite]r
           \ :<C-u>Denite -resume<CR>
     let g:_spacevim_mappings_denite.r = ['Denite -resume',
-          \ 'Deniteコンソール再開']
+          \ 'resume denite window']
     nnoremap <silent> [denite]f  :<C-u>Denite file_rec<cr>
-    let g:_spacevim_mappings_denite.f = ['Denite file_rec', 'ファイルパスで検索']
+    let g:_spacevim_mappings_denite.f = ['Denite file_rec', 'file_rec']
     nnoremap <silent> [denite]g  :<C-u>Denite grep<cr>
-    let g:_spacevim_mappings_denite.g = ['Denite grep', 'ファイル内Grep']
+    let g:_spacevim_mappings_denite.g = ['Denite grep', 'denite grep']
     nnoremap <silent> [denite]j  :<C-u>Denite jump<CR>
-    let g:_spacevim_mappings_denite.j = ['Denite jump', '参照行履歴']
+    let g:_spacevim_mappings_denite.j = ['Denite jump', 'denite jump']
     nnoremap <silent> [denite]<C-h>  :<C-u>DeniteCursorWord help<CR>
     let g:_spacevim_mappings_denite['<C-h>'] = ['DeniteCursorWord help',
-          \ 'カーソル上単語をヘルプ検索']
+          \ 'denite with cursor word help']
     nnoremap <silent> [denite]o  :<C-u>Denite -buffer-name=outline
           \  -auto-preview outline<CR>
-    let g:_spacevim_mappings_denite.o = ['Denite outline', '関数アウトライン']
+    let g:_spacevim_mappings_denite.o = ['Denite outline', 'denite outline']
     nnoremap <silent> [denite]e  :<C-u>Denite
           \ -buffer-name=register register<CR>
-    let g:_spacevim_mappings_denite.e = ['Denite register', 'レジスタを検索']
+    let g:_spacevim_mappings_denite.e = ['Denite register', 'denite register']
     nnoremap <silent> [denite]<Space> :Denite menu:CustomKeyMaps<CR>
     let g:_spacevim_mappings_denite['<space>'] = ['Denite menu:CustomKeyMaps',
-          \ 'denite カスタムキーマップ']
+          \ 'denite customkeymaps']
   endif
 endfunction
 
@@ -201,46 +201,46 @@ function! SpaceVim#mapping#leader#defindUniteLeader(key) abort
     nnoremap <silent> [unite]r
           \ :<C-u>Unite -buffer-name=resume resume<CR>
     let g:_spacevim_mappings_unite.r = ['Unite -buffer-name=resume resume',
-          \ 'uniteコンソール再開']
+          \ 'resume unite window']
     if has('nvim')
       nnoremap <silent> [unite]f  :<C-u>Unite file_rec/neovim<cr>
       let g:_spacevim_mappings_unite.f = ['Unite file_rec/neovim', 'file_rec']
     else
       nnoremap <silent> [unite]f  :<C-u>Unite file_rec/async<cr>
-      let g:_spacevim_mappings_unite.f = ['Unite file_rec/async', 'file_rec/async']
+      let g:_spacevim_mappings_unite.f = ['Unite file_rec/async', 'file_rec']
     endif
     nnoremap <silent> [unite]i  :<C-u>Unite file_rec/git<cr>
     let g:_spacevim_mappings_unite.i = ['Unite file_rec/git', 'git files']
     nnoremap <silent> [unite]g  :<C-u>Unite grep<cr>
-    let g:_spacevim_mappings_unite.g = ['Unite grep', 'grep']
+    let g:_spacevim_mappings_unite.g = ['Unite grep', 'unite grep']
     nnoremap <silent> [unite]u  :<C-u>Unite source<CR>
-    let g:_spacevim_mappings_unite.u = ['Unite source', 'source']
+    let g:_spacevim_mappings_unite.u = ['Unite source', 'unite source']
     nnoremap <silent> [unite]t  :<C-u>Unite tag<CR>
-    let g:_spacevim_mappings_unite.t = ['Unite tag', 'tag']
+    let g:_spacevim_mappings_unite.t = ['Unite tag', 'unite tag']
     nnoremap <silent> [unite]T  :<C-u>Unite tag/include<CR>
     let g:_spacevim_mappings_unite.T = ['Unite tag/include',
-          \ 'tag/include']
+          \ 'unite tag/include']
     nnoremap <silent> [unite]l  :<C-u>Unite locationlist<CR>
     let g:_spacevim_mappings_unite.l = ['Unite locationlist',
-          \ 'locationlist']
+          \ 'unite locationlist']
     nnoremap <silent> [unite]q  :<C-u>Unite quickfix<CR>
-    let g:_spacevim_mappings_unite.q = ['Unite quickfix', 'quickfix']
+    let g:_spacevim_mappings_unite.q = ['Unite quickfix', 'unite quickfix']
     nnoremap <silent> [unite]e  :<C-u>Unite
           \ -buffer-name=register register<CR>
-    let g:_spacevim_mappings_unite.e = ['Unite register', 'レジスタを検索']
+    let g:_spacevim_mappings_unite.e = ['Unite register', 'unite register']
     nnoremap <silent> [unite]j  :<C-u>Unite jump<CR>
-    let g:_spacevim_mappings_unite.j = ['Unite jump', '参照行履歴']
+    let g:_spacevim_mappings_unite.j = ['Unite jump', 'unite jump']
     nnoremap <silent> [unite]h  :<C-u>Unite history/yank<CR>
     let g:_spacevim_mappings_unite.h = ['Unite history/yank',
-          \ 'ヤンク履歴']
+          \ 'unite history/yank']
     nnoremap <silent> [unite]<C-h>  :<C-u>UniteWithCursorWord help<CR>
     let g:_spacevim_mappings_unite['<C-h>'] = ['UniteWithCursorWord help',
-          \ 'カーソル上の単語でヘルプ検索']
+          \ 'unite with cursor word help']
     nnoremap <silent> [unite]s  :<C-u>Unite session<CR>
-    let g:_spacevim_mappings_unite.s = ['Unite session', 'セッション']
+    let g:_spacevim_mappings_unite.s = ['Unite session', 'unite session']
     nnoremap <silent> [unite]o  :<C-u>Unite -buffer-name=outline
           \ -start-insert -auto-preview -split outline<CR>
-    let g:_spacevim_mappings_unite.o = ['Unite outline', 'アウトライン']
+    let g:_spacevim_mappings_unite.o = ['Unite outline', 'unite outline']
 
     " menu
     nnoremap <silent> [unite]ma
@@ -256,19 +256,19 @@ function! SpaceVim#mapping#leader#defindUniteLeader(key) abort
           \ -buffer-name=files buffer bookmark file<CR>
     let g:_spacevim_mappings_unite.c =
           \ ['UniteWithCurrentDir -buffer-name=files buffer bookmark file',
-          \ 'カレントディレクトリ']
+          \ 'unite files in current dir']
     nnoremap <silent> [unite]b  :<C-u>UniteWithBufferDir
           \ -buffer-name=files -prompt=%\  buffer bookmark file<CR>
     let g:_spacevim_mappings_unite.b =
           \ ['UniteWithBufferDir -buffer-name=files' .
           \ ' buffer bookmark file',
-          \ '現在バッファのディレクトリ']
+          \ 'unite files in current dir']
     nnoremap <silent> [unite]n  :<C-u>Unite session/new<CR>
     let g:_spacevim_mappings_unite.n = ['Unite session/new',
-          \ '新しいUniteセッション']
+          \ 'unite session/new']
     nnoremap <silent> [unite]/ :Unite grep:.<cr>
     let g:_spacevim_mappings_unite['/'] = ['Unite grep:.',
-          \ 'Grepプレビュー付']
+          \ 'unite grep with preview']
     nnoremap <silent> [unite]w
           \ :<C-u>Unite -buffer-name=files -no-split
           \ jump_point file_point buffer_tab
@@ -280,7 +280,7 @@ function! SpaceVim#mapping#leader#defindUniteLeader(key) abort
           \ -start-insert menu:CustomKeyMaps<CR>
     let g:_spacevim_mappings_unite['[SPC]'] = ['Unite -silent -ignorecase' .
           \ ' -winheight=17 -start-insert menu:CustomKeyMaps',
-          \ 'カスタムキーマップ一覧']
+          \ 'unite customkeymaps']
   endif
 endfunction
 

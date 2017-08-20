@@ -1,9 +1,5 @@
 scriptencoding utf-8
 call unite#custom#source('codesearch', 'max_candidates', 30)
-call unite#custom#default_action('directory' , 'vimfiler')
-call unite#custom#default_action('file' , 'tabswitch')
-
-
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#filters#sorter_default#use(['sorter_rank'])
 call unite#custom#profile('default', 'context', {
@@ -12,7 +8,8 @@ call unite#custom#profile('default', 'context', {
       \   'ignorecase' : 1,
       \   'short_source_names': 1,
       \   'update_time': 200,
-      \   'direction': 'botright',
+      \   'direction': 'rightbelow',
+      \   'winwidth': 40,
       \   'winheight': 15,
       \   'max_candidates': 100,
       \   'no_auto_resize': 1,
@@ -20,25 +17,20 @@ call unite#custom#profile('default', 'context', {
       \   'cursor_line_time': '0.10',
       \   'hide_icon': 0,
       \   'candidate-icon': ' ',
-      \   'marked_icon': '*',
+      \   'marked_icon': '✓',
       \   'prompt' : '➭ '
       \ })
 call unite#custom#profile('source/neobundle/update', 'context', {
       \   'start_insert' : 0,
       \ })
-
-let g:unite_source_bookmark_directory = get(g:, 
-      \ 'unite_source_bookmark_directory' ,
-      \ expand($HOME . "/bookmark"))
-
 let g:unite_source_codesearch_ignore_case = get(g:,
       \ 'unite_source_codesearch_ignore_case', 1)
 let g:unite_source_buffer_time_format = get(g:,
-      \ 'unite_source_buffer_time_format', '(%y/%m/%d %H:%M) ')
+      \ 'unite_source_buffer_time_format', '(%m-%d-%Y %H:%M:%S) ')
 let g:unite_source_file_mru_time_format = get(g:,
-      \ 'unite_source_file_mru_time_format', '(%y/%m/%d %H:%M) ')
+      \ 'unite_source_file_mru_time_format', '(%m-%d-%Y %H:%M:%S) ')
 let g:unite_source_directory_mru_time_format = get(g:,
-      \ 'unite_source_directory_mru_time_format', '(%y/%m/%d %H:%M) ')
+      \ 'unite_source_directory_mru_time_format', '(%m-%d-%Y %H:%M:%S) ')
 let g:unite_source_directory_mru_limit = get(g:,
       \ 'unite_source_directory_mru_limit', 80)
 let g:unite_source_file_rec_max_depth = get(g:,
@@ -197,10 +189,11 @@ nnoremap <silent><leader>sc :Unite -silent -winheight=17
       \ -start-insert menu:StatusCodeDefinitions<CR>
 let g:unite_source_grep_max_candidates = get(g:,
       \ 'unite_source_grep_max_candidates', 200)
-
-if executable('rg')
-  let g:unite_source_grep_command = 'rg'
-  let g:unite_source_grep_default_opts = '--path-separator / --hidden --files --glob !.git'
+if executable('hw')
+  " Use hw (highway)
+  " https://github.com/tkengo/highway
+  let g:unite_source_grep_command = 'hw'
+  let g:unite_source_grep_default_opts = '--no-group --no-color'
   let g:unite_source_grep_recursive_opt = ''
 elseif executable('ag')
   " Use ag (the silver searcher)
@@ -210,11 +203,15 @@ elseif executable('ag')
         \ '-i --vimgrep --hidden --ignore ' .
         \ '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
   let g:unite_source_grep_recursive_opt = ''
+elseif executable('rg') && 0
+  let g:unite_source_grep_command = 'rg'
+  let g:unite_source_grep_default_opts = ''
+  let g:unite_source_grep_recursive_opt = ''
 elseif executable('pt')
   " Use pt (the platinum searcher)
   " https://github.com/monochromegane/the_platinum_searcher
   let g:unite_source_grep_command = 'pt'
-  let g:unite_source_grep_default_opts = '--follow --hiddne --nogroup --nocolor'
+  let g:unite_source_grep_default_opts = '--nogroup --nocolor'
   let g:unite_source_grep_recursive_opt = ''
 elseif executable('ack-grep')
   " Use ack
@@ -225,12 +222,6 @@ elseif executable('ack-grep')
 elseif executable('ack')
   let g:unite_source_grep_command = 'ack'
   let g:unite_source_grep_default_opts = '-i --no-heading --no-color -k -H'
-  let g:unite_source_grep_recursive_opt = ''
-elseif executable('hw')
-  " Use hw (highway)
-  " https://github.com/tkengo/highway
-  let g:unite_source_grep_command = 'hw'
-  let g:unite_source_grep_default_opts = '--no-group --no-color'
   let g:unite_source_grep_recursive_opt = ''
 elseif executable('jvgrep')
   " Use jvgrep

@@ -6,7 +6,7 @@ function! SpaceVim#layers#denite#plugins() abort
 endfunction
 
 function! SpaceVim#layers#denite#config() abort
-  call SpaceVim#mapping#space#def('nnoremap', ['j', 'i'], 'Denite outline', 'バッファー内の定義にジャンプ', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['j', 'i'], 'Denite outline', 'jump to a definition in buffer', 1)
 endfunction
 
 " vim:set et sw=2 cc=80:

@@ -1,6 +1,6 @@
 function! SpaceVim#layers#chinese#plugins() abort
     return [
-                \ ['vim-jp/vimdoc-ja'],
+                \ ['vimcn/vimcdoc'],
                 \ ]
 endfunction
 

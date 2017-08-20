@@ -19,7 +19,7 @@ function! airline#extensions#tabline#formatters#spacevim#format(bufnr, buffers) 
     endif
   endif
   if empty(fn)
-    return '無題'
+    return 'No Name'
   elseif !g:airline#extensions#tabline#buffer_idx_mode
     return id . fn
   else

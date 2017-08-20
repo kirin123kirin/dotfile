@@ -11,9 +11,9 @@ let s:denite_options = {
       \ 'quit' : 'true',
       \ 'highlight_matched_char' : 'MoreMsg',
       \ 'highlight_matched_range' : 'MoreMsg',
-      \ 'direction': 'botright',
+      \ 'direction': 'rightbelow',
       \ 'statusline' : 0,
-      \ 'prompt' : '>> ',
+      \ 'prompt' : '➭',
       \ }}
 
 function! s:profile(opts) abort
@@ -43,7 +43,7 @@ if !s:sys.isWindows
   elseif executable('ag')
     " Change file_rec command.
     call denite#custom#var('file_rec', 'command',
-          \ ['ag' , '--hidden', '--nocolor', '--nogroup', '-g', '']
+          \ ['ag' , '--nocolor', '--nogroup', '-g', '']
           \ + zvim#util#Generate_ignore(g:spacevim_wildignore, 'ag')
           \ )
   endif
@@ -52,7 +52,7 @@ else
     " For Pt(the platinum searcher)
     " NOTE: It also supports windows.
     call denite#custom#var('file_rec', 'command',
-          \ ['pt', '--hidden', '--follow', '--nocolor', '--nogroup', '-g:', ''])
+          \ ['pt', '--follow', '--nocolor', '--nogroup', '-g:', ''])
   endif
 endif
 
@@ -103,7 +103,6 @@ call denite#custom#var('menu', 'unite_source_menu_compatibility', 1)
 " KEY MAPPINGS
 let s:insert_mode_mappings = [
       \  ['jk', '<denite:enter_mode:normal>', 'noremap'],
-      \  ['jj', '<denite:enter_mode:normal>', 'noremap'],
       \ ['<Tab>', '<denite:move_to_next_line>', 'noremap'],
       \ ['<S-tab>', '<denite:move_to_previous_line>', 'noremap'],
       \  ['<Esc>', '<denite:enter_mode:normal>', 'noremap'],
@@ -111,15 +110,13 @@ let s:insert_mode_mappings = [
       \  ['<C-P>', '<denite:assign_previous_matched_text>', 'noremap'],
       \  ['<Up>', '<denite:assign_previous_text>', 'noremap'],
       \  ['<Down>', '<denite:assign_next_text>', 'noremap'],
-      \  ['<C-R>', '<denite:redraw>', 'noremap'],
+      \  ['<C-Y>', '<denite:redraw>', 'noremap'],
       \ ]
 
 let s:normal_mode_mappings = [
-      \   [",", '<denite:toggle_select_down>', 'noremap'],
+      \   ["'", '<denite:toggle_select_down>', 'noremap'],
       \   ['<C-n>', '<denite:jump_to_next_source>', 'noremap'],
-      \   ['<Down>', '<denite:jump_to_next_source>', 'noremap'],
       \   ['<C-p>', '<denite:jump_to_previous_source>', 'noremap'],
-      \   ['<Up>', '<denite:jump_to_previous_source>', 'noremap'],
       \   ['gg', '<denite:move_to_first_line>', 'noremap'],
       \   ['st', '<denite:do_action:tabopen>', 'noremap'],
       \   ['sg', '<denite:do_action:vsplit>', 'noremap'],

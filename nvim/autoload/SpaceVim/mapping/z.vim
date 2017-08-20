@@ -2,53 +2,53 @@ function! SpaceVim#mapping#z#init() abort "{{{
     nnoremap <silent><nowait> [z] :<c-u>LeaderGuide "z"<CR>
     nmap z [z]
     let g:_spacevim_mappings_z = {}
-    let g:_spacevim_mappings_z['<CR>'] = ['call feedkeys("z\<CR>", "n")', '行頭']
+    let g:_spacevim_mappings_z['<CR>'] = ['call feedkeys("z\<CR>", "n")', 'cursor line to top']
     nnoremap z<CR> z<CR>
-    let g:_spacevim_mappings_z['+'] = ['call feedkeys("z+", "n")', '画面上端 N']
+    let g:_spacevim_mappings_z['+'] = ['call feedkeys("z+", "n")', 'cursor to screen top line N']
     nnoremap z+ z+
-    let g:_spacevim_mappings_z['-'] = ['call feedkeys("z-", "n")', '画面末端 N']
+    let g:_spacevim_mappings_z['-'] = ['call feedkeys("z-", "n")', 'cursor to screen bottom line N']
     nnoremap z- z-
-    let g:_spacevim_mappings_z['^'] = ['call feedkeys("z^", "n")', '画面末端 N']
+    let g:_spacevim_mappings_z['^'] = ['call feedkeys("z^", "n")', 'cursor to screen bottom line N']
     nnoremap z^ z^
-    let g:_spacevim_mappings_z['.'] = ['call feedkeys("z.", "n")', '行中央']
+    let g:_spacevim_mappings_z['.'] = ['call feedkeys("z.", "n")', 'cursor line to center']
     nnoremap z. z.
-    let g:_spacevim_mappings_z['='] = ['call feedkeys("z=", "n")', 'スペリング候補']
+    let g:_spacevim_mappings_z['='] = ['call feedkeys("z=", "n")', 'spelling suggestions']
     nnoremap z= z=
-    let g:_spacevim_mappings_z['A'] = ['call feedkeys("zA", "n")', '再帰的な折り畳み切替']
+    let g:_spacevim_mappings_z['A'] = ['call feedkeys("zA", "n")', 'toggle folds recursively']
     nnoremap zA zA
-    let g:_spacevim_mappings_z['C'] = ['call feedkeys("zC", "n")', '再帰的に折り畳む']
+    let g:_spacevim_mappings_z['C'] = ['call feedkeys("zC", "n")', 'close folds recursively']
     nnoremap zC zC
-    let g:_spacevim_mappings_z['D'] = ['call feedkeys("zD", "n")', '折り畳み部を再帰的に削除する']
+    let g:_spacevim_mappings_z['D'] = ['call feedkeys("zD", "n")', 'delete folds recursively']
     nnoremap zD zD
-    let g:_spacevim_mappings_z['E'] = ['call feedkeys("zE", "n")', '全折り畳みを省略']
+    let g:_spacevim_mappings_z['E'] = ['call feedkeys("zE", "n")', 'eliminate all folds']
     nnoremap zE zE
-    let g:_spacevim_mappings_z['F'] = ['call feedkeys("zF", "n")', 'N行の折り畳みを作成する']
+    let g:_spacevim_mappings_z['F'] = ['call feedkeys("zF", "n")', 'create a fold for N lines']
     nnoremap zF zF
-    let g:_spacevim_mappings_z['G'] = ['call feedkeys("zG", "n")', '良いスペリングとしてマーク(内部辞書も更新)']
+    let g:_spacevim_mappings_z['G'] = ['call feedkeys("zG", "n")', 'mark good spelled(update internal-wordlist)']
     nnoremap zG zG
-    let g:_spacevim_mappings_z['H'] = ['call feedkeys("zH", "n")', '右方向に半画面スクロール']
+    let g:_spacevim_mappings_z['H'] = ['call feedkeys("zH", "n")', 'scroll half a screenwidth to the right']
     nnoremap zH zH
-    let g:_spacevim_mappings_z['L'] = ['call feedkeys("zL", "n")', '左方向に半画面スクロール']
+    let g:_spacevim_mappings_z['L'] = ['call feedkeys("zL", "n")', 'scroll half a screenwidth to the left']
     nnoremap zL zL
-    let g:_spacevim_mappings_z['M'] = ['call feedkeys("zM", "n")', '折り畳みレベルを0']
+    let g:_spacevim_mappings_z['M'] = ['call feedkeys("zM", "n")', 'set `foldlevel` to zero']
     nnoremap zM zM
-    let g:_spacevim_mappings_z['N'] = ['call feedkeys("zN", "n")', '折り畳みを有効']
+    let g:_spacevim_mappings_z['N'] = ['call feedkeys("zN", "n")', 'set `foldenable`']
     nnoremap zN zN
-    let g:_spacevim_mappings_z['O'] = ['call feedkeys("zO", "n")', '折り畳みを再帰的に開く']
+    let g:_spacevim_mappings_z['O'] = ['call feedkeys("zO", "n")', 'open folds recursively']
     nnoremap zO zO
-    let g:_spacevim_mappings_z['R'] = ['call feedkeys("zR", "n")', '折り畳みレベルを最深']
+    let g:_spacevim_mappings_z['R'] = ['call feedkeys("zR", "n")', 'set `foldlevel` to deepest fold']
     nnoremap zR zR
-    let g:_spacevim_mappings_z['W'] = ['call feedkeys("zW", "n")', '間違ったスペルとしてマーク']
+    let g:_spacevim_mappings_z['W'] = ['call feedkeys("zW", "n")', 'mark wrong spelled']
     nnoremap zW zW
-    let g:_spacevim_mappings_z['X'] = ['call feedkeys("zX", "n")', '折り畳みレベルを再適用']
+    let g:_spacevim_mappings_z['X'] = ['call feedkeys("zX", "n")', 're-apply `foldleve`']
     nnoremap zX zX
-    let g:_spacevim_mappings_z['a'] = ['call feedkeys("za", "n")', '折り畳み切替']
+    let g:_spacevim_mappings_z['a'] = ['call feedkeys("za", "n")', 'toggle a fold']
     nnoremap za za
-    let g:_spacevim_mappings_z['b'] = ['call feedkeys("zb", "n")', '行末']
+    let g:_spacevim_mappings_z['b'] = ['call feedkeys("zb", "n")', 'redraw, cursor line at bottom']
     nnoremap zb zb
-    let g:_spacevim_mappings_z['c'] = ['call feedkeys("zc", "n")', '折り畳みを閉じる']
+    let g:_spacevim_mappings_z['c'] = ['call feedkeys("zc", "n")', 'close a fold']
     nnoremap zc zc
-    let g:_spacevim_mappings_z['d'] = ['call feedkeys("zd", "n")', '折り畳み削除']
+    let g:_spacevim_mappings_z['d'] = ['call feedkeys("zd", "n")', 'delete a fold']
     nnoremap zd zd
     let g:_spacevim_mappings_z['e'] = ['call feedkeys("ze", "n")', 'right scroll horizontally to cursor position']
     nnoremap ze ze

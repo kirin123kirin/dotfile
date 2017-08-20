@@ -19,5 +19,5 @@ function! SpaceVim#layers#format#plugins() abort
 endfunction
 
 function! SpaceVim#layers#format#config() abort
-  call SpaceVim#mapping#space#def('nnoremap', ['b', 'f'], 'Neoformat', '自動コードフォーマッティング', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['b', 'f'], 'Neoformat', 'format-codo', 1)
 endfunction

@@ -47,36 +47,36 @@ function! SpaceVim#layers#default#config() abort
     " Select last paste
     nnoremap <silent><expr> gp '`['.strpart(getregtype(), 0, 1).'`]'
 
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'f'], "exe 'CtrlP ' . fnamemodify(bufname('%'), ':h')", '現在のバッファディレクトリ内のファイルを検索する', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 's'], 'write', '保存', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'S'], 'wall', '全バッファ保存', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'W'], 'write !sudo tee % >/dev/null', '管理者権限で強制的に保存', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'f'], "exe 'CtrlP ' . fnamemodify(bufname('%'), ':h')", 'Find files in the directory of the current buffer', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 's'], 'write', 'save buffer', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'S'], 'wall', 'save all buffer', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'W'], 'write !sudo tee % >/dev/null', 'save buffer with sudo', 1)
     " help mappings
     call SpaceVim#mapping#space#def('nnoremap', ['h', 'I'], 'call SpaceVim#issue#report()', 'Reporting an issue of SpaceVim', 1)
     if has('python3')
-        call SpaceVim#mapping#space#def('nnoremap', ['h', 'i'], 'DeniteCursorWord help', 'カーソル上の単語でヘルプ検索(denite)', 1)
+        call SpaceVim#mapping#space#def('nnoremap', ['h', 'i'], 'DeniteCursorWord help', 'get help with the symbol at point', 1)
     else
-        call SpaceVim#mapping#space#def('nnoremap', ['h', 'i'], 'UniteWithCursorWord help', 'カーソル上の単語でヘルプ検索(unite)', 1)
+        call SpaceVim#mapping#space#def('nnoremap', ['h', 'i'], 'UniteWithCursorWord help', 'get help with the symbol at point', 1)
     endif
     call SpaceVim#mapping#space#def('nnoremap', ['h', 'l'], 'SPLayer -l', 'lists all the layers available in SpaceVim', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['h', 'm'], 'Unite manpage', 'search available man pages', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['h', 'k'], 'LeaderGuide "[KEYs]"', 'show top-level bindings with mapping guide', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['h', '[SPC]'], 'Unite help -input=SpaceVim', 'SpaceVimヘルプ', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['j', '0'], 'm`^', 'マーク行の行頭にジャンプ', 0)
-    call SpaceVim#mapping#space#def('nnoremap', ['j', '$'], 'm`g_', 'マーク行の行末にジャンプ', 0)
-    call SpaceVim#mapping#space#def('nnoremap', ['j', 'b'], '<C-o>', '前にジャンプ', 0)
-    call SpaceVim#mapping#space#def('nnoremap', ['j', 'f'], '<C-i>', '次にジャンプ', 0)
-    call SpaceVim#mapping#space#def('nnoremap', ['j', 'd'], 'VimFiler -no-split', 'カレントディレクトリ開く', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['j', 'D'], 'VimFiler', '別ウィンドウでカレントディレクトリを開く', 1)
-    call SpaceVim#mapping#space#def('nmap', ['j', 'j'], '<Plug>(easymotion-prefix)s', 'easymotion 1文字', 0)
-    call SpaceVim#mapping#space#def('nmap', ['j', 'J'], '<Plug>(easymotion-s2)', 'easymotion 2文字', 0)
-    call SpaceVim#mapping#space#def('nnoremap', ['j', 'k'], 'j==', '次のインデントにジャンプ', 0)
-    call SpaceVim#mapping#space#def('nmap', ['j', 'l'], '<Plug>(easymotion-bd-jk)', '行ジャンプ(easymotion)', 0)
-    call SpaceVim#mapping#space#def('nmap', ['j', 'v'], '<Plug>(easymotion-bd-jk)', '行ジャンプ(easymotion)', 0)
-    call SpaceVim#mapping#space#def('nmap', ['j', 'w'], '<Plug>(easymotion-bd-w)', '単語ジャンプ(easymotion)', 0)
-    call SpaceVim#mapping#space#def('nmap', ['j', 'q'], '<Plug>(easymotion-bd-jk)', '行ジャンプ(easymotion)', 0)
-    call SpaceVim#mapping#space#def('nnoremap', ['j', 'n'], "i\<cr>\<esc>", '行挿入', 0)
-    call SpaceVim#mapping#space#def('nnoremap', ['j', 'o'], "i\<cr>\<esc>k$", '下に行挿入', 0)
+    call SpaceVim#mapping#space#def('nnoremap', ['h', '[SPC]'], 'Unite help -input=SpaceVim', 'unite-SpaceVim-help', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['j', '0'], 'm`^', 'push mark and goto beginning of line', 0)
+    call SpaceVim#mapping#space#def('nnoremap', ['j', '$'], 'm`g_', 'push mark and goto beginning of line', 0)
+    call SpaceVim#mapping#space#def('nnoremap', ['j', 'b'], '<C-o>', 'jump backward', 0)
+    call SpaceVim#mapping#space#def('nnoremap', ['j', 'f'], '<C-i>', 'jump forward', 0)
+    call SpaceVim#mapping#space#def('nnoremap', ['j', 'd'], 'VimFiler -no-split', 'Explore current directory', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['j', 'D'], 'VimFiler', 'Explore current directory (other window)', 1)
+    call SpaceVim#mapping#space#def('nmap', ['j', 'j'], '<Plug>(easymotion-prefix)s', 'jump to a character', 0)
+    call SpaceVim#mapping#space#def('nmap', ['j', 'J'], '<Plug>(easymotion-s2)', 'jump to a suite of two characters', 0)
+    call SpaceVim#mapping#space#def('nnoremap', ['j', 'k'], 'j==', 'go to next line and indent', 0)
+    call SpaceVim#mapping#space#def('nmap', ['j', 'l'], '<Plug>(easymotion-bd-jk)', 'jump to a line', 0)
+    call SpaceVim#mapping#space#def('nmap', ['j', 'v'], '<Plug>(easymotion-bd-jk)', 'jump to a line', 0)
+    call SpaceVim#mapping#space#def('nmap', ['j', 'w'], '<Plug>(easymotion-bd-w)', 'jump to a word', 0)
+    call SpaceVim#mapping#space#def('nmap', ['j', 'q'], '<Plug>(easymotion-bd-jk)', 'jump to a line', 0)
+    call SpaceVim#mapping#space#def('nnoremap', ['j', 'n'], "i\<cr>\<esc>", 'sp-newline', 0)
+    call SpaceVim#mapping#space#def('nnoremap', ['j', 'o'], "i\<cr>\<esc>k$", 'open-line', 0)
     call SpaceVim#mapping#space#def('nnoremap', ['j', 's'], 'call call('
                 \ . string(s:_function('s:split_string')) . ', [0])',
                 \ 'split sexp', 1)
@@ -85,60 +85,63 @@ function! SpaceVim#layers#default#config() abort
                 \ 'split-and-add-newline', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['w', 'r'], 'call call('
                 \ . string(s:_function('s:next_window')) . ', [])',
-                \ '画面ローテーション正方向', 1)
+                \ 'rotate windows forward', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['w', 'R'], 'call call('
                 \ . string(s:_function('s:previous_window')) . ', [])',
-                \ '画面ローテーション逆方向', 1)
+                \ 'rotate windows backward', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['j', 'u'], 'call call('
                 \ . string(s:_function('s:jump_to_url')) . ', [])',
-                \ 'URL文字にジャンプ', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['<Tab>'], 'try | b# | catch | endtry', '前回のバッファ', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', 'd'], 'call SpaceVim#mapping#close_current_buffer()', '現在のバッファを閉じる', 1)
+                \ 'jump to url', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['<Tab>'], 'try | b# | catch | endtry', 'last buffer', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', '.'], 'call call('
+                \ . string(s:_function('s:buffer_transient_state')) . ', [])',
+                \ 'buffer transient state', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'd'], 'call SpaceVim#mapping#close_current_buffer()', 'kill-this-buffer', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'D'],
                 \ 'call SpaceVim#mapping#kill_visible_buffer_choosewin()',
-                \ '現在のバッファを強制終了', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', '<C-d>'], 'call SpaceVim#mapping#clearBuffers()', '現在バッファ以外全終了', 1)
+                \ 'kill-this-buffer', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', '<C-d>'], 'call SpaceVim#mapping#clearBuffers()', 'kill-other-buffers', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'e'], 'call call('
                 \ . string(s:_function('s:safe_erase_buffer')) . ', [])',
-                \ '現在のバッファを空にする', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', 'h'], 'Startify', 'ホーム画面へ', 1)
+                \ 'safe-erase-buffer', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'h'], 'Startify', 'home', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'm'], 'call call('
                 \ . string(s:_function('s:open_message_buffer')) . ', [])',
-                \ 'メッセージバッファを開く', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', 'P'], 'normal! ggdG"+P', 'バッファ内全てをコピー', 1)
+                \ 'open-message-buffer', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'P'], 'normal! ggdG"+P', 'copy-clipboard-to-whole-buffer', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 'R'], 'call call('
                 \ . string(s:_function('s:safe_revert_buffer')) . ', [])',
-                \ 'バッファ全体を元に戻す', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', 'Y'], 'normal! ggVG"+y``', 'バッファ内全てをヤンク', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', 'w'], 'setl readonly!', '読取専用モード', 1)
-    let g:_spacevim_mappings_space.b.N = {'name' : '新しい空バッファを開く'}
-    call SpaceVim#mapping#space#def('nnoremap', ['b', 'N', 'h'], 'topleft vertical new', '左上に開く', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', 'N', 'j'], 'rightbelow new', '右下に開く', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', 'N', 'k'], 'new', '上に開く', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', 'N', 'l'], 'rightbelow vertical new', '右に開く', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['b', 'N', 'n'], 'enew', 'デフォルト場所に開く', 1)
+                \ 'safe-revert-buffer', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'Y'], 'normal! ggVG"+y``', 'copy-whole-buffer-to-clipboard', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'w'], 'setl readonly!', 'read-only-mode', 1)
+    let g:_spacevim_mappings_space.b.N = {'name' : '+New empty buffer'}
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'N', 'h'], 'topleft vertical new', 'new-empty-buffer-left', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'N', 'j'], 'rightbelow new', 'new-empty-buffer-below', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'N', 'k'], 'new', 'new-empty-buffer-above', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'N', 'l'], 'rightbelow vertical new', 'new-empty-buffer-right', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'N', 'n'], 'enew', 'new-empty-buffer', 1)
 
     " file mappings
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'b'], 'Unite vim_bookmarks', 'ブックマーク', 1)
-    let g:_spacevim_mappings_space.f.C = {'name' : 'ファイル/コンバート'}
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'C', 'd'], 'update | e ++ff=dos | w', 'LFからCRLF', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'C', 'u'], 'update | e ++ff=dos | setlocal ff=unix | w', 'CRLFからLF', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'b'], 'Unite vim_bookmarks', 'unite-filtered-bookmarks', 1)
+    let g:_spacevim_mappings_space.f.C = {'name' : '+Files/convert'}
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'C', 'd'], 'update | e ++ff=dos | w', 'unix2dos', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'C', 'u'], 'update | e ++ff=dos | setlocal ff=unix | w', 'dos2unix', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['f', 'D'], 'call call('
                 \ . string(s:_function('s:delete_current_buffer_file')) . ', [])',
-                \ '現在開いているファイルを削除する', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'F'], 'normal! gf', 'カーソル上のファイルを開く', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'r'], 'Unite file_mru', '最近開いたファイルを開く', 1)
+                \ 'delete-current-buffer-file', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'F'], 'normal! gf', 'open-cursor-file', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'r'], 'Unite file_mru', 'open-recent-file', 1)
     if g:spacevim_filemanager ==# 'vimfiler'
-        call SpaceVim#mapping#space#def('nnoremap', ['f', 't'], 'VimFiler', 'ファイルツリートグル', 1)
-        call SpaceVim#mapping#space#def('nnoremap', ['f', 'T'], 'VimFiler -no-toggle', 'ファイルツリーを見る', 1)
+        call SpaceVim#mapping#space#def('nnoremap', ['f', 't'], 'VimFiler', 'toggle_file_tree', 1)
+        call SpaceVim#mapping#space#def('nnoremap', ['f', 'T'], 'VimFiler -no-toggle', 'show_file_tree', 1)
     elseif g:spacevim_filemanager ==# 'nerdtree'
-        call SpaceVim#mapping#space#def('nnoremap', ['f', 't'], 'NERDTreeToggle', 'ファイルツリートグル', 1)
-        call SpaceVim#mapping#space#def('nnoremap', ['f', 't'], 'NERDTree', 'ファイルツリー', 1)
+        call SpaceVim#mapping#space#def('nnoremap', ['f', 't'], 'NERDTreeToggle', 'toggle_file_tree', 1)
+        call SpaceVim#mapping#space#def('nnoremap', ['f', 't'], 'NERDTree', 'toggle_file_tree', 1)
     endif
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'y'], 'call zvim#util#CopyToClipboard()', 'ファイル名コピー', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'y'], 'call zvim#util#CopyToClipboard()', 'show-and-copy-buffer-filename', 1)
     let g:_spacevim_mappings_space.f.v = {'name' : '+Vim(SpaceVim)'}
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'v', 'v'], 'let @+=g:spacevim_version | echo g:spacevim_version', 'バージョン情報', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'v', 'd'], 'SPConfig', 'カスタム設定を開く', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'v', 'v'], 'let @+=g:spacevim_version | echo g:spacevim_version', 'display-and-copy-version', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'v', 'd'], 'SPConfig', 'open-custom-configuration', 1)
 endfunction
 
 let s:file = SpaceVim#api#import('file')
@@ -275,11 +278,11 @@ function! s:safe_revert_buffer() abort
 endfunction
 
 function! s:delete_current_buffer_file() abort
-    if s:MESSAGE.confirm('本当に削除してよいですか?')
+    if s:MESSAGE.confirm('Are you sure you want to delete this file')
         let f = fnameescape(expand('%:p'))
         call SpaceVim#mapping#close_current_buffer()
         if delete(f) == 0
-            echo "File '" . f . "' 削除成功"
+            echo "File '" . f . "' successfully removed"
         endif
     endif
     redraw!

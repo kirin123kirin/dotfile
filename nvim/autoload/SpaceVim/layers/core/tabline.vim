@@ -52,7 +52,7 @@ function! s:tabname(id) abort
         endif
     endif
     if empty(fn)
-        return '無題'
+        return 'No Name'
     else
         return id . fn
     endif
@@ -76,7 +76,7 @@ function! SpaceVim#layers#core#tabline#get() abort
             let winnr = tabpagewinnr(i)
             let name = fnamemodify(bufname(buflist[winnr - 1]), ':t')
             if empty(name)
-                let name = '無題'
+                let name = 'No Name'
             endif
             if g:spacevim_buffer_index_type == 3
                 let id = s:messletters.index_num(i)
@@ -121,7 +121,7 @@ function! SpaceVim#layers#core#tabline#get() abort
             endif
             let name = fnamemodify(bufname(i), ':t')
             if empty(name)
-                let name = '無題'
+                let name = 'No Name'
             endif
             if g:spacevim_buffer_index_type == 3
                 let id = s:messletters.index_num(index(s:buffers, i) + 1)
@@ -162,12 +162,12 @@ function! SpaceVim#layers#core#tabline#config() abort
         exe "call SpaceVim#mapping#def('nmap <silent>', '<leader>" . i
                     \ . "', ':call SpaceVim#layers#core#tabline#jump("
                     \ . i . ")<cr>', 'Switch to airline tab " . i
-                    \ . "', '', 'タブ " . i . "')"
+                    \ . "', '', 'tabline index " . i . "')"
     endfor
-    call SpaceVim#mapping#def('nmap', '<leader>-', ':bprevious<cr>', '前のairline tagに切替', '', 'window previous')
-    call SpaceVim#mapping#def('nmap', '<leader>+', ':bnext<cr>', '次のairline tagに切替', '', 'window next')
-    "call SpaceVim#mapping#space#def('nmap', ['-'], 'bprevious', '前の画面へ', 1)
-    "call SpaceVim#mapping#space#def('nmap', ['+'], 'bnext', '次の画面へ', 1)
+    call SpaceVim#mapping#def('nmap', '<leader>-', ':bprevious<cr>', 'Switch to previous airline tag', '', 'window previous')
+    call SpaceVim#mapping#def('nmap', '<leader>+', ':bnext<cr>', 'Switch to next airline tag', '', 'window next')
+    "call SpaceVim#mapping#space#def('nmap', ['-'], 'bprevious', 'window previous', 1)
+    "call SpaceVim#mapping#space#def('nmap', ['+'], 'bnext', 'window next', 1)
 endfunction
 
 function! SpaceVim#layers#core#tabline#jump(id) abort
@@ -178,11 +178,11 @@ function! SpaceVim#layers#core#tabline#jump(id) abort
 endfunction
 
 function! SpaceVim#layers#core#tabline#def_colors() abort
-    let name = get(g:, 'colors_name', 'powelineish')
+    let name = get(g:, 'colors_name', 'gruvbox')
     try
         let t = SpaceVim#mapping#guide#theme#{name}#palette()
     catch /^Vim\%((\a\+)\)\=:E117/
-        let t = SpaceVim#mapping#guide#theme#powerlineish#palette()
+        let t = SpaceVim#mapping#guide#theme#gruvbox#palette()
     endtry
     exe 'hi! SpaceVim_tabline_a ctermbg=' . t[0][2] . ' ctermfg=' . t[0][3] . ' guibg=' . t[0][1] . ' guifg=' . t[0][0]
     exe 'hi! SpaceVim_tabline_b ctermbg=' . t[1][2] . ' ctermfg=' . t[1][3] . ' guibg=' . t[1][1] . ' guifg=' . t[1][0]

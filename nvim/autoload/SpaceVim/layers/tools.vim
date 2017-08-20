@@ -48,9 +48,9 @@ endfunction
 
 function! SpaceVim#layers#tools#config() abort
   let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown', 'leaderGuide']
-  call SpaceVim#mapping#space#def('nnoremap', ['a', 'c'], 'Calendar', 'カレンダー', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['a', 'c'], 'Calendar', 'vim calendar', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['e', 'a'], 'FencAutoDetect',
-        \ 'ファイル自動エンコードして開き直す', 1)
+        \ 'Auto detect the file encoding', 1)
   nmap mm <Plug>BookmarkToggle
   nmap mi <Plug>BookmarkAnnotate
   nmap ma <Plug>BookmarkShowAll

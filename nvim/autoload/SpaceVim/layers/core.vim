@@ -11,7 +11,7 @@ function! SpaceVim#layers#core#config() abort
     call SpaceVim#layers#load('core#banner')
     call SpaceVim#layers#load('core#statusline')
     call SpaceVim#layers#load('core#tabline')
-    call SpaceVim#mapping#space#def('nnoremap', ['p', 't'], 'Rooter', 'プロジェクトルートを検索', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['p', 'f'], 'CtrlP', '現在のプロジェクト内ファイル検索', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['p', '/'], 'Grepper', '現在のプロジェクト内でテキスト曖昧検索', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['p', 't'], 'Rooter', 'find-project-root', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['p', 'f'], 'CtrlP', 'find files in current project', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['p', '/'], 'Grepper', 'fuzzy search for text in current project', 1)
 endfunction

@@ -21,13 +21,13 @@ function! SpaceVim#layers#shell#config() abort
 
     call SpaceVim#mapping#space#def('nnoremap', ["'"], 'call call('
                 \ . string(function('s:open_default_shell')) . ', [])',
-                \ 'シェルを開く', 1)
+                \ 'open shell', 1)
 
 endfunction
 
 function! SpaceVim#layers#shell#set_variable(var) abort
    let s:default_shell = get(a:var, 'defaut_shell', 'terminal')
-   let s:default_position = get(a:var, 'default_position', 'bottom')
+   let s:default_position = get(a:var, 'default_position', 'top')
    let s:default_height = get(a:var, 'default_height', 30)
 endfunction
 

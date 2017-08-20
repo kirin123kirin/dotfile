@@ -1,5 +1,4 @@
 if exists('g:GuiLoaded')
-  highlight Cursor gui=reverse guifg=NONE guibg=NONE
   if empty(g:spacevim_guifont)
     exe 'Guifont! DejaVu Sans Mono for Powerline:h11:cANSI:qDRAFT'
   else

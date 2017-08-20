@@ -65,8 +65,10 @@ endfunction
 
 
 function! SpaceVim#layers#autocomplete#config() abort
-  let g:delimitMate_matchpairs = '[:],{:},<:>'
-  inoremap <silent><expr> ( complete_parameter#pre_complete("()")
+  imap <expr>( 
+        \ pumvisible() ? 
+        \ complete_parameter#pre_complete("()") : 
+        \ "\<Plug>delimitMate("
 
   "mapping
   imap <silent><expr><TAB> SpaceVim#mapping#tab()
@@ -87,7 +89,7 @@ function! SpaceVim#layers#autocomplete#config() abort
   imap <expr> <M-/>
         \ neosnippet#expandable() ?
         \ "\<Plug>(neosnippet_expand)" : ""
-    call SpaceVim#mapping#space#def('nnoremap', ['i', 's'], 'Unite neosnippet', 'スニペット', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['i', 's'], 'Unite neosnippet', 'insert sneppets', 1)
 endfunction
 
 function! SpaceVim#layers#autocomplete#set_variable(var)

@@ -1,6 +1,6 @@
 call denite#custom#option('default', 'winheight', 60*winheight(0)/100)
 
-if IsWindows()
+if WINDOWS()
     call denite#custom#var('directory_rec', 'command',
         \ ['dir', '/s', '/ad', '/b'])
 endif
