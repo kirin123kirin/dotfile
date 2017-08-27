@@ -63,7 +63,7 @@ call SpaceVim#layers#load('lang#vim')
 call SpaceVim#layers#load('lang#xml')
 call SpaceVim#layers#load('shell')   
 "call SpaceVim#layers#load('tools#screensaver')
-let g:spacevim_enable_vimfiler_welcome = 1
+let g:spacevim_enable_vimfiler_welcome = 0
 let g:spacevim_autocomplete_method = 'deoplete'
 let g:deoplete#auto_complete_delay = 300
 let g:spacevim_buffer_index_type = 4
@@ -73,6 +73,8 @@ let g:spacevim_sidebar_width = 35
 let g:spacevim_enable_os_fileformat_icon = 0
 let g:spacevim_enable_vimfiler_filetypeicon = 0
 let g:spacevim_enable_tabline_filetype_icon = 0
+let g:spacevim_search_tools = ['rg', 'grep']
+let g:spacevim_smartcloseignoreft      = ['tagbar', 'vimfiler']
 
 let g:spacevim_enable_powerline_fonts = 1
 
@@ -103,6 +105,7 @@ let g:spacevim_custom_plugins = [
   \ ['vim-airline/vim-airline'],
   \ ['vim-airline/vim-airline-themes'],
   \ ['ConradIrwin/vim-bracketed-paste'],
+  \ ['thinca/vim-prettyprint'],
   \ ]
 let g:airline#extensions#tagbar#enabled = 0
 
@@ -126,7 +129,7 @@ set showtabline=2
 set nowritebackup
 set nobackup
 set noswapfile
-set nohidden
+set hidden
 set lazyredraw
 set ttyfast
 set tabstop=4

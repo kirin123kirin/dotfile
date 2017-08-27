@@ -45,8 +45,8 @@ function! s:vimfilerinit()
   nmap <buffer> <Right> <Plug>(vimfiler_smart_l)
 endfunction
 
-noremap <F3> <nop>
 
+noremap <F3> <nop>
 noremap <silent> <F2> :call zvim#util#OpenVimfiler()<CR>
 map <silent><S-F2> :VimFilerDouble -toggle -create -no-explorer -winwidth=`winwidth(0)/2` -reverse -horizontal -direction="bottom"<CR>
 
