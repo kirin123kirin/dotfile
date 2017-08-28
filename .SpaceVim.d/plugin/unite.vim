@@ -15,7 +15,7 @@ call unite#custom#profile('default', 'context', {
       \   'hide_icon': 0,
       \   'candidate-icon': ' ',
       \   'marked_icon': '*',
-      \   'prompt' : '? '
+      \   'prompt' : '> '
       \ })
 
 let g:unite_source_buffer_time_format = get(g:,

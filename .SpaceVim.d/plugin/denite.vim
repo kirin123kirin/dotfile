@@ -4,6 +4,11 @@ if WINDOWS()
     call denite#custom#var('directory_rec', 'command',
         \ ['dir', '/s', '/ad', '/b'])
 endif
+call denite#custom#option('default', 'prompt', '>')
+call denite#custom#option('default', 'direction', 'botright')
+call denite#custom#var(
+      \ 'buffer',
+      \ 'date_format', '%y/%m/%d %H:%M')
 if executable('rg')
     call denite#custom#var('file_rec', 'command',
         \ ['rg', '--path-separator', '/', '--hidden', '--files', '--glob', '!.git'])
@@ -26,7 +31,10 @@ if has('nvim')
 endif
 call denite#custom#source('file_old', 'converters',
         \ ['converter_relative_word'])
-
+call denite#custom#source(
+        \ 'file_rec', 'sorters', ['sorter_rank'])
+call denite#custom#source(
+        \ 'file_mru', 'sorters', ['sorter_rank'])
 call denite#custom#map('insert', '<C-j>',
         \ '<denite:move_to_next_line>', 'noremap')
 call denite#custom#map('insert', '<C-k>',
@@ -47,12 +55,7 @@ call denite#custom#map(
         \ '<denite:move_to_previous_line>',
         \ 'noremap'
         \)
-call denite#custom#map(
-        \ 'insert',
-        \ 'jj',
-        \ '<denite:move_to_next_line>',
-        \ 'noremap'
-        \)
+call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>')
 
 
 

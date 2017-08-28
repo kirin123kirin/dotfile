@@ -106,6 +106,7 @@ let g:spacevim_custom_plugins = [
   \ ['vim-airline/vim-airline-themes'],
   \ ['ConradIrwin/vim-bracketed-paste'],
   \ ['thinca/vim-prettyprint'],
+  \ ['ozelentok/denite-gtags'],
   \ ]
 let g:airline#extensions#tagbar#enabled = 0
 
@@ -432,9 +433,11 @@ augroup PrevimSettings
 augroup END
 
 "neossh
-let g:neossh#ssh_command = 'plink.exe -P PORT HOSTNAME'
-let g:neossh#copy_directory_command = 'pscp.exe -P PORT -q -r $srcs $dest'
-let g:neossh#copy_file_command = 'pscp.exe -P PORT -q $srcs $dest'
+if WINDOWS()
+    let g:neossh#ssh_command = 'Y:/home/PortableApps/PuTTYPortable/App/putty/plink.exe -P PORT HOSTNAME'
+    let g:neossh#copy_directory_command = 'Y:/home/PortableApps/PuTTYPortable/App/putty/pscp.exe -P PORT -q -r $srcs $dest'
+    let g:neossh#copy_file_command = 'Y:/home/PortableApps/PuTTYPortable/App/putty/pscp.exe -P PORT -q $srcs $dest'
+endif
 
 vnoremap <silent> > >gv
 vnoremap <silent> < <gv
