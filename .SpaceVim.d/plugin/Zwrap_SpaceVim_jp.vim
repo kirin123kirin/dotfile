@@ -36,7 +36,7 @@ let g:_spacevim_mappings = {'+': ["call feedkeys(\":bnext\r\", \"m\")", '次の�
       \ 'w': ["call feedkeys(\"\e:w\r\", \"n\")", '現在のファイルを保存']}
 
 let g:_spacevim_mappings_space = {'!': ['Unite output/shellcmd -no-start-insert', 'コマンド実行'],
-      \  "'": ["call call(function('<SNR>92_open_default_shell'), [])", 'シェル'],
+      \  "'": ['VimShell -popup', 'シェル'],
       \  '1': ['call SpaceVim#layers#core#statusline#jump(1)', '画面 1'],
       \  '2': ['call SpaceVim#layers#core#statusline#jump(2)', '画面 2'],
       \  '3': ['call SpaceVim#layers#core#statusline#jump(3)', '画面 3'],
