@@ -23,39 +23,21 @@ else
         \ ['pt', '--follow', '--nocolor', '--hidden', '--nogroup', '-g', ''])
 endif
 
-call denite#custom#source('file_old', 'matchers',
-        \ ['matcher_fuzzy', 'matcher_project_files'])
+call denite#custom#source('file_old', 'matchers',['matcher_fuzzy', 'matcher_project_files'])
 if has('nvim')
-    call denite#custom#source('file_rec,grep', 'matchers',
-        \ ['matcher_cpsm'])
+    call denite#custom#source('file_rec,grep', 'matchers', ['matcher_cpsm'])
 endif
-call denite#custom#source('file_old', 'converters',
-        \ ['converter_relative_word'])
-call denite#custom#source(
-        \ 'file_rec', 'sorters', ['sorter_rank'])
-call denite#custom#source(
-        \ 'file_mru', 'sorters', ['sorter_rank'])
-call denite#custom#map('insert', '<C-j>',
-        \ '<denite:move_to_next_line>', 'noremap')
-call denite#custom#map('insert', '<C-k>',
-        \ '<denite:move_to_previous_line>', 'noremap')
-call denite#custom#map('insert', "'",
-        \ '<denite:move_to_next_line>', 'noremap')
-call denite#custom#map('normal', 'r',
-        \ '<denite:do_action:quickfix>', 'noremap')
-call denite#custom#map(
-        \ 'insert',
-        \ '<Down>',
-        \ '<denite:move_to_next_line>',
-        \ 'noremap'
-        \)
-call denite#custom#map(
-        \ 'insert',
-        \ '<Up>',
-        \ '<denite:move_to_previous_line>',
-        \ 'noremap'
-        \)
+call denite#custom#source('file_old', 'converters', ['converter_relative_word'])
+call denite#custom#source('file_rec', 'sorters', ['sorter_rank'])
+call denite#custom#source('file_mru', 'sorters', ['sorter_rank'])
+call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
+call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+call denite#custom#map('insert', "'", '<denite:move_to_next_line>', 'noremap')
+call denite#custom#map('normal', 'r', '<denite:do_action:quickfix>', 'noremap')
+call denite#custom#map('normal', '<Down>', '<denite:move_to_next_line>', 'noremap')
+call denite#custom#map('normal', '<Up>', '<denite:move_to_previous_line>', 'noremap')
 call denite#custom#map('insert', 'jj', '<denite:enter_mode:normal>')
+call denite#custom#map('normal', '<ESC><ESC>', '<denite:quit>')
 
 
 

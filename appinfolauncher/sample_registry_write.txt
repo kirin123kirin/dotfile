@@ -1,0 +1,24 @@
+[Activate]
+Registry=true
+
+[RegistryKeys]
+;レジストリキー（フォルダ）を追加したいとき
+APPNAME=HKEY_CURRENT_USER\Software\Classes\Folder\shell\APPNAME
+
+[RegistryValueWrite]
+;レジストリバリューを追加したいとき最後が\で終わると既定の値になるようである。
+;Valueの値別の識別子は以下のとおり
+;文字列          REG_SZ
+;数値            REG_DWORD
+;バイナリ        REG_BINARY
+;複数行文字列    REG_MULTI_SZ
+;展開可能な文字  REG_EXPAND_SZ 環境変数の展開例えば「%USERNAME%」や「%SystemRoot%」など
+
+;以下はフォルダに対してコンテキストメニューを追加する場合
+HKCU\Software\Classes\Folder\shell\APPNAME\=REG_SZ:open APPNAMEPortable
+HKCU\Software\Classes\Folder\shell\APPNAME\command\=REG_SZ:"%PAL:PortableAppsDir%\APPNAMEPortable\APPNAMEPortable.exe" "%1"
+
+;以下はファイルに対してコンテキストメニューを表示したい場合
+HKCU\Software\Classes\*\shell\APPNAME\=REG_SZ:open APPNAMEPortable
+HKCU\Software\Classes\*\shell\APPNAME\command\=REG_SZ:"%PAL:PortableAppsDir%\APPNAMEPortable\APPNAMEPortable.exe" "%1"
+

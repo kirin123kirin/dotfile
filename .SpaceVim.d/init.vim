@@ -170,7 +170,7 @@ if exists('+fixeol')
     set nofixendofline
 endif
 
-if has('multi_byte_ime')
+if has('multi_byte')
     set iminsert=0 imsearch=0
 endif
 
@@ -337,6 +337,12 @@ endif
 "---------------------------------------------------------------------------
 
 cabbr w!! w !sudo tee > /dev/null %
+map <Leader>so :source ~/dotfiles/nvim/init.vim<CR>
+
+" 削除キーでyankしない
+nnoremap x "_x
+nnoremap d "_d
+nnoremap D "_D
 
 " 自然な正規表現検索にするため
 nmap / /\v
@@ -373,10 +379,14 @@ nnoremap <silent><A-Down>  <C-w>+<CR>
 "タブ操作
 nnoremap t <Nop>
 nnoremap <silent> tt :<C-u>tabnew<CR>
+nnoremap <silent> <C-n> :<C-u>tabnew<CR>
 nnoremap <silent> tn :<C-u>tabprev<CR>
 nnoremap <silent> tx :<C-u>tabclose<CR>
 nnoremap <silent> td :<C-u>tabclose<CR>
 nnoremap <silent> to :<C-u>tabonly<CR>
+nnoremap <silent> <C-PageDown> :<C-u>tabnext<CR>
+nnoremap <silent> <C-PageUp> :<C-u>tabprev<CR>
+
 
 " <Esc><Esc>: ハイライトの切り替え
 nnoremap <silent> <Esc><Esc> :<C-u>set nohlsearch!<CR>
