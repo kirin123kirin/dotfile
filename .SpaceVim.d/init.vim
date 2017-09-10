@@ -16,11 +16,11 @@ let g:spacevim_default_indent = 4
 let g:spacevim_max_column     = 120
 " let g:spacevim_guifont = 'DejaVu\ Sans\ Mono\ for\ Powerline:h11:cANSI:qDRAFT'
 let g:spacevim_vim_help_language = 'ja,en'
-" let g:spacevim_language = 'ja_JP.UTF-8'
+let g:spacevim_language = 'ja'
 let g:spacevim_plugin_bundle_dir = '~/.cache/vimfiles/'
 
 " set SpaceVim colorscheme 
-let g:spacevim_colorscheme = 'PaperColor'
+let g:spacevim_colorscheme = 'gammy' " 'PaperColor'
 let g:spacevim_colorscheme_bg = 'light'
 
 " Set plugin manager, you want to use, default is dein.vim
@@ -90,9 +90,6 @@ endif
 let g:clang2_placeholder_next = ''
 let g:clang2_placeholder_prev = ''
 
-let g:clang2_placeholder_next = ''
-let g:clang2_placeholder_prev = ''
-
 let g:vimfiler_tree_indentation = 2
 let g:spacevim_enable_powerline_fonts = 1
 
@@ -100,9 +97,6 @@ let g:spacevim_enable_powerline_fonts = 1
 " variable to disable them entirely:
 let g:spacevim_disabled_plugin = [
   \ ['vim-youdao-translate'],
-  \ ['eskk.vim'],
-  \ ['DirDiff.vim'],
-  \ ['dirdiff.vim'],
   \ ]
 
 let g:spacevim_custom_plugins = [
@@ -120,6 +114,7 @@ let g:spacevim_custom_plugins = [
   \ ['ConradIrwin/vim-bracketed-paste'],
   \ ['thinca/vim-prettyprint'],
   \ ['ozelentok/denite-gtags'],
+  \ ['vim-scripts/vcscommand.vim'],
   \ ]
 let g:airline#extensions#tagbar#enabled = 0
 
@@ -187,7 +182,6 @@ if has('multi_byte')
     set iminsert=0 imsearch=0
 endif
 
-" set guicursor=n-c:block-blinkon10,o:hor50-blinkon10,i-ci:hor15-blinkon10,r-cr:hor30-blinkon10,sm:block-blinkon10
 set maxmem=1000000
 set maxmempattern=1000000
 set maxmemtot=1000000
@@ -239,16 +233,19 @@ endfunction
 if WINDOWS()
     set shellslash
     set opendevice
+    let g:_cmd = 'start'
     let g:zip_unzipcmd='unzip.exe'
     let g:zip_zipcmd='zip.exe'
     if has('win64')
         let g:default_browser = 'C:/Program Files (x86)/Mozilla Firefox/firefox.exe'
     elseif has('win32')
-        let g:default_browser = 'C:/Program Files/Mozilla Firefox/firefox.exe'
+        let g:default_browser = 'C:/Program Files/Mozilla Firefox/firefox.exe -osint -url'
     endif
 elseif IsMac()
+    let g:_cmd = 'open'
     let g:default_browser = '/Applications/Firefox.app'
 else
+    let g:_cmd = 'open'
     let g:default_browser = 'firefox'
     let g:zip_unzipcmd='unzip'
     let g:zip_zipcmd='zip'
@@ -339,6 +336,22 @@ if has('gui_running')
     set langmenu=ja_jp.utf-8
     source $VIMRUNTIME/menu.vim
 endif
+
+"カーソル表示状態変更制御シーケンス
+"ESC [ ? 25 h	カーソルを表示状態にする
+"ESC [ ? 25 l	カーソルを非表示状態にする
+"ESC [ 0 SP q	カーソル形状を箱型で点滅状態にする
+"ESC [ 1 SP q	カーソル形状を箱型で点滅状態にする
+"ESC [ 2 SP q	カーソル形状を箱型で点灯(非点滅)状態にする
+"ESC [ 3 SP q	カーソル形状を下線で点滅状態にする
+"ESC [ 4 SP q	カーソル形状を下線で点灯(非点滅)状態にする
+"ESC [ 5 SP q	カーソル形状を縦線で点滅状態にする
+"ESC [ 6 SP q	カーソル形状を縦線で点灯(非点滅)状態にする	ESC [ 33 h	カーソルを点灯(非点滅)状態にする
+"ESC [ 33 l	カーソルを点滅状態にする
+"ESC [ 34 h	カーソル形状を下線にする
+"ESC [ 34 l	カーソル形状を箱型にする
+"ESC [ ? 12 l	カーソルを点灯(非点滅)状態にする
+"ESC [ ? 12 h	カーソルを点滅状態にする
 
 "-------------------------------------------------------------------------------
 " コマンド       ノーマルモード 挿入モード コマンドラインモード ビジュアルモード

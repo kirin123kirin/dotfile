@@ -61,7 +61,7 @@ function! s:unite_my_settings()
 
 
   imap <buffer> jj      <Plug>(unite_insert_leave)
-  nmap <buffer> <ESC><ESC>      <Plug>(unite_all_exit)
+  nmap <buffer> <ESC>      <Plug>(unite_all_exit)
   imap <buffer> <ESC><ESC>      <Plug>(unite_all_exit)
   "imap <buffer> <C-w>     <Plug>(unite_delete_backward_path)
 
