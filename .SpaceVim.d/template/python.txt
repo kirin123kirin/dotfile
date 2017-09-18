@@ -1,0 +1,20 @@
+#!python
+# -*- coding: utf-8 -*-
+# vim: set filetype=python ts=4 sw=4 sts=4 fenc=utf-8:>
+#######################################################
+# program name:
+# create date :     
+__version__ = '0.0.1'
+# Author      : 
+# Copyright (c) [year] [fullname]
+#
+# This software is released under the MIT License.
+# http://opensource.org/licenses/mit-license.php
+#######################################################
+
+__doc__ = """
+This program description ...
+"""
+
+if __name__ == "__main__":
+    pass

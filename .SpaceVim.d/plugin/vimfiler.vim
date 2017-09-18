@@ -3,7 +3,7 @@ let g:vimfiler_enable_auto_cd = 1
 
 if has('win32') || has('win64')
   let g:vimfiler_detect_drives = ['C:/', 'Y:/']
-  let g:vimfiler_quick_look_command = "Y:/home/Seer/Seer.exe"
+  " let g:vimfiler_quick_look_command = "Seer.exe"
 endif
 
 augroup vfinit

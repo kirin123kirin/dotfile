@@ -14,7 +14,8 @@ highlight Normal ctermbg=none
 " file for all possible options:
 let g:spacevim_default_indent = 4
 let g:spacevim_max_column     = 120
-" let g:spacevim_guifont = 'DejaVu\ Sans\ Mono\ for\ Powerline:h11:cANSI:qDRAFT'
+"let g:spacevim_guifont = 'DejaVu\ Sans\ Mono\ for\ Powerline:h11:cANSI:qDRAFT'
+let g:spacevim_guifont = 'Myrica\ M:h12'
 let g:spacevim_vim_help_language = 'ja,en'
 let g:spacevim_language = 'ja'
 let g:spacevim_plugin_bundle_dir = '~/.cache/vimfiles/'
@@ -91,6 +92,8 @@ let g:clang2_placeholder_next = ''
 let g:clang2_placeholder_prev = ''
 
 let g:vimfiler_tree_indentation = 2
+let g:vimfiler_tree_opened_icon = '-'
+let g:vimfiler_tree_closed_icon = '+'
 let g:spacevim_enable_powerline_fonts = 1
 
 " If there is a particular plugin you don't like, you can define this
@@ -428,37 +431,36 @@ nnoremap Y y$
 imap <silent><C-d> <ESC>yypi
 map <silent><C-d> yypi
 
+autocmd BufNewFile *.diag 0r $HOME/.SpaceVim.d/template/diag.txt
+
 " + と - で数字を変化させる?
 " nnoremap + <C-a>
 " nnoremap - <C-x>
 
 " QuickRun
-map <silent> <F5> :QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
-map!<silent> <F5> <Esc>:QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
+map <silent> <F5> :QuickRun<CR>
+map!<silent> <F5> <Esc>:QuickRun<CR>
+"map <silent> <F5> :QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
+"map!<silent> <F5> <Esc>:QuickRun -outputter error -outputter/error/success buffer -outputter/error quickfix<CR>
 
 " Denite
-map <silent> <C-F><C-F> :<C-u>Denite file_rec<CR>
-cmap <silent> <C-F><C-F> :<C-u>Denite file_rec<CR>
+map <silent> <C-F><C-F> :<C-u>Denite directory_rec<CR>
+cmap <silent> <C-F><C-F> :<C-u>Denite directory_rec<CR>
 map <silent> <C-g>  :<C-u>Denite line<CR>
 map <silent> <C-g><C-g> :<C-u>Denite grep<CR>
 map <silent> <C-/>:<C-u>DeniteCursorWord grep<CR>
-map <silent> <C-h> :<C-u>Denite file_mru<CR>
-map <silent> <C-y><C-y> :<C-u>Denite neoyank<CR>
 map <silent> <F1>  :<C-u>Denite help<CR>
-map <silent> <C-h><C-h>  :<C-u>Denite command_history<CR>
-map <silent> <F9>  :<C-N>Denite -resume -immediately -select=+1<CR>
-map <silent> <F10> :<C-P>Denite -resume -immediately -select=-1<CR>
 
 " Unite
 if WINDOWS()
     let g:unite_source_bookmark_directory = "Y:/bookmark"
 endif
 map <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
-map <silent> <F12> <ESC>:Unite bookmark -buffer-name=bookmark -winheight=20 -start-insert<CR>
+map <silent> <F12> <ESC>:Denite unite:bookmark -buffer-name=bookmark<CR>
 map! <silent> <F11> <ESC>:UniteBookmarkAdd<CR>
-map! <silent> <F12> <ESC>:Unite bookmark -buffer-name=bookmark -vertical -winheight=20 -start-insert<CR>
+map! <silent> <F12> <ESC>:Denite unite:bookmark -buffer-name=bookmark<CR>
 cmap <F11> UniteBookmarkAdd<CR>
-cmap <F12> Unite bookmark -buffer-name=bookmark -vertical -winheight=20 -start-insert<CR>
+cmap <F12> Denite unite:bookmark -buffer-name=bookmark<CR>
 map <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<CR>
 map! <C-F12> <ESC>:Unite -buffer-name=outline -vertical -winwidth=50 outline<CR>
 
@@ -471,7 +473,7 @@ augroup END
 
 "neossh
 if WINDOWS()
-    let s:ssh_dir = 'Y:/home/PortableApps/PuTTYPortable/App/putty/'
+    let s:ssh_dir = expand($PALHOME . '/PuTTYPortable/App/putty/')
     let g:neossh#ssh_command = s:ssh_dir . 'plink.exe -P PORT HOSTNAME'
     let g:neossh#copy_directory_command = s:ssh_dir . 'pscp.exe -P PORT -q -r $srcs $dest'
     let g:neossh#copy_file_command = s:ssh_dir . 'pscp.exe -P PORT -q $srcs $dest'

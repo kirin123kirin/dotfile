@@ -17,24 +17,24 @@ let g:quickrun_config = {
             \        'outputter': 'null'
             \    },
             \    'blockdiag': {
-            \        'runner': 'shell', 'command' : 'blockdiag', 'exec' : '%C %S',
+            \        'runner': 'shell', 'command' : 'blockdiag.bat', 'exec' : '%C %S',
             \    },
             \    'seqdiag': {
-            \        'runner': 'shell', 'command' : 'seqdiag', 'exec' : '%C %S',
+            \        'runner': 'shell', 'command' : 'seqdiag.bat', 'exec' : '%C %S',
             \    },
             \    'actdiag': {
-            \        'runner': 'shell', 'command' : 'actdiag', 'exec' : '%C %S',
+            \        'runner': 'shell', 'command' : 'actdiag.bat', 'exec' : '%C %S',
             \    },
             \    'nwdiag': {
-            \        'runner': 'shell', 'command' : 'nwdiag', 'exec' : '%C %S',
+            \        'runner': 'shell', 'command' : 'nwdiag.bat', 'exec' : '%C %S',
             \    },
             \    'rackdiag': {
-            \        'runner': 'shell', 'command' : 'rackdiag', 'exec' : '%C %S',
+            \        'runner': 'shell', 'command' : 'rackdiag.bat', 'exec' : '%C %S',
             \    },
             \    'packetdiag': {
-            \        'runner': 'shell', 'command' : 'packetdiag', 'exec' : '%C %S',
+            \        'runner': 'shell', 'command' : 'packetdiag.bat', 'exec' : '%C %S',
             \    },
             \}
 
 let g:quickrun_config["xhtml"] = g:quickrun_config["html"]
-let g:quickrun_config["block"] = g:quickrun_config["blockdiag"]
+let g:quickrun_config["diag"] = g:quickrun_config["blockdiag"]

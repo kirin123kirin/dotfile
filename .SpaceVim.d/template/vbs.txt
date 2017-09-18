@@ -1,0 +1,16 @@
+' program name:
+' create date :     
+' version     : 0.0.1
+' Author      : 
+' Copyright (c) [year] [fullname]
+'
+' This software is released under the MIT License.
+' http://opensource.org/licenses/mit-license.php
+
+Option Explicit
+
+Private Sub Main()
+    ' main method
+End Sub
+
+Call Main()

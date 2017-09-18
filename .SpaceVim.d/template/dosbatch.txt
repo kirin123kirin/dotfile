@@ -1,0 +1,13 @@
+REM vim: set filetype=dosbatch ts=4 sw=4 sts=4 fenc=utf-8:>
+REM #######################################################
+REM program name:
+REM create date : 
+REM version     : 0.0.1
+REM Author      : 
+REM Copyright (c) [year] [fullname]
+REM
+REM This software is released under the MIT License.
+REM http://opensource.org/licenses/mit-license.php
+REM #######################################################
+
+
