@@ -36,6 +36,9 @@ let g:spacevim_unite_leader = 'f'
 " Set Denite work flow shortcut leader [Denite], default is `F`
 let g:spacevim_denite_leader = 'F'
 
+let g:spacevim_terminal_cursor_shape = 1
+
+
 " By default, language specific plugins are not loaded. This can be changed
 " with the following, then the plugins for go development will be loaded.
 
@@ -340,6 +343,7 @@ if has('gui_running')
     source $VIMRUNTIME/menu.vim
 endif
 
+
 "カーソル表示状態変更制御シーケンス
 "ESC [ ? 25 h	カーソルを表示状態にする
 "ESC [ ? 25 l	カーソルを非表示状態にする
@@ -484,3 +488,4 @@ vnoremap <silent> < <gv
 
 vnoremap <silent> <TAB> >gv
 vnoremap <silent> <S-TAB> <gv
+
