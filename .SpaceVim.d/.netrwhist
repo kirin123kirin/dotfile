@@ -1,5 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='//FREENAS/data1/Applications/eclipse/configuration/org.eclipse.osgi/bundles/338/data/-1574744082'
-let g:netrw_dirhist_2='//FREENAS/data1/download/Kiseijyu_01-03/02巻'
-let g:netrw_dirhist_3='//FREENAS/data1/data/Netbeans/myArchiver/archive/001'

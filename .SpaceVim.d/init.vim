@@ -414,8 +414,8 @@ nnoremap <silent> tn :<C-u>tabprev<CR>
 nnoremap <silent> tx :<C-u>tabclose<CR>
 nnoremap <silent> td :<C-u>tabclose<CR>
 nnoremap <silent> to :<C-u>tabonly<CR>
-nnoremap <silent> <C-PageDown> :<C-u>tabnext<CR>
-nnoremap <silent> <C-PageUp> :<C-u>tabprev<CR>
+nnoremap <silent> <C-PageDown> :<C-u>bnext<CR>
+nnoremap <silent> <C-PageUp> :<C-u>bprevious<CR>
 
 
 " <Esc><Esc>: ハイライトの切り替え
