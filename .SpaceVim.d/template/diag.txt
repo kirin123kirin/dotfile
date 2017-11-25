@@ -57,12 +57,12 @@ blockdiag {     // フローチャート   <http://blockdiag.com/ja/blockdiag/in
 // shape = actor                                 // 人形
 // shape = beginpoint                            // 処理開始を表すやつ
 // shape = endpoint                              // 処理終了を表すやつ
-// shape = condition                             // 条件分岐
-// shape = database                              // ドラム缶
-// shape = terminator                            // UMLで言うターミネータ 四角
-// shape = input                                 // 平行四辺形
-// shape = loopin                                // 台形
-// shape = loopout                               // 逆台形
+// shape = flowchart.condition                   // 条件分岐
+// shape = flowchart.database                    // ドラム缶
+// shape = flowchart.terminator                  // UMLで言うターミネータ 四角
+// shape = flowchart.input                       // 平行四辺形
+// shape = flowchart.loopin                      // 台形
+// shape = flowchart.loopout                     // 逆台形
 // background = background image                 // ノードに背景画像を張り付けます。ファイルパス、または URL で指定できます。
 // stacked                                       // ノードを重ね合わせた状態にします。
 // description = description                     // Sphinx 拡張で desctable オプションを利用している場合、図の下にテーブルを表示します。    表示される列は name と description です。 name には ノードID または label 属性が利用されます。
