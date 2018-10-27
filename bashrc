@@ -178,56 +178,13 @@ function fzf_cd {
 alias sd='fzf_cd'
 
 function cd_func {
-    local x2 the_new_dir adir index
-    local -i cnt
-
-    if [[ $1 == "--" ]]; then
-        dirs -v
-        return 0
+  if cd "$@"; then
+    if [ $(head -n 2 $HOME/.cd_history | grep -qs ${PWD}$) ]; then
+      sed -i "1s:^:$PWD\n:" $HOME/.cd_history
     fi
-
-    the_new_dir=$1
-    [[ -z $1 ]] && the_new_dir=$HOME
-
-    if [[ ${the_new_dir:0:1} == '-' ]]; then
-        #
-        # Extract dir N from dirs
-        index=${the_new_dir:1}
-        [[ -z $index ]] && index=1
-        adir=$(dirs +$index)
-        [[ -z $adir ]] && return 1
-        the_new_dir=$adir
-    fi
-
-    #
-    # '~' has to be substituted by ${HOME}
-    [[ ${the_new_dir:0:1} == '~' ]] && the_new_dir="${HOME}${the_new_dir:1}"
-
-    #
-    # Now change to the new dir and add to the top of the stack
-    pushd "${the_new_dir}" > /dev/null
-    [[ $? -ne 0 ]] && return 1
-    the_new_dir=$(pwd)
-    echo $the_new_dir >> $HOME/.cd_history
-    echo " Changed : " `ls -d $the_new_dir`
+    echo "Changed: " `ls -d $PWD`
     echo ""
-
-    #
-    # Trim down everything beyond 11th entry
-    popd -n +11 2>/dev/null 1>/dev/null
-
-    #
-    # Remove any other occurence of this dir, skipping the top of the stack
-    for ((cnt=1; cnt <= 10; cnt++)); do
-        x2=$(dirs +${cnt} 2>/dev/null)
-        [[ $? -ne 0 ]] && return 0
-        [[ ${x2:0:1} == '~' ]] && x2="${HOME}${x2:1}"
-        if [[ "${x2}" == "${the_new_dir}" ]]; then
-            popd -n +$cnt 2>/dev/null 1>/dev/null
-            cnt=cnt-1
-        fi
-    done
-    return 0
+  fi
 }
 
 alias cd=cd_func
@@ -304,18 +261,26 @@ function locbasename {  # fzf: locate basename only & open
 }
 alias lb='locbasename'
 
+function catuniq {
+  cat -n "$@" | sort -uk 2 | sort | sed "s/^.*\t//g"
+}
+
+function tacuniq {
+  tac "$@" | cat -n | sort -uk 2 | sort | sed "s/^.*\t//g"
+}
+
 function cdhist {  # fzf : recently Changed directory
-    cd `sort $HOME/.cd_history | uniq -c | sort -nr | cut -b 9- | fzf`
+    cd `catuniq $HOME/.cd_history | xargs ls -d 2> /dev/null | fzf`
 }
 bind -x '"\C-x\C-c": cdhist' > /dev/null 2>&1
 
 function vihist {  # fzf : recently vim opened file
-    vim `grep "^> " $HOME/.viminfo | cut -d " " -f 2 | sort | uniq -c | sort -nr | cut -b 9- | fzf`
+    vim `grep "^> " $HOME/.viminfo | cut -c 3- | tacuniq | sed "s:~:$HOME:g" | xargs ls -d 2> /dev/null | fzf`
 }
 bind -x '"\C-x\C-v": vihist' > /dev/null 2>&1
 
 function hist {  # fzf : recently bash cmd or Changed directory
-    ret=`(cat $HOME/.cd_history && grep "^> " $HOME/.viminfo | cut -d " " -f 2) | sort | uniq -c | sort -nr | cut -b 9- | fzf`
+    ret=`(cat $HOME/.cd_history && grep "^> " $HOME/.viminfo | cut -b 3- | sed "s:~:$HOME:g") | sort | uniq -c | sort -nr | cut -b 9- | xargs ls -d 2> /dev/null | fzf`
     opener $ret
 }
 bind -x '"\C-x\C-h": hist' > /dev/null 2>&1
