@@ -130,11 +130,11 @@ export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 
 ### Ore function ###
 function opener {       #file or directory automatic open
-    fn=`abspath $1`
+    fn=`readlink -f $1`
     if [ -f $fn ]; then
         $EDITOR $fn
     elif [ -d $fn ]; then
-        builtin cd $fn
+        cd $fn
     else
         echo "File or Directory Not Found.."
         exit 1
@@ -233,19 +233,7 @@ function cd_func {
 alias cd=cd_func
 
 ########################################
-function abspath {      #abstractic path string return
-    f=$@;
-    if [ -d "$f" ]; then
-        base="";
-        dir="$f";
-    else
-        base="/$(basename "$f")";
-        dir=$(dirname "$f");
-    fi;
-    dir=$(builtin cd "$dir" && /bin/pwd);
-    echo "$dir$base"
-}
-
+alias abspath='readlink -f'
 
 function ripgrep_goto {    # ripgrep & opener
     ret=$(rg --hidden --files . | fzf )
