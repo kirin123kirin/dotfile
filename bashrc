@@ -1,29 +1,31 @@
-#!/bin/sh
+#!/bin/bash
 # Oresama Setting
 # v0.1
 
 
 ### Ore View ###
-case ${UID} in
-0)
-    PS1='\[\033[31m\]${PWD}\$\[\033[0m\] '
-    PS2='\[\033[31m\]>\[\033[0m\] '
-    [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && PS1='\[\033[31m\]\u@\h'" ${PS1}"
-    ;;
-*)
-    PS1='\[\033[37m\]\w:\$\[\033[0m\] '
-    PS2='\[\033[37m\]$\[\033[0m\] '
-    [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && PS1='\[\033[36m\]\u@\h'" ${PS1}"
-    ;;
-esac
+_SHELL=$(ps -p $$ | tail -n 1 | sed "s/^.* //g")
+if [ $_SHELL = "bash" ];then
+    case ${UID} in
+    0)
+        PS1='\[\033[31m\]${PWD}\$\[\033[0m\] '
+        PS2='\[\033[31m\]>\[\033[0m\] '
+        [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && PS1='\[\033[31m\]\u@\h'" ${PS1}"
+        ;;
+    *)
+        PS1='\[\033[37m\]\w:\$\[\033[0m\] '
+        PS2='\[\033[37m\]$\[\033[0m\] '
+        [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && PS1='\[\033[36m\]\u@\h'" ${PS1}"
+        ;;
+    esac
+fi
 
-function treesize() { # Directory Tree & sort by file size
+function treesize { # Directory Tree & sort by file size
     du -chx --max-depth=3 $@ | sort -h
 }
 
 ### vi normalize
-which gvim 2>/dev/null 1>/dev/null
-if [ $? = 0 ]; then
+if which gvim >/dev/null 2>&1; then
     alias vim='gvim -v'
 fi
 alias vi='vim'
@@ -52,7 +54,11 @@ fi
 export PATH=$PATH:$BIN
 
 # Ore option
-shopt -s autocd
+set -o emacs
+
+if [ $_SHELL = "bash" ]; then 
+    shopt -s autocd
+fi
 set completion-ignore-case on
 
 # undefine C-Q C-S
@@ -74,7 +80,7 @@ alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 
-if which git &> /dev/null; then
+if which git > /dev/null 2>&1; then
   alias diff='git diff --no-index'
 fi
 
@@ -135,9 +141,8 @@ function opener {       #file or directory automatic open
     fi
 }
 
-
 # Thanks! http://bio-eco-evo.hatenablog.com/entry/2017/04/30/044703
-function fzf-cd {
+function fzf_cd {
   local sw="1"
   while [ "$sw" != "0" ]
      do
@@ -170,10 +175,9 @@ function fzf-cd {
         fi
      done
 }
-alias sd='fzf-cd'
+alias sd='fzf_cd'
 
-cd_func ()
-{
+function cd_func {
     local x2 the_new_dir adir index
     local -i cnt
 
@@ -229,7 +233,7 @@ cd_func ()
 alias cd=cd_func
 
 ########################################
-function abspath() {      #abstractic path string return
+function abspath {      #abstractic path string return
     f=$@;
     if [ -d "$f" ]; then
         base="";
@@ -243,34 +247,34 @@ function abspath() {      #abstractic path string return
 }
 
 
-function ripgrep_goto() {    # ripgrep & opener
+function ripgrep_goto {    # ripgrep & opener
     ret=$(rg --hidden --files . | fzf )
     if [ ! -z "$ret" -a "$ret" != " " ]; then
         opener "$ret"
     fi
 }
 alias rgg=ripgrep_goto
-bind -x '"\C-g\C-g": ripgrep_goto'
+bind -x '"\C-g\C-g": ripgrep_goto' > /dev/null 2>&1
 
-function change_direcoty_goto() {  # recursive directory search & jump
+function change_direcoty_goto {  # recursive directory search & jump
     ret=$(fd . --type d | fzf)
     if [ ! -z "$ret" -a "$ret" != " " ]; then
         cd "$ret"
     fi
 }
 alias cdgo=change_direcoty_goto
-bind -x '"\C-x\C-x": change_direcoty_goto'
+bind -x '"\C-x\C-x": change_direcoty_goto' > /dev/null 2>&1
 
-function find_open() {  # recursive find & open
+function find_open {  # recursive find & open
     ret=`normpath $(fd | fzf)`
     if [ ! -z "$ret" -a "$ret" != " " ]; then
         opener "$ret"
     fi
 }
 alias fo=find_open
-bind -x '"\C-o\C-o": find_open'
+bind -x '"\C-o\C-o": find_open' > /dev/null 2>&1
 
-function bookmark() {   #lookup bookmark
+function bookmark {   #lookup bookmark
 #    ret=`normpath $(cat $HOME/bookmark.txt | fzf | awk -F"\t" '{print $2}')`
 #    if [ ! -z "$ret" -a "$ret" != " " ]; then
 #        start "$ret"
@@ -280,17 +284,17 @@ function bookmark() {   #lookup bookmark
 }
 alias b=bookmark
 
-function save_bookmark() {   # save bookmark
+function save_bookmark {   # save bookmark
     echo $PWD >> $HOME/bookmark.txt
 }
 alias s=save_bookmark
 
-function open_bookmark() {    # open edit bookmark
+function open_bookmark {    # open edit bookmark
     $EDITOR $HOME/bookmark.txt
 }
 alias bo=open_bookmark
 
-function fzf-select-history() {
+function fzf_select_history {
     local tac
     which gtac &> /dev/null && tac="gtac" || \
         which tac &> /dev/null && tac="tac" || \
@@ -298,51 +302,51 @@ function fzf-select-history() {
     READLINE_LINE=$(HISTTIMEFORMAT= history | $tac | sed -e 's/^\s*[0-9]\+\s\+//' | awk '!a[$0]++' | fzf --query "$READLINE_LINE")
     READLINE_POINT=${#READLINE_LINE}
 }
-bind -x '"\C-r": fzf-select-history'
+bind -x '"\C-r": fzf_select_history' > /dev/null 2>&1
 
-function loc() {    # fzf: locate & open
+function loc {    # fzf: locate & open
     ret=`locate $* | fzf`
     opener $ret
 }
-bind -x '"\C-x\C-f": \C-aloc \C-m'
+bind -x '"\C-x\C-f": \C-aloc \C-m' > /dev/null 2>&1
 
-function locbasename() {  # fzf: locate basename only & open
+function locbasename {  # fzf: locate basename only & open
     ret=`locate -b $* | fzf`
     opener $ret
 }
 alias lb='locbasename'
 
-function cdhist() {  # fzf : recently Changed directory
+function cdhist {  # fzf : recently Changed directory
     cd `sort $HOME/.cd_history | uniq -c | sort -nr | cut -b 9- | fzf`
 }
-bind -x '"\C-x\C-c": cdhist'
+bind -x '"\C-x\C-c": cdhist' > /dev/null 2>&1
 
-function vihist() {  # fzf : recently vim opened file
+function vihist {  # fzf : recently vim opened file
     vim `grep "^> " $HOME/.viminfo | cut -d " " -f 2 | sort | uniq -c | sort -nr | cut -b 9- | fzf`
 }
-bind -x '"\C-x\C-v": vihist'
+bind -x '"\C-x\C-v": vihist' > /dev/null 2>&1
 
-function hist() {  # fzf : recently bash cmd or Changed directory
+function hist {  # fzf : recently bash cmd or Changed directory
     ret=`(cat $HOME/.cd_history && grep "^> " $HOME/.viminfo | cut -d " " -f 2) | sort | uniq -c | sort -nr | cut -b 9- | fzf`
     opener $ret
 }
-bind -x '"\C-x\C-h": hist'
+bind -x '"\C-x\C-h": hist' > /dev/null 2>&1
 
-bind '"\C-t": "\C-atime \C-m"' #time command shortcut
+bind '"\C-t": "\C-atime \C-m"' > /dev/null 2>&1 #time command shortcut
 
-function topy3() {          # python2 source is convert to python3 source (overrite)
+function topy3 {          # python2 source is convert to python3 source (overrite)
     ret=`fd $1 --type f --exec file {} \; | grep ": Python script" | cut -d ":" -f 1 | grep -v "\.md$"`
     for x in $ret; do
         2to3 -wn $x
     done
 }
 
-rep(){          # firster replace function
+function rep {          # firster replace function
     arg="$(cat -)"
     echo "$arg" | rg "$1" -r "$2" -C 9999999999999999999
 }
 
-function between() {     # between cat lines
+function between {     # between cat lines
     awk "$1<=NR && NR<=$2"
 }
 alias bt='between'
@@ -383,7 +387,7 @@ function extract {   # extract any archived file
 fi
 }
 
-function compress() {
+function compress {
     FILE=$1
     shift
     case $FILE in
@@ -396,7 +400,7 @@ function compress() {
    esac
 }
 
-function lscompress() {
+function lscompress {
 if [ -z "$1" ]; then
     # display usage if no parameters given
     echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
@@ -422,10 +426,10 @@ if [ -z "$1" ]; then
 fi
 }
 
-function vimgrep() {
+function vimgrep {
     ret=`rg --vimgrep --no-heading $@ | fzf`
     vim -p `echo $ret | cut -d ":" -f 1,2 | sed "s/:/ +/g"`
 }
 alias vg='vimgrep'
-#bind -x '"\C-g\C-g": vimgrep'
+#bind -x '"\C-g\C-g": vimgrep' > /dev/null 2>&1
 
