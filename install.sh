@@ -19,3 +19,12 @@ if [ -f ~/.vimrc ]; then
 else
     ln -s $OWNDIR/vimrc ~/.vimrc
 fi
+
+if [ -d ~/.vim ]; then
+    mv ~/.vim ~/vim.bak
+    cp -pRbv ~/vim.bak/* $OWNDIR/vim/
+    ln -s $OWNDIR/vim ~/.vim
+else
+	ln -s $OWNDIR/vim ~/.vim
+fi
+
