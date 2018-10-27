@@ -29,7 +29,7 @@ fi
 alias vi='vim'
 
 ### Ore Environment ###
-export TERM=xterm-256color                            # needs peco
+export TERM=xterm-256color 
 export EDITOR=vim
 export PROMPT_DIRTRIM=2
 export PAGER='less -r'
@@ -42,11 +42,14 @@ export TIMEFORMAT='real: %Rs  user: %Us  system: %Ss'
 export LSCOLORS=ExFxCxdxBxegedabagacad
 export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
 
-export PYTHONPATH=$HOME/usr/local/python
-
 BIN=$HOME/bin:$HOME/usr/bin:$HOME/usr/local/bin
 
-export PATH=$PYTHONPATH/bin:$PATH:$BIN
+if [ -d $HOME/usr/local/python ]; then
+  export PYTHONPATH=$HOME/usr/local/python
+  export PATH=$PYTHONPATH/bin:$PATH
+fi
+
+export PATH=$PATH:$BIN
 
 # Ore option
 shopt -s autocd
@@ -64,6 +67,7 @@ alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 alias cd.='cd ..'
 alias cd..='cd ..'
+alias dc='cd'
 alias python="$PYTHONPATH/bin/python3"
 alias pip="$PYTHONPATH/bin/pip3"
 alias rm='rm -i'
@@ -133,7 +137,7 @@ function opener {       #file or directory automatic open
 
 
 # Thanks! http://bio-eco-evo.hatenablog.com/entry/2017/04/30/044703
-function peco-cd {
+function fzf-cd {
   local sw="1"
   while [ "$sw" != "0" ]
      do
@@ -166,7 +170,7 @@ function peco-cd {
         fi
      done
 }
-alias sd='peco-cd'
+alias sd='fzf-cd'
 
 cd_func ()
 {
