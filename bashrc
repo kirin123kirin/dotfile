@@ -49,6 +49,11 @@ BIN=$HOME/bin:$HOME/usr/bin:$HOME/usr/local/bin
 if [ -d $HOME/usr/local/python ]; then
   export PYTHONPATH=$HOME/usr/local/python
   export PATH=$PYTHONPATH/bin:$PATH
+  if [ -z "$LD_LIBRARY_PATH" ]; then
+    export LD_LIBRARY_PATH=$PYTHONPATH/lib
+  else
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PYTHONPATH/lib
+  fi
 fi
 
 export PATH=$PATH:$BIN
