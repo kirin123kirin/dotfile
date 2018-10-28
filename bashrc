@@ -179,7 +179,7 @@ alias sd='fzf_cd'
 
 function cd_func {
   if cd "$@"; then
-    if [ $(head -n 2 $HOME/.cd_history | grep -qs ${PWD}$) ]; then
+    if [ ! $(head -n 2 $HOME/.cd_history | grep -qs ${PWD}$) ]; then
       sed -i "1s:^:$PWD\n:" $HOME/.cd_history
     fi
     echo "Changed: " `ls -d $PWD`
