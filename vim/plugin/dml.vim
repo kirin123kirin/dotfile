@@ -1,1 +1,1 @@
-au BufRead,BufNewFile *.dml set filetype=dml
+au BufRead,BufNewFile *.dml,*xfr,*.mp,*.pset,*.plan set filetype=dml
