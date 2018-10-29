@@ -24,8 +24,13 @@ function treesize { # Directory Tree & sort by file size
     du -chx --max-depth=3 $@ | sort -h
 }
 
+# thanks. https://qiita.com/kawaz/items/1b61ee2dd4d1acc7cc94
+function valid {
+  type "$@" > /dev/null 2>&1
+}
+
 ### vi normalize
-if which gvim >/dev/null 2>&1; then
+if valid gvim; then
     alias vim='gvim -v'
 fi
 alias vi='vim'
@@ -85,7 +90,7 @@ alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 
-if which git > /dev/null 2>&1; then
+if valid git; then
   alias diff='git diff --no-index'
 fi
 
@@ -128,13 +133,31 @@ alias r='. ~/.bashrc'
 alias h='grep -E "^(function|alias|bind).*" ~/dotfile/bashrc | sort | less'
 alias rg='rg --no-heading'
 alias be='xxd -u -g 1'
+if [ _SHELL = "bash" -o _SHELL = "zsh" ]; then
+  function history {
+    history "$@" | sed -E "s/^\s*[0-9]+\s+//g"
+  }
+elif [ _SHELL = "ksh" ]; then
+  function history {
+    history -nN 32767 "$@" | sed "s/^\t//g"
+  }
+fi
+
+if valid gtac; then
+  alias tac="gtac"
+elif ! valid tac; then
+  alias tac="tail -r"
+else
+  :
+fi
+
 
 export FZF_DEFAULT_COMMAND='fd --no-mouse --type f --ignore-case --follow -E .git -E .svn -E old -E bak'
 export FZF_DEFAULT_OPTS="--no-mouse --layout=reverse --height=40% --border --preview 'echo {};echo ---; ls -l {} 2>/dev/null' --preview-window down:wrap"
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 
 ### Ore function ###
-function opener {       #file or directory automatic open
+function opener {(       #file or directory automatic open
     fn=`readlink -f $1`
     if [ -f $fn ]; then
         $EDITOR $fn
@@ -144,31 +167,31 @@ function opener {       #file or directory automatic open
         echo "File or Directory Not Found.."
         exit 1
     fi
-}
+)}
 
 # Thanks! http://bio-eco-evo.hatenablog.com/entry/2017/04/30/044703
-function fzf_cd {
-  local sw="1"
+function fzf_cd {(
+  sw="1"
   while [ "$sw" != "0" ]
      do
         if [ "$sw" = "1" ];then
-            local list=$(echo -e "---$PWD\n../\n$( /bin/ls -F | grep / )\n---Show hidden directory\n---Show files, $(echo $(/bin/ls -F | grep -v / ))\n---HOME DIRECTORY")
+            list=$(echo -e "---$PWD\n../\n$( /bin/ls -F | grep / )\n---Show hidden directory\n---Show files, $(echo $(/bin/ls -F | grep -v / ))\n---HOME DIRECTORY")
         elif [ "$sw" = "2" ];then
-            local list=$(echo -e "---$PWD\n$( /bin/ls -a -F | grep / | sed 1d )\n---Hide hidden directory\n---Show files, $(echo $(/bin/ls -F | grep -v / ))\n---HOME DIRECTORY")
+            list=$(echo -e "---$PWD\n$( /bin/ls -a -F | grep / | sed 1d )\n---Hide hidden directory\n---Show files, $(echo $(/bin/ls -F | grep -v / ))\n---HOME DIRECTORY")
         else
-            local list=$(echo -e "---BACK\n$( /bin/ls -F | grep -v / )")
+            list=$(echo -e "---BACK\n$( /bin/ls -F | grep -v / )")
         fi
         
-        local slct=$(echo -e "$list" | fzf )
+        slct=$(echo -e "$list" | fzf )
         
         if [ "$slct" = "---$PWD" ];then
-            local sw="0"
+            sw="0"
         elif [ "$slct" = "---Hide hidden directory" ];then
-            local sw="1"
+            sw="1"
         elif [ "$slct" = "---Show hidden directory" ];then
-            local sw="2"
+            sw="2"
         elif [ "$slct" = "---Show files, $(echo $(/bin/ls -F | grep -v / ))" ];then
-            local sw=$(($sw+2))
+            sw=$(($sw+2))
         elif [ "$slct" = "---HOME DIRECTORY" ];then
             builtin cd "$HOME"
         elif [[ "$slct" =~ / ]];then
@@ -176,15 +199,19 @@ function fzf_cd {
         elif [ "$slct" = "" ];then
             :
         else
-            local sw=$(($sw-2))
+            sw=$(($sw-2))
         fi
      done
-}
+)}
+
 alias sd='fzf_cd'
 
 function cd_func {
   if cd "$@"; then
     if [ ! $(head -n 2 $HOME/.cd_history | grep -qs ${PWD}$) ]; then
+      if [ ! -f $HOME/.cd_history ]; then
+        echo $PWD > $HOME/.cd_history
+      fi
       sed -i "1s:^:$PWD\n:" $HOME/.cd_history
     fi
     echo "Changed: " `ls -d $PWD`
@@ -197,41 +224,37 @@ alias cd=cd_func
 ########################################
 alias abspath='readlink -f'
 
-function ripgrep_goto {    # ripgrep & opener
+function ripgrep_goto {(    # ripgrep & opener
     ret=$(rg --hidden --files . | fzf )
     if [ ! -z "$ret" -a "$ret" != " " ]; then
         opener "$ret"
     fi
-}
+)}
 alias rgg=ripgrep_goto
 bind -x '"\C-g\C-g": ripgrep_goto' > /dev/null 2>&1
 
-function change_direcoty_goto {  # recursive directory search & jump
+function change_direcoty_goto {(  # recursive directory search & jump
     ret=$(fd . --type d | fzf)
     if [ ! -z "$ret" -a "$ret" != " " ]; then
         cd "$ret"
     fi
-}
+)}
 alias cdgo=change_direcoty_goto
 bind -x '"\C-x\C-x": change_direcoty_goto' > /dev/null 2>&1
 
-function find_open {  # recursive find & open
+function find_open {(  # recursive find & open
     ret=`normpath $(fd | fzf)`
     if [ ! -z "$ret" -a "$ret" != " " ]; then
         opener "$ret"
     fi
-}
+)}
 alias fo=find_open
 bind -x '"\C-o\C-o": find_open' > /dev/null 2>&1
 
-function bookmark {   #lookup bookmark
-#    ret=`normpath $(cat $HOME/bookmark.txt | fzf | awk -F"\t" '{print $2}')`
-#    if [ ! -z "$ret" -a "$ret" != " " ]; then
-#        start "$ret"
-#    fi
+function bookmark {(   #lookup bookmark
     ret=`cat $HOME/bookmark.txt | fzf`
     opener $ret
-}
+)}
 alias b=bookmark
 
 function save_bookmark {   # save bookmark
@@ -244,26 +267,23 @@ function open_bookmark {    # open edit bookmark
 }
 alias bo=open_bookmark
 
-function fzf_select_history {
-    local tac
-    which gtac &> /dev/null && tac="gtac" || \
-        which tac &> /dev/null && tac="tac" || \
-        tac="tail -r"
-    READLINE_LINE=$(HISTTIMEFORMAT= history | $tac | sed -e 's/^\s*[0-9]\+\s\+//' | awk '!a[$0]++' | fzf --query "$READLINE_LINE")
+function fzf_select_history {(
+    #READLINE_LINE=$(HISTTIMEFORMAT= history | $tac | sed -e 's/^\s*[0-9]\+\s\+//' | awk '!a[$0]++' | fzf --query "$READLINE_LINE")
+    READLINE_LINE=$(HISTTIMEFORMAT= history | uniq | tac | fzf --query "$READLINE_LINE")
     READLINE_POINT=${#READLINE_LINE}
-}
+)}
 bind -x '"\C-r": fzf_select_history' > /dev/null 2>&1
 
-function loc {    # fzf: locate & open
+function loc {(    # fzf: locate & open
     ret=`locate $* | fzf`
     opener $ret
-}
+)}
 bind -x '"\C-x\C-f": \C-aloc \C-m' > /dev/null 2>&1
 
-function locbasename {  # fzf: locate basename only & open
+function locbasename {(  # fzf: locate basename only & open
     ret=`locate -b $* | fzf`
     opener $ret
-}
+)}
 alias lb='locbasename'
 
 function catuniq {
@@ -284,25 +304,25 @@ function vihist {  # fzf : recently vim opened file
 }
 bind -x '"\C-x\C-v": vihist' > /dev/null 2>&1
 
-function hist {  # fzf : recently bash cmd or Changed directory
-    ret=`(cat $HOME/.cd_history && grep "^> " $HOME/.viminfo | cut -b 3- | sed "s:~:$HOME:g") | sort | uniq -c | sort -nr | cut -b 9- | xargs ls -d 2> /dev/null | fzf`
+function hist {(  # fzf : recently bash cmd or Changed directory
+    ret=`(uniq $HOME/.cd_history && grep "^> " $HOME/.viminfo | uniq | cut -b 3- | sed "s:~:$HOME:g") | sort | uniq -c | sort -nr | cut -b 9- | xargs ls -d 2> /dev/null | fzf`
     opener $ret
-}
+)}
 bind -x '"\C-x\C-h": hist' > /dev/null 2>&1
 
 bind '"\C-t": "\C-atime \C-m"' > /dev/null 2>&1 #time command shortcut
 
-function topy3 {          # python2 source is convert to python3 source (overrite)
+function topy3 {(          # python2 source is convert to python3 source (overrite)
     ret=`fd $1 --type f --exec file {} \; | grep ": Python script" | cut -d ":" -f 1 | grep -v "\.md$"`
     for x in $ret; do
         2to3 -wn $x
     done
-}
+)}
 
-function rep {          # firster replace function
+function rep {(          # firster replace function
     arg="$(cat -)"
     echo "$arg" | rg "$1" -r "$2" -C 9999999999999999999
-}
+)}
 
 function between {     # between cat lines
     awk "$1<=NR && NR<=$2"
@@ -345,7 +365,7 @@ function extract {   # extract any archived file
 fi
 }
 
-function compress {
+function compress {(
     FILE=$1
     shift
     case $FILE in
@@ -356,7 +376,7 @@ function compress {
         *.rar)     rar $FILE $*      ;;
         *)         echo "Filetype not recognized" ;;
    esac
-}
+)}
 
 function lscompress {
 if [ -z "$1" ]; then
@@ -384,10 +404,10 @@ if [ -z "$1" ]; then
 fi
 }
 
-function vimgrep {
+function vimgrep {(
     ret=`rg --vimgrep --no-heading $@ | fzf`
     vim -p `echo $ret | cut -d ":" -f 1,2 | sed "s/:/ +/g"`
-}
+)}
 alias vg='vimgrep'
 #bind -x '"\C-g\C-g": vimgrep' > /dev/null 2>&1
 
