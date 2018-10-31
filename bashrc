@@ -133,12 +133,12 @@ alias r='. ~/.bashrc'
 alias h='grep -E "^(function|alias|bind).*" ~/dotfile/bashrc | sort | less'
 alias rg='rg --no-heading'
 alias be='xxd -u -g 1'
-if [ _SHELL = "bash" -o _SHELL = "zsh" ]; then
-  function history {
+if [ $_SHELL = "bash" -o $_SHELL = "zsh" ]; then
+  function _history {
     history "$@" | sed -E "s/^\s*[0-9]+\s+//g"
   }
-elif [ _SHELL = "ksh" ]; then
-  function history {
+elif [ $_SHELL = "ksh" ]; then
+  function _history {
     history -nN 32767 "$@" | sed "s/^\t//g"
   }
 fi
@@ -267,11 +267,11 @@ function open_bookmark {    # open edit bookmark
 }
 alias bo=open_bookmark
 
-function fzf_select_history {(
+function fzf_select_history {
     #READLINE_LINE=$(HISTTIMEFORMAT= history | $tac | sed -e 's/^\s*[0-9]\+\s\+//' | awk '!a[$0]++' | fzf --query "$READLINE_LINE")
-    READLINE_LINE=$(HISTTIMEFORMAT= history | uniq | tac | fzf --query "$READLINE_LINE")
+    READLINE_LINE=$(HISTTIMEFORMAT= _history | uniq | tac | fzf --query "$READLINE_LINE")
     READLINE_POINT=${#READLINE_LINE}
-)}
+}
 bind -x '"\C-r": fzf_select_history' > /dev/null 2>&1
 
 function loc {(    # fzf: locate & open
