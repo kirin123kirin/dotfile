@@ -153,7 +153,7 @@ fi
 
 
 export FZF_DEFAULT_COMMAND='fd --no-mouse --type f --ignore-case --follow -E .git -E .svn -E old -E bak'
-export FZF_DEFAULT_OPTS="--no-mouse --layout=reverse --height=40% --border --preview 'echo {};echo ---; ls -l {} 2>/dev/null' --preview-window down:wrap"
+export FZF_DEFAULT_OPTS="--no-mouse --layout=reverse --height=55% --border --preview 'echo {};echo ---; ls -l {} 2>/dev/null' --preview-window down:wrap"
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 
 ### Ore function ###
@@ -268,8 +268,7 @@ function open_bookmark {    # open edit bookmark
 alias bo=open_bookmark
 
 function fzf_select_history {
-    #READLINE_LINE=$(HISTTIMEFORMAT= history | $tac | sed -e 's/^\s*[0-9]\+\s\+//' | awk '!a[$0]++' | fzf --query "$READLINE_LINE")
-    READLINE_LINE=$(HISTTIMEFORMAT= _history | uniq | tac | fzf --query "$READLINE_LINE")
+    READLINE_LINE=$(HISTTIMEFORMAT= history|sort -uk 2|sort -r|sed -E "s/[\s0-9]+\s+//g"| fzf --query "$READLINE_LINE")
     READLINE_POINT=${#READLINE_LINE}
 }
 bind -x '"\C-r": fzf_select_history' > /dev/null 2>&1
