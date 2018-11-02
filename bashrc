@@ -44,10 +44,12 @@ export LANG=ja_JP.UTF-8
 export HISTSIZE=10000
 export HISTFILESIZE=10000
 export HISTCONTROL=ignoredups		#ignoredups,ignorespace,erasedups
-export HISTIGNORE=cd:ls	#you can use wild cart(*,?)
+export HISTIGNORE=cd:ls:pwd:exit	#you can use wild cart(*,?)
 export TIMEFORMAT='real: %Rs  user: %Us  system: %Ss'
-export LSCOLORS=ExFxCxdxBxegedabagacad
-export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+if [ $_SHELL = "bash" -o $_SHELL = "zsh" ];then
+  export LSCOLORS=ExFxCxdxBxegedabagacad
+  export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+fi
 
 BIN=$HOME/bin:$HOME/usr/bin:$HOME/usr/local/bin
 
@@ -92,6 +94,8 @@ alias mv='mv -i'
 
 if valid git; then
   alias diff='git diff --no-index'
+else
+  alias diff='diff -u'
 fi
 
 ### Default to human readable figures ###
@@ -206,12 +210,13 @@ function fzf_cd {(
 
 alias sd='fzf_cd'
 
+if [ ! -f $HOME/.cd_history ]; then
+  echo $HOME > $HOME/.cd_history
+fi
+
 function cd_func {
   if cd "$@"; then
-    if [ ! $(head -n 2 $HOME/.cd_history | grep -qs ${PWD}$) ]; then
-      if [ ! -f $HOME/.cd_history ]; then
-        echo $PWD > $HOME/.cd_history
-      fi
+    if ! head -n 2 $HOME/.cd_history | grep -qs ${PWD}$; then
       sed -i "1s:^:$PWD\n:" $HOME/.cd_history
     fi
     echo "Changed: " `ls -d $PWD`
@@ -404,7 +409,7 @@ fi
 }
 
 function vimgrep {(
-    ret=`rg --vimgrep --no-heading $@ | fzf`
+    ret=`rg --vimgrep $@ | fzf`
     vim -p `echo $ret | cut -d ":" -f 1,2 | sed "s/:/ +/g"`
 )}
 alias vg='vimgrep'
