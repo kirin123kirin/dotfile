@@ -1,43 +1,106 @@
 #!/bin/bash
 # Oresama Setting
 # v0.1
+#set -eu
+
 ### Ore View ###
 _SHELL=$(ps -p $$ | tail -n 1 | sed "s/^.* //g")
-if [ $_SHELL = "bash" ];then
-    case ${UID} in
-    0)
-        PS1='\[\033[31m\]${PWD}\$\[\033[0m\] '
-        PS2='\[\033[31m\]>\[\033[0m\] '
-        [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && PS1='\[\033[31m\]\u@\h'" ${PS1}"
-        ;;
-    *)
-        PS1='\[\033[37m\]\w:\$\[\033[0m\] '
-        PS2='\[\033[37m\]$\[\033[0m\] '
-        [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] && PS1='\[\033[36m\]\u@\h'" ${PS1}"
-        ;;
-    esac
-fi
 
-function treesize { # Directory Tree & sort by file size
-    du -chx --max-depth=3 $@ | sort -h
-}
+if [ $_SHELL = "bash" ];then
+  case ${UID} in
+    0)
+      PS1='\[\033[31m\]${PWD}\$\[\033[0m\] '
+      PS2='\[\033[31m\]>\[\033[0m\] '
+      [ -n "${REMOTEHOST:-}${SSH_CONNECTION:-}" ] && PS1='\[\033[31m\]\u@\h'" ${PS1}"
+      ;;
+    *)
+      PS1='\[\033[37m\]\w:\$\[\033[0m\] '
+      PS2='\[\033[37m\]$\[\033[0m\] '
+      [ -n "${REMOTEHOST:-}${SSH_CONNECTION:-}" ] && PS1='\[\033[36m\]\u@\h'" ${PS1}"
+      ;;
+  esac
+
+elif [ $_SHELL = "ksh" ]; then
+  case $USER in
+    root)
+      export PS1="
+$LOGNAME@$(hostname) \$PWD
+# " ;;
+
+    *)
+      export PS1="
+$LOGNAME@$(hostname) \$PWD
+$ " ;;
+  esac
+fi
 
 # thanks. https://qiita.com/kawaz/items/1b61ee2dd4d1acc7cc94
 function valid {
   type "$@" > /dev/null 2>&1
 }
 
-function isbinary {
-  [ $(file --mime-encoding -b "$1") = "binary" ]
+# thanks. https://github.com/faif/shell-utils/blob/master/shell-utils.sh
+# Arguments: $@ -> message to print
+function perr { # prints an error message to STDERR
+    printf "ERROR: ${@}\n" >&2
 }
 
-function iscompress {
-  file $1 | grep -qs "compressed data"
+# Arguments: $@ -> message to print
+function pwarn { # print a warning nessage to STDERR
+    printf "WARNING: ${@}\n" >&2
+}
+
+
+# Arguments: $@ -> message to print
+function puse { # print a usage message and then exits
+    printf "USAGE: ${@}\n" >&2
+}
+
+# Arguments: $1 -> The prompt
+#            $2 -> The default answer (optional)
+# Variables: yesno -> set to the user response (y for yes, n for no)
+function prompt_yn { # ask a yes/no question
+    if [ $# -lt 1 ]
+    then
+  puse "prompt_yn prompt [default answer]"
+  return 1
+    fi
+
+    def_arg=""
+    yesno=""
+
+    case "${2}" in
+  [yY]|[yY][eE][sS])
+      def_arg=y ;;
+  [nN]|[nN][oO])
+      def_arg=n ;;
+    esac
+
+    while :
+    do
+  printf "${1} (y/n)? "
+  test -n "${def_arg}" && printf "[${def_arg}] "
+
+  read yesno
+  test -z "${yesno}" && yesno="${def_arg}"
+
+  case "${yesno}" in
+      [yY]|[yY][eE][sS])
+    yesno=y ; break ;;
+      [nN]|[nN][oO])
+    yesno=n ; break ;;
+      *)
+    yesno="" ;;
+  esac
+    done
+
+    export yesno
+    unset def_arg
 }
 
 ### vi normalize
 if valid gvim; then
-    alias vim='gvim -v'
+  alias vim='gvim -v'
 fi
 alias vi='vim'
 
@@ -49,13 +112,11 @@ export PAGER='less -r'
 export LANG=ja_JP.UTF-8
 export HISTSIZE=10000
 export HISTFILESIZE=10000
-export HISTCONTROL=ignoredups		#ignoredups,ignorespace,erasedups
-export HISTIGNORE=cd:ls:ll:la:lla:pwd:vi:vim:exit	#you can use wild cart(*,?)
+export HISTCONTROL=ignoredups    #ignoredups,ignorespace,erasedups
+export HISTIGNORE=cd:ls:ll:la:lla:pwd:vi:vim:exit  #you can use wild cart(*,?)
 export TIMEFORMAT='real: %Rs  user: %Us  system: %Ss'
-if [ $_SHELL = "bash" -o $_SHELL = "zsh" ];then
-  export LSCOLORS=ExFxCxdxBxegedabagacad
-  export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
-fi
+export LSCOLORS=ExFxCxdxBxegedabagacad
+export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
 
 BIN=$HOME/bin:$HOME/.local/bin:$HOME/usr/bin:$HOME/usr/local/bin
 
@@ -69,7 +130,7 @@ if [ -d $HOME/usr/local/python ]; then
   fi
 fi
 
-if [ -f $PYTHONPATH/bin/python3 ]; then
+if valid python3 && [[ ${PYTHONPATH:-} != "" ]]; then
   alias python="$PYTHONPATH/bin/python3"
   alias pip="$PYTHONPATH/bin/pip3"
   
@@ -81,8 +142,17 @@ if [ -f $PYTHONPATH/bin/python3 ]; then
   }
 fi
 
-export PATH=$BIN:$PATH
+if [ -d "${1:-}" ]; then
+  WORKDIR=$1
+  export PATH=$BIN:$PATH
+else
+  WORKDIR=$HOME
+  export PATH=$WORKDIR/bin:$WORKDIR/usr/bin:$WORKDIR/usr/local/bin:$WORKDIR/local/bin:$BIN:$PATH
+fi
 unset BIN
+
+export WORKCDHISTFILE=$WORKDIR/.cd_history
+export WORKBOOKMARKFILE=$WORKDIR/.bookmark
 
 # Ore option
 set -o emacs
@@ -127,12 +197,10 @@ alias fgrep='fgrep --color=auto'              # show differences in colour
 alias more='less'
 
 # Some shortcuts for different directory listings
-if [ $_SHELL = "bash" -o $_SHELL = "zsh" ];then
-  alias ls='ls --show-control-chars --color=always'
-  #alias ls='ls -hF --color=tty'                 # classify files in colour
-  alias dir='ls --color=auto --format=vertical'
-  alias vdir='ls --color=auto --format=long'
-fi
+alias ls='ls --show-control-chars --color=always'
+#alias ls='ls -hF --color=tty'                 # classify files in colour
+alias dir='ls --color=auto --format=vertical'
+alias vdir='ls --color=auto --format=long'
 alias ll='ls -l'                              # long list
 alias la='ls -A'                              # all but . and ..
 alias lla='ls -lA'
@@ -152,8 +220,16 @@ alias 755='chmod 755'
 alias 775='chmod 775'
 alias 777='chmod 777'
 alias orebackup='cd ~;tar czfh portable_linux_64.tgz bin dotfile usr'
-alias r='. ~/.bashrc'
-alias rg='rg --no-heading'
+
+if [ $_SHELL = "bash" ]; then
+  alias rr='. ~/.bashrc'
+elif [ $_SHELL = "ksh" ]; then
+  alias rr='. ~/.kshrc'
+fi
+
+if valid rg; then
+  alias rg='rg --no-heading'
+fi
 alias find='find -L'
 alias be='xxd -u -g 1'
 if [ $_SHELL = "bash" -o $_SHELL = "zsh" ]; then
@@ -173,13 +249,27 @@ fi
   
 if valid fzf; then
   if valid fd; then
-    alias fd='fd -L'
-    export FZF_DEFAULT_COMMAND='fd --type f --ignore-case --follow -E .git -E .svn -E old -E bak'
+    #alias fd='fd -L'
+    export FZF_DEFAULT_COMMAND='fd -L --type f --ignore-case --follow -E .git -E .svn -E old -E bak'
   else
-    export FZF_DEFAULT_COMMAND='find * -type d \( -name ".git" -o -name ".svn"  -o -name "old" -o -name "bak" \) -prune -o -type f -print'
+    export FZF_DEFAULT_COMMAND='find * -L -type d \( -name ".git" -o -name ".svn"  -o -name "old" -o -name "bak" \) -prune -o -type f -print'
   fi
   export FZF_DEFAULT_OPTS="--no-mouse --layout=reverse --height=70% --border --preview 'preview {}' --preview-window down:wrap"
   export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+fi
+
+if valid docker; then
+  if [ "$USER" = "root" ]; then
+    alias d='docker'
+  else
+    alias d='sudo docker'
+  fi
+  alias dpa='d ps -a'
+  alias di='d images'
+  alias drm='d rm -f'
+  alias drmi='d rmi'
+  alias dpl='d pull'
+  alias dx='d exec'
 fi
 
 ### Ore function ###
@@ -187,7 +277,7 @@ function opener {       #file or directory automatic open
   if [ "$1" = "" ];then
     return 1
   fi
-  typeset fn=$(readlink -f $1)
+  typeset fn=$(readlink -f "$1")
   if [ -f $fn ]; then
       $EDITOR $fn
   elif [ -d $fn ]; then
@@ -198,75 +288,89 @@ function opener {       #file or directory automatic open
   fi
 }
 
+function treesize { # Directory Tree & sort by file size
+    du -chx --max-depth=3 "$@" | sort -h
+}
+
+function isbinary {
+  [ $(file --mime-encoding -b "$1") = "binary" ]
+}
+
+function iscompress {
+  file "$1" | grep -qs "compressed data"
+}
+
 if valid fzf; then
   # Thanks! http://bio-eco-evo.hatenablog.com/entry/2017/04/30/044703
   function fzf_cd {
     typeset sw="1" list slct
     while [ "$sw" != "0" ]
-       do
-          if [ "$sw" = "1" ];then
-              list=$(echo -e "---$PWD\n../\n$( /bin/ls -F | grep / )\n---Show hidden directory\n---Show files, $(echo $(/bin/ls -F | grep -v / ))\n---HOME DIRECTORY")
-          elif [ "$sw" = "2" ];then
-              list=$(echo -e "---$PWD\n$( /bin/ls -a -F | grep / | sed 1d )\n---Hide hidden directory\n---Show files, $(echo $(/bin/ls -F | grep -v / ))\n---HOME DIRECTORY")
-          else
-              list=$(echo -e "---BACK\n$( /bin/ls -F | grep -v / )")
-          fi
-          
-          slct=$(echo -e "$list" | fzf )
-          
-          if [ "$slct" = "---$PWD" ];then
-              sw="0"
-          elif [ "$slct" = "---Hide hidden directory" ];then
-              sw="1"
-          elif [ "$slct" = "---Show hidden directory" ];then
-              sw="2"
-          elif [ "$slct" = "---Show files, $(echo $(/bin/ls -F | grep -v / ))" ];then
-              sw=$(($sw+2))
-          elif [ "$slct" = "---HOME DIRECTORY" ];then
-              builtin cd "$HOME"
-          elif [[ "$slct" =~ / ]];then
-              builtin cd "$slct"
-          elif [ "$slct" = "" ];then
-              :
-          else
-              sw=$(($sw-2))
-          fi
-       done
+      do
+        if [ "$sw" = "1" ];then
+          list=$(echo -e "---$PWD\n../\n$( /bin/ls -LF | grep / )\n---Show hidden directory\n---Show files, $(echo $(/bin/ls -LF | grep -v / ))\n---HOME DIRECTORY")
+        elif [ "$sw" = "2" ];then
+          list=$(echo -e "---$PWD\n$( /bin/ls -a -LF | grep / | sed 1d )\n---Hide hidden directory\n---Show files, $(echo $(/bin/ls -LF | grep -v / ))\n---HOME DIRECTORY")
+        else
+          list=$(echo -e "---BACK\n$( /bin/ls -LF | grep -v / )")
+        fi
+        
+        slct=$(echo -e "$list" | fzf )
+        
+        if [ "$slct" = "---$PWD" ];then
+          sw="0"
+        elif [ "$slct" = "---Hide hidden directory" ];then
+          sw="1"
+        elif [ "$slct" = "---Show hidden directory" ];then
+          sw="2"
+        elif [ "$slct" = "---Show files, $(echo $(/bin/ls -LF | grep -v / ))" ];then
+          sw=$(($sw+2))
+        elif [ "$slct" = "---HOME DIRECTORY" ];then
+          cd "$HOME"
+        elif [[ "$slct" =~ / ]];then
+          cd "$slct"
+        elif [ "$slct" = "" ];then
+          :
+        else
+          sw=$(($sw-2))
+        fi
+      done
   }
 
   alias sd='fzf_cd'
 fi
 
-if [ ! -f $HOME/.cd_history ]; then
-  echo $HOME > $HOME/.cd_history
+if [ ! -f $WORKCDHISTFILE ]; then
+  echo $HOME > $WORKCDHISTFILE
 fi
 
-if [ ! -f $HOME/.bookmark ]; then
-  touch $HOME/.bookmark
+if [ ! -f $WORKBOOKMARKFILE ]; then
+  touch $WORKBOOKMARKFILE
 fi
 
 function cd_func { # cd with histories
-  if builtin cd "$@"; then
-    if ! head -n 2 $HOME/.cd_history | grep -qs ${PWD}$; then
-      sed -i "1s:^:$PWD\n:" $HOME/.cd_history
+  if \cd "$@"; then
+    if ! head -n 2 $WORKCDHISTFILE | grep -qs ${PWD}$; then
+      sed -i "1s:^:$PWD\n:" $WORKCDHISTFILE
     fi
     echo "Changed: " `ls -d $PWD`
     echo ""
+  else
+    return 1
   fi
 }
 alias cd=cd_func
 
 function cleanhist { #clean .cd_history
-  if [ -f $HOME/.cd_history ];then
-    grep -v "^$HOME$" $HOME/.cd_history | uniq > $HOME/.cd_history.unq
-    if [ $(printf "%d" $(cat .cd_history |wc -l)) -ne 0 ]; then
-      mv -f $HOME/.cd_history.unq $HOME/.cd_history
+  if [ -f $WORKCDHISTFILE ];then
+    grep -v "^$HOME$" $WORKCDHISTFILE | uniq > ${WORKCDHISTFILE}.unq
+    if [ $(printf "%d" $(cat $WORKCDHISTFILE |wc -l)) -ne 0 ]; then
+      mv -f ${WORKCDHISTFILE}.unq $WORKCDHISTFILE
     else
-      rm -f $HOME/.cd_history.unq
-      echo $HOME > $HOME/.cd_history
+      rm -f ${WORKCDHISTFILE}.unq
+      echo $HOME > $WORKCDHISTFILE
     fi
   else
-    echo $HOME > $HOME/.cd_history
+    echo $HOME > $WORKCDHISTFILE
   fi
 }
 
@@ -284,13 +388,13 @@ if valid fzf; then
     fi
     
     if valid rg; then
-      ret=$(rg --hidden --files "$kw" | fzf )
+      ret=$(rg --hidden "$kw" | fzf )
     else
       ret=$(grep -rl "$kw" * | fzf )
     fi
     
     if [ ! -z "$ret" -a "$ret" != " " ]; then
-      opener "$ret"
+      opener $(echo $ret | cut -d ":" -f 1)
     fi
   }
   alias gg=grep_goto
@@ -304,20 +408,20 @@ if valid fzf; then
     fi
   }
   alias cdgo=change_direcoty_goto
-  bind '"\C-x\C-x": "change_direcoty_goto\C-m"' > /dev/null 2>&1
+  bind '"\C-x\C-e": "change_direcoty_goto\C-m"' > /dev/null 2>&1
 
   function find_open {  # recursive find & open
     if valid fd; then
-      opener $(fd | fzf)
+      opener $(fd -L | fzf)
     else
-      opener $(find | fzf)
+      opener $(find -L | fzf)
     fi
   }
   alias fo=find_open
   bind '"\C-o\C-o": "find_open\C-m"' > /dev/null 2>&1
 
   function bookmark {   #lookup bookmark
-    opener $(cat $HOME/.bookmark | fzf)
+    opener $(cat $WORKBOOKMARKFILE | fzf)
   }
   alias b=bookmark
 
@@ -350,9 +454,9 @@ if valid fzf; then
   alias lb='locbasename'
 
   function histcd {  # fzf : recently Changed directory
-    opener $(catuniq $HOME/.cd_history | xargs ls -d 2> /dev/null | fzf)
+    opener $(catuniq $WORKCDHISTFILE | xargs ls -d 2> /dev/null | fzf)
   }
-  bind '"\C-x\C-c": "histcd\C-m"' > /dev/null 2>&1
+  bind '"\C-x\C-x": "histcd\C-m"' > /dev/null 2>&1
 
   function histvi {  # fzf : recently vim opened file
     opener $(grep "^> " $HOME/.viminfo | cut -c 3- | tacuniq | sed "s:~:$HOME:g" | xargs ls -d 2> /dev/null | fzf)
@@ -361,19 +465,19 @@ if valid fzf; then
 
   function hist {  # fzf : recently bash cmd or Changed directory
     typeset ret
-    ret=`(uniq $HOME/.cd_history && grep "^> " $HOME/.viminfo | uniq | cut -b 3- | sed "s:~:$HOME:g") | sort | uniq -c | sort -nr | cut -b 9- | xargs ls -d 2> /dev/null | fzf`
+    ret=`(uniq $WORKCDHISTFILE && grep "^> " $HOME/.viminfo | uniq | cut -b 3- | sed "s:~:$HOME:g") | sort | uniq -c | sort -nr | cut -b 9- | xargs ls -d 2> /dev/null | fzf`
     opener $ret
   }
-  bind '"\C-x\C-h": "hist\C-m"' > /dev/null 2>&1
+  bind '"\C-x\C-a": "hist\C-m"' > /dev/null 2>&1
 fi
 
 function save_bookmark {   # save bookmark
-  echo $PWD >> $HOME/.bookmark
+  echo $PWD >> $WORKBOOKMARKFILE
 }
 alias s=save_bookmark
 
 function open_bookmark {    # open edit bookmark
-  opener $HOME/.bookmark
+  opener $WORKBOOKMARKFILE
 }
 alias bo=open_bookmark
 
@@ -449,12 +553,16 @@ function compress {
   typeset FILE=$1
   shift
   case $FILE in
-      *.tar.bz2) tar cjfh $FILE $*  ;;
-      *.tar.gz)  tar czfh $FILE $*  ;;
-      *.tgz)     tar czfh $FILE $*  ;;
-      *.zip)     zip -r $FILE $*      ;;
-      *.rar)     rar $FILE $*      ;;
-      *)         echo "Filetype not recognized" ;;
+      *.tar.bz2|*.tbz2) tar cjfh $FILE $*  ;;
+      *.tar.gz|*.tgz)   tar czfh $FILE $*  ;;
+      *.tar)            tar cfh $FILE $*   ;;
+      *.zip)            zip -r $FILE $*    ;;
+      *.rar)            rar $FILE $*       ;;
+      *.gz)             gzip $FILE         ;;
+      *.bz2)            bzip2 $FILE        ;;
+      *.xz)             xz $FILE           ;;
+      *)    echo "Filetype not recognized"
+            return 1 ;;
   esac
 }
 
@@ -492,4 +600,116 @@ function vimgrep {
 }
 alias vg='vimgrep'
 bind '"\C-x\C-g": "vimgrep\C-m"' > /dev/null 2>&1
+
+#thanks https://github.com/faif/shell-utils/blob/master/shell-utils.sh
+
+# Arguments: $1 -> the file
+function bkup { # simple way to keep a backup of a file
+    if [ $# -ne 1 ]
+    then
+        puse "bkup file"
+        return 1
+    fi
+
+    file_copy=${1}.$(date +%Y%m%d.%H%M.ORIG)
+    mv -f ${1} ${file_copy}
+    printf "Backing up ${1} to ${file_copy}\n"
+    cp -p "${file_copy}" "${1}"
+
+    unset file_copy
+}
+
+
+function os_name { # print the system's name
+    case $(uname -s) in
+        *BSD)
+            printf BSD ;;
+        Darwin)
+            printf macOS ;;
+        SunOS)
+            case $(uname -r) in
+                5.*) printf Solaris ;;
+                *) printf SunOS ;;
+            esac
+            ;;
+        Linux)
+            printf GNU/Linux ;;
+        MINIX*)
+            printf MINIX ;;
+        HP-UX)
+            echo HPUX ;;
+        AIX)
+            echo AIX ;;
+        *) echo unknown ;;
+    esac
+    printf "\n"
+}
+
+
+# Arguments: $1 -> the process name to search for
+function get_pid { # print a list of process id(s) matching $1
+    if [ $# -lt 1 ]
+    then
+  perr "Insufficient Arguments."
+        return 1
+    fi
+
+    ps -ef | grep "${1}" | grep -v grep | awk '{ print $2; }'
+
+    unset psopts
+}
+
+
+# Arguments: $1 -> the user name
+function get_uid { # print the numeric user id
+    if [ $# -lt 1 ]
+    then
+  perr "Insufficient Arguments."
+        return 1
+    fi
+
+    user_id=$(id ${1} 2>/dev/null)
+
+    if [ $? -ne 0 ]
+    then
+  perr "No such user: ${1}"
+  return 1
+    fi
+
+    printf "${user_id}\n" | sed -e 's/(.*$//' -e 's/^uid=//'
+
+    unset user_id
+}
+
+
+# Arguments: $@ -> the string
+function to_lower { # print an input string to lower case
+    printf "${@}\n" | tr '[A-Z]' '[a-z]'
+}
+
+
+# Arguments: $@ -> the string
+function to_upper { # print an input string to upper case
+    printf "${@}\n" | tr '[a-z]' '[A-Z]'
+}
+
+
+# Arguments: $@ -> files to convert
+function file_to_lower { # convert the input files to lower case
+    for file in "${@}"
+    do
+  mv -f "${file}" "$(printf "${file}\n" | tr '[A-Z]' '[a-z]')" \
+      2>/dev/null || perr "File ${file} does not exist"
+    done
+}
+
+
+# Arguments: $@ -> files to convert
+function file_to_upper { # convert the input files to upper case
+    for file in "${@}"
+    do
+  mv -f "${file}" "$(printf "${file}\n" | tr '[a-z]' '[A-Z]')" \
+      2>/dev/null || perr "File ${file} does not exist"
+    done
+}
 

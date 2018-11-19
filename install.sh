@@ -50,4 +50,16 @@ cd ~/.local/bin
 tar zxf *.tar.gz && rm -f *.tar.gz
 chmod -R a+x ~/.local/bin/*
 
+# .ctags linking
+if [ -f ~/.ctags ]; then
+  if [ -L ~/.ctags ]; then
+    :
+  else
+    echo "" >> ~/.ctags
+    cat $OWNDIR/ctags >> ~/.ctags
+  fi
+else
+  ln -s $OWNDIR/ctags ~/.ctags
+fi
+
 cd $OWNDIR

@@ -13,31 +13,33 @@ function lscompress {   # lscompress any archived file
   esac
 }
 
-echo [Path] $(realpath $1)
 
-if [ ! -e $1 ];then
-  echo "[WARN] File or Directory Not Found"
+if [ ! -e "$1" ];then
+  echo "$1"
+  echo "Such File or Directory Not Found"
   exit 1
 fi
 
-echo [Type] $(file -b $1)
-if [ -d $1 ]; then
+echo [Path] $(realpath $1)
+
+echo [Type] $(file -b "$1")
+if [ -d "$1" ]; then
   printf "[Detail] "
 else
   echo "[Detail]"
 fi
-ls -lh $1
+ls -lh "$1"
 
-if [ -f $1 ]; then
+if [ -f "$1" ]; then
   typeset pth
-  if [ -L $1 ];then
-    pth=$(readlink -f $1)
+  if [ -L "$1" ];then
+    pth=$(readlink -f "$1")
   else
-    pth=$1
+    pth="$1"
   fi
   echo "[Content]"
   if [ $(file --mime-encoding -b $pth) = "binary" ]; then
-    if file $1 | grep -qs "compressed data"; then
+    if file $pth | grep -qs "compressed data"; then
       lscompress $pth
     else
       file $pth

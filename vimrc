@@ -21,6 +21,13 @@ augroup BinaryXXD
   autocmd BufWritePost * set nomod | endif
 augroup END
 
+augroup AllwaysTabOpen
+  autocmd!
+  let b:flg = 1
+  autocmd BufReadPre */doc/*.txt let b:flg =0
+  autocmd BufReadPost * if b:flg | tab ba | endif
+augroup END
+
 " OS Type
 function! LINUX()
     return has('unix') && !has('macunix') && !has('win32unix')
@@ -198,6 +205,8 @@ if LINUX()
     map <silent> <ESC>OB <DOWN>
     map <silent> <ESC>OC <RIGHT>
     map <silent> <ESC>OD <LEFT>
+    map <silent> <ESC>[5~ <PageUp>
+    map <silent> <ESC>[6~ <PageDown>
     imap <silent> <ESC>OA <UP>
     imap <silent> <ESC>OB <DOWN>
     imap <silent> <ESC>OC <RIGHT>
@@ -240,8 +249,8 @@ behave mswin
 
 " 削除キーでyankしない
 nnoremap x "_x
-nnoremap d "_d
-nnoremap D "_D
+"nnoremap d "_d
+"nnoremap D "_D
 
 " backspace in Visual mode deletes selection
 noremap <nowait> <BS> hx
@@ -249,8 +258,8 @@ noremap <nowait> ^? hx
 noremap! <nowait> ^? ^H
 noremap <C-x> <NOP>
 noremap <C-c> <NOP>
-noremap <C-v> vv
-" inoremap <C-v> <NOP>
+noremap <C-v> V
+inoremap <C-v> <NOP>
 
 if has('clipboard')
     " CTRL-X are Cut
@@ -325,11 +334,9 @@ inoremap <C-Tab> <C-O><C-W>w
 cnoremap <C-Tab> <C-C><C-W>w
 onoremap <C-Tab> <C-C><C-W>w
 
-" CTRL-PageDown is Next window
-noremap <silent><C-PageUp> :tabp<CR>
-lnoremap <silent><C-PageUp> <ESC>:tabp<CR>
-noremap <silent><C-PageDown> :tabn<CR>
-lnoremap <silent><C-PageDown> <ESC>:tabn<CR>
+" CTRL-LR is Next Tab
+noremap <silent><C-h> :tabp<CR>
+noremap <silent><C-l> :tabn<CR>
 
 if has("gui")
 " CTRL-F is the search dialog
@@ -377,6 +384,9 @@ noremap K 20k
 noremap L 10l
 noremap H 10h
 
+inoremap <C-J> <Down>
+inoremap <C-K> <Up>
+
 " 無効化
 "nnoremap ZZ <Nop>
 "nnoremap ZQ <Nop>
@@ -405,8 +415,8 @@ nnoremap <silent> tn :<C-u>tabprev<CR>
 nnoremap <silent> tx :<C-u>tabclose<CR>
 nnoremap <silent> td :<C-u>tabclose<CR>
 nnoremap <silent> to :<C-u>tabonly<CR>
-nnoremap <silent> <C-PageDown> :<C-u>bnext<CR>
-nnoremap <silent> <C-PageUp> :<C-u>bprevious<CR>
+"nnoremap <silent> <C-PageDown> :<C-u>bnext<CR>
+"nnoremap <silent> <C-PageUp> :<C-u>bprevious<CR>
 
 " jj: エスケープ
 inoremap jj <Esc>
@@ -431,10 +441,10 @@ nnoremap <C-S-CR> mzO<ESC>`z
 " }}}
 
 " Move Lines
-nnoremap <C-Up> "zdd<Up>"zP
-nnoremap <C-Down> "zdd"zp
-vnoremap <C-Up> "zx<Up>"zP`[V`]
-vnoremap <C-Down> "zx"zp`[V`]
+nnoremap <C-k> "zdd<Up>"zP
+nnoremap <C-j> "zdd"zp
+vnoremap <C-k> "zx<Up>"zP`[V`]
+vnoremap <C-j> "zx"zp`[V`]
 
 " {{{ User functions & Plugins hardcoding
 
@@ -606,6 +616,106 @@ vnoremap ,d :s/^\([/(]\*\\|<!--\) \(.*\) \(\*[/)]\\|-->\)$/\2/<CR>:nohlsearch<CR
 " block comments
 vnoremap ,b v`<I<CR><esc>k0i/*<ESC>`>j0i*/<CR><esc><ESC>
 vnoremap ,h v`<I<CR><esc>k0i<!--<ESC>`>j0i--><CR><esc><ESC>
+" }}}
+
+call plug#begin('~/.vim/plugged')
+  Plug 'mechatroner/rainbow_csv'
+  Plug 'tyru/caw.vim'
+  Plug 'Shougo/neosnippet.vim'
+  Plug 'Shougo/neosnippet-snippets'
+  Plug 'junegunn/fzf.vim'
+call plug#end()
+
+" {{{ caw.setting
+imap <silent> <C-_> <ESC><Plug>(caw:zeropos:toggle)I
+nmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
+vmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
+" }}}
+
+" {{{ ctag jump
+" thanks. https://qiita.com/aratana_tamutomo/items/59fb4c377863a385e032
+set tags=.tags;$HOME
+
+function! s:execute_ctags() abort
+  let tag_name = '.tags'
+  let tags_path = findfile(tag_name, '.;')
+  if tags_path ==# ''
+    return
+  endif
+
+  let tags_dirpath = fnamemodify(tags_path, ':p:h')
+  execute 'silent !cd' tags_dirpath '&& ctags -R -f' tag_name '2> /dev/null &'
+endfunction
+
+augroup ctags
+  autocmd!
+  autocmd BufWritePost * call s:execute_ctags()
+augroup END
+
+nnoremap <F11> :vsp<CR> :exe("tjump ".expand('<cword>'))<CR>
+" }}}
+
+" {{{ Neosnipet User Snippet directory Setting
+" Plugin key-mappings.
+imap <C-i>     <Plug>(neosnippet_expand_or_jump)
+smap <C-i>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-i>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+
+"set snippet file dir
+let g:neosnippet#snippets_directory='~/.vim/neosnippets/'
+" }}}
+
+" Fzf.vim {{{
+let g:fzf_command_prefix = 'Fzf'
+
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+" - down / up / left / right
+let g:fzf_layout = { 'down': '~40%' }
+
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+  
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+
+" [[B]Commits] Customize the options used by 'git log':
+let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+
+" [Tags] Command to generate tags file
+let g:fzf_tags_command = 'ctags -R'
+
+" [Commands] --expect expression for directly executing the command
+let g:fzf_commands_expect = 'alt-enter,ctrl-x'
+
 " }}}
 
 " }}}
