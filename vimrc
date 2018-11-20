@@ -224,7 +224,120 @@ function! s:set_vsearch()
 endfunction
 " }}}
 
-" {{{ Key Mapping Setting
+" Auto Paste mode {{{ 
+  if exists("g:loaded_bracketed_paste")
+      finish
+  endif
+  let g:loaded_bracketed_paste = 1
+
+  let &t_ti .= "\<Esc>[?2004h"
+  let &t_te = "\e[?2004l" . &t_te
+
+  function! XTermPasteBegin(ret)
+      set pastetoggle=<f29>
+      set paste
+      return a:ret
+  endfunction
+
+  execute "set <f28>=\<Esc>[200~"
+  execute "set <f29>=\<Esc>[201~"
+  map <expr> <f28> XTermPasteBegin("i")
+  imap <expr> <f28> XTermPasteBegin("")
+  vmap <expr> <f28> XTermPasteBegin("c")
+  cmap <f28> <nop>
+  cmap <f29> <nop>
+" }}}
+
+" Ctags Management {{{ 
+  " thanks. https://qiita.com/aratana_tamutomo/items/59fb4c377863a385e032
+  set tags=.tags;$HOME
+
+  function! s:execute_ctags() abort
+    let tag_name = '.tags'
+    let tags_path = findfile(tag_name, '.;')
+    if tags_path ==# ''
+      return
+    endif
+
+    let tags_dirpath = fnamemodify(tags_path, ':p:h')
+    execute 'silent !cd' tags_dirpath '&& ctags -R -f' tag_name '2> /dev/null &'
+  endfunction
+
+  augroup ctags
+    autocmd!
+    autocmd BufWritePost * call s:execute_ctags()
+  augroup END
+
+  nnoremap <F11> :vsp<CR> :exe("tjump ".expand('<cword>'))<CR>
+" }}}
+
+
+" Plugins Management {{{
+
+call plug#begin('~/.vim/plugged')
+  Plug 'mechatroner/rainbow_csv'
+  
+  Plug 'itchyny/lightline.vim'
+    let g:lightline = { 'colorscheme': 'wombat', }
+  
+  Plug 'thinca/vim-quickrun'
+
+  " Press v over and over again to expand selection
+  Plug 'terryma/vim-expand-region'
+    vmap v <Plug>(expand_region_expand)
+    vmap <C-v> <Plug>(expand_region_shrink)
+
+  Plug 'tyru/caw.vim'
+    imap <silent> <C-_> <ESC><Plug>(caw:zeropos:toggle)I
+    nmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
+    vmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
+
+  Plug 'Shougo/neosnippet.vim'
+  Plug 'Shougo/neosnippet-snippets'
+    " {{{ Neosnipet User Snippet directory Setting
+    imap <C-i>     <Plug>(neosnippet_expand_or_jump)
+    smap <C-i>     <Plug>(neosnippet_expand_or_jump)
+    xmap <C-i>     <Plug>(neosnippet_expand_target)
+
+    " SuperTab like snippets behavior.
+    "imap <expr><TAB>
+    " \ pumvisible() ? "\<C-n>" :
+    " \ neosnippet#expandable_or_jumpable() ?
+    " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+    smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+    \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+    " For conceal markers.
+    if has('conceal')
+      set conceallevel=2 concealcursor=niv
+    endif
+
+    "set snippet file dir
+    let g:neosnippet#snippets_directory='~/.vim/neosnippets/'
+    " }}}
+
+  if executable('fzf')
+    Plug 'junegunn/fzf.vim'
+    let g:fzf_command_prefix = 'Fzf'
+    if executable('rg')
+      command! -bang -nargs=* Rg
+        \ call fzf#vim#grep(
+        \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+        \   <bang>0 ? fzf#vim#with_preview('up:60%')
+        \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+        \   <bang>0)
+    endif
+    noremap <silent><F1> :FzfHelptags<CR>
+    cnoremap <silent><F1> :FzfHelptags<CR>
+    inoremap <silent><F1> <ESC>:FzfHelptags<CR>
+    
+    noremap <Leader>o :FZF<CR>
+  endif
+call plug#end()
+
+" }}}
+
+" Key Mapping Setting {{{
 if LINUX()
     map <silent> <ESC>OA <UP>
     map <silent> <ESC>OB <DOWN>
@@ -409,7 +522,6 @@ nnoremap <silent><A-Down>  <C-w>+<CR>
 
 "}}}
 
-" {{{ etc.. Operation
 "タブ操作
 nnoremap t <Nop>
 nnoremap <silent> tt :<C-u>tabnew<CR>
@@ -441,7 +553,6 @@ imap <S-CR> <End><CR>
 imap <C-S-CR> <Up><End><CR>
 nnoremap <S-CR> mzo<ESC>`z
 nnoremap <C-S-CR> mzO<ESC>`z
-" }}}
 
 " Move Lines
 nnoremap <C-k> "zdd<Up>"zP
@@ -468,115 +579,6 @@ nnoremap <Leader>w :w<CR>
 nnoremap <Leader>s :wq<CR>
 nnoremap <Leader>v V
 nnoremap <Leader>g gf
-
-" {{{ Auto Paste mode
-  if exists("g:loaded_bracketed_paste")
-      finish
-  endif
-  let g:loaded_bracketed_paste = 1
-
-  let &t_ti .= "\<Esc>[?2004h"
-  let &t_te = "\e[?2004l" . &t_te
-
-  function! XTermPasteBegin(ret)
-      set pastetoggle=<f29>
-      set paste
-      return a:ret
-  endfunction
-
-  execute "set <f28>=\<Esc>[200~"
-  execute "set <f29>=\<Esc>[201~"
-  map <expr> <f28> XTermPasteBegin("i")
-  imap <expr> <f28> XTermPasteBegin("")
-  vmap <expr> <f28> XTermPasteBegin("c")
-  cmap <f28> <nop>
-  cmap <f29> <nop>
-" }}}
-
-" {{{ ctag jump
-  " thanks. https://qiita.com/aratana_tamutomo/items/59fb4c377863a385e032
-  set tags=.tags;$HOME
-
-  function! s:execute_ctags() abort
-    let tag_name = '.tags'
-    let tags_path = findfile(tag_name, '.;')
-    if tags_path ==# ''
-      return
-    endif
-
-    let tags_dirpath = fnamemodify(tags_path, ':p:h')
-    execute 'silent !cd' tags_dirpath '&& ctags -R -f' tag_name '2> /dev/null &'
-  endfunction
-
-  augroup ctags
-    autocmd!
-    autocmd BufWritePost * call s:execute_ctags()
-  augroup END
-
-  nnoremap <F11> :vsp<CR> :exe("tjump ".expand('<cword>'))<CR>
-" }}}
-
-call plug#begin('~/.vim/plugged')
-  Plug 'mechatroner/rainbow_csv'
-  
-  Plug 'itchyny/lightline.vim'
-    let g:lightline = { 'colorscheme': 'wombat', }
-  
-  Plug 'thinca/vim-quickrun'
-
-  " Press v over and over again to expand selection
-  Plug 'terryma/vim-expand-region'
-    vmap v <Plug>(expand_region_expand)
-    vmap <C-v> <Plug>(expand_region_shrink)
-
-  Plug 'tyru/caw.vim'
-    imap <silent> <C-_> <ESC><Plug>(caw:zeropos:toggle)I
-    nmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
-    vmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
-
-  Plug 'Shougo/neosnippet.vim'
-  Plug 'Shougo/neosnippet-snippets'
-    " {{{ Neosnipet User Snippet directory Setting
-    imap <C-i>     <Plug>(neosnippet_expand_or_jump)
-    smap <C-i>     <Plug>(neosnippet_expand_or_jump)
-    xmap <C-i>     <Plug>(neosnippet_expand_target)
-
-    " SuperTab like snippets behavior.
-    "imap <expr><TAB>
-    " \ pumvisible() ? "\<C-n>" :
-    " \ neosnippet#expandable_or_jumpable() ?
-    " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-    smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-    \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
-    " For conceal markers.
-    if has('conceal')
-      set conceallevel=2 concealcursor=niv
-    endif
-
-    "set snippet file dir
-    let g:neosnippet#snippets_directory='~/.vim/neosnippets/'
-    " }}}
-
-  if executable('fzf')
-    Plug 'junegunn/fzf.vim'
-    let g:fzf_command_prefix = 'Fzf'
-    if executable('rg')
-      command! -bang -nargs=* Rg
-        \ call fzf#vim#grep(
-        \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-        \   <bang>0 ? fzf#vim#with_preview('up:60%')
-        \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-        \   <bang>0)
-    endif
-    noremap <silent><F1> :FzfHelptags
-    cnoremap <silent><F1> :FzfHelptags
-    inoremap <silent><F1> <ESC>:FzfHelptags
-    
-    noremap <Leader>o :FZF<CR>
-  endif
-call plug#end()
-
 
 " }}}
 
