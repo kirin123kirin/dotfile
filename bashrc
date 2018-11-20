@@ -113,7 +113,7 @@ export LANG=ja_JP.UTF-8
 export HISTSIZE=10000
 export HISTFILESIZE=10000
 export HISTCONTROL=ignoredups    #ignoredups,ignorespace,erasedups
-export HISTIGNORE=cd:ls:ll:la:lla:pwd:vi:vim:exit  #you can use wild cart(*,?)
+export HISTIGNORE=cd:ls:ll:la:lla:pwd:exit  #you can use wild cart(*,?)
 export TIMEFORMAT='real: %Rs  user: %Us  system: %Ss'
 export LSCOLORS=ExFxCxdxBxegedabagacad
 export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
@@ -144,11 +144,13 @@ fi
 
 if [ -d "${1:-}" ]; then
   WORKDIR=$1
-  export PATH=$BIN:$PATH
+  _PATH=$BIN:$PATH
 else
   WORKDIR=$HOME
-  export PATH=$WORKDIR/bin:$WORKDIR/usr/bin:$WORKDIR/usr/local/bin:$WORKDIR/local/bin:$BIN:$PATH
+  _PATH=$WORKDIR/bin:$WORKDIR/usr/bin:$WORKDIR/usr/local/bin:$WORKDIR/local/bin:$BIN:$PATH
 fi
+export PATH=$(echo $_PATH | tr ":" "\n" | cat -n | sort -uk 2 | sort -n | sed "s/^.*\t//g" | tr "\n" ":" | sed "s/:*$//g")
+unset _PATH
 unset BIN
 
 export WORKCDHISTFILE=$WORKDIR/.cd_history
@@ -426,7 +428,7 @@ if valid fzf; then
   alias b=bookmark
 
   function fzf_select_history {
-    READLINE_LINE=$(HISTTIMEFORMAT= history|sort -uk 2|sort -nr|sed -E 's/^[\t0-9]+//g'| fzf --query "$READLINE_LINE")
+    READLINE_LINE=$(HISTTIMEFORMAT= history|sort -uk 2|sort -nr|sed -E 's/^[ \t0-9]+//g'| fzf --query "$READLINE_LINE")
     READLINE_POINT=${#READLINE_LINE}
   }
   bind -x '"\C-r": fzf_select_history' > /dev/null 2>&1
