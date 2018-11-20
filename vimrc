@@ -1,10 +1,9 @@
 " OreVimrc
 " Global Setting
-set nocompatible " must be the first line
-filetype on
-filetype indent on
-filetype plugin on
-syntax on
+set nocompatible
+
+let mapleader = "\<Space>"
+let maplocalleader = ","
 
 " reset
 augroup MyAutoCmd
@@ -39,7 +38,7 @@ function! OSX()
     return has('macunix')
 endfunction
 
-colorscheme delek
+colorscheme wombat256mod
 highlight Search term=reverse cterm=bold ctermfg=0 ctermbg=14 guifg=Black guibg=Cyan gui=bold
 highlight IncSearch term=reverse cterm=bold ctermfg=0 ctermbg=14 guifg=Black guibg=Cyan gui=bold
 highlight MatchParen term=reverse ctermfg=0 ctermbg=14 guifg=Black guibg=Cyan
@@ -50,6 +49,9 @@ highlight DiffChange term=reverse ctermfg=0 ctermbg=225 guifg=Black guibg=LightM
 highlight Directory term=bold cterm=bold ctermfg=2 guifg=green3 gui=bold
 
 "highlight Normal ctermbg=none
+" filetype on
+filetype plugin indent on
+" syntax on
 set timeout timeoutlen=200 ttimeoutlen=50
 set noautochdir
 set foldopen=all
@@ -59,7 +61,7 @@ set number
 set norelativenumber
 set splitbelow
 set splitright
-"set t_Co=256
+set t_Co=256
 set t_ut=
 set cmdheight=2
 set laststatus=2
@@ -256,6 +258,7 @@ nnoremap x "_x
 noremap <nowait> <BS> hx
 noremap <nowait> ^? hx
 noremap! <nowait> ^? ^H
+noremap <C-z> <NOP>
 noremap <C-x> <NOP>
 noremap <C-c> <NOP>
 noremap <C-v> V
@@ -335,8 +338,8 @@ cnoremap <C-Tab> <C-C><C-W>w
 onoremap <C-Tab> <C-C><C-W>w
 
 " CTRL-LR is Next Tab
-noremap <silent><C-h> :tabp<CR>
-noremap <silent><C-l> :tabn<CR>
+noremap <silent><Leader>h :tabp<CR>
+noremap <silent><Leader>l :tabn<CR>
 
 if has("gui")
 " CTRL-F is the search dialog
@@ -446,278 +449,132 @@ nnoremap <C-j> "zdd"zp
 vnoremap <C-k> "zx<Up>"zP`[V`]
 vnoremap <C-j> "zx"zp`[V`]
 
-" {{{ User functions & Plugins hardcoding
 
-" Vim rg grep
-if exists('g:loaded_rg') || &cp
-    finish
-endif
+" Space Settings
+vmap <Leader>y "+y
+vmap <Leader>d "+d
+nmap <Leader>p "+p
+nmap <Leader>P "+P
+vmap <Leader>p "+p
+vmap <Leader>P "+P
+nmap <Leader><Leader> V
+nmap <Leader>b :make<CR>
+nnoremap <Leader><Tab> <C-^>
+nnoremap <Leader>y :!annotate expand('%:p') " what?
 
-let g:loaded_rg = 1
+nnoremap <Leader>o :FZF<CR>
 
-if !exists('g:rg_binary')
-    let g:rg_binary = 'rg'
-endif
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
 
-if !exists('g:rg_format')
-    let g:rg_format = "%f:%l:%m"
-endif
-
-if !exists('g:rg_command')
-    let g:rg_command = g:rg_binary . ' --vimgrep'
-endif
-
-if !exists('g:rg_root_types')
-    let g:rg_root_types = ['.git']
-endif
-
-if !exists('g:rg_window_location')
-    let g:rg_window_location = 'botright'
-endif
-
-fun! s:Rg(txt)
-    call s:RgGrepContext(function('s:RgSearch'), s:RgSearchTerm(a:txt))
-endfun
-
-fun! s:RgSearchTerm(txt)
-    if empty(a:txt)
-        return expand("<cword>")
-    else
-        return a:txt
-    endif
-endfun
-
-fun! s:RgSearch(txt)
-    silent! exe 'grep! ' . a:txt
-    if len(getqflist())
-        exe g:rg_window_location 'copen'
-        redraw!
-        if exists('g:rg_highlight')
-            call s:RgHighlight(a:txt)
-        endif
-    else
-        cclose
-        redraw!
-        echo "No match found for " . a:txt
-    endif
-endfun
-
-fun! s:RgGrepContext(search, txt)
-    let l:grepprgb = &grepprg
-    let l:grepformatb = &grepformat
-    let &grepprg = g:rg_command
-    let &grepformat = g:rg_format
-    let l:te = &t_te
-    let l:ti = &t_ti
-    set t_te=
-    set t_ti=
-
-    if exists('g:rg_derive_root')
-        call s:RgPathContext(a:search, a:txt)
-    else
-        call a:search(a:txt)
-    endif
-
-    let &t_te=l:te
-    let &t_ti=l:ti
-    let &grepprg = l:grepprgb
-    let &grepformat = l:grepformatb
-endfun
-
-fun! s:RgPathContext(search, txt)
-    let l:cwdb = getcwd()
-    exe 'lcd '.s:RgRootDir()
-    call a:search(a:txt)
-    exe 'lcd '.l:cwdb
-endfun
-
-fun! s:RgHighlight(txt)
-    let @/=escape(substitute(a:txt, '"', '', 'g'), '|')
-    call feedkeys(":let &hlsearch=1\<CR>", 'n')
-endfun
-
-fun! s:RgRootDir()
-    let l:cwd = getcwd()
-    let l:dirs = split(getcwd(), '/')
-
-    for l:dir in reverse(copy(l:dirs))
-        for l:type in g:rg_root_types
-            let l:path = s:RgMakePath(l:dirs, l:dir)
-            if s:RgHasFile(l:path.'/'.l:type)
-                return l:path
-            endif
-        endfor
-    endfor
-    return l:cwd
-endfun
-
-fun! s:RgMakePath(dirs, dir)
-    return '/'.join(a:dirs[0:index(a:dirs, a:dir)], '/')
-endfun
-
-fun! s:RgHasFile(path)
-    return filereadable(a:path) || isdirectory(a:path)
-endfun
-
-fun! s:RgShowRoot()
-    if exists('g:rg_derive_root')
-        echo s:RgRootDir()
-    else
-        echo getcwd()
-    endif
-endfun
-
-command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
-command! -complete=file RgRoot :call s:RgShowRoot()
-
-" }}}
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>s :wq<CR>
+nnoremap <Leader>v V
+nnoremap <Leader>g gf
 
 " {{{ Auto Paste mode
-if exists("g:loaded_bracketed_paste")
-    finish
-endif
-let g:loaded_bracketed_paste = 1
+  if exists("g:loaded_bracketed_paste")
+      finish
+  endif
+  let g:loaded_bracketed_paste = 1
 
-let &t_ti .= "\<Esc>[?2004h"
-let &t_te = "\e[?2004l" . &t_te
+  let &t_ti .= "\<Esc>[?2004h"
+  let &t_te = "\e[?2004l" . &t_te
 
-function! XTermPasteBegin(ret)
-    set pastetoggle=<f29>
-    set paste
-    return a:ret
-endfunction
+  function! XTermPasteBegin(ret)
+      set pastetoggle=<f29>
+      set paste
+      return a:ret
+  endfunction
 
-execute "set <f28>=\<Esc>[200~"
-execute "set <f29>=\<Esc>[201~"
-map <expr> <f28> XTermPasteBegin("i")
-imap <expr> <f28> XTermPasteBegin("")
-vmap <expr> <f28> XTermPasteBegin("c")
-cmap <f28> <nop>
-cmap <f29> <nop>
+  execute "set <f28>=\<Esc>[200~"
+  execute "set <f29>=\<Esc>[201~"
+  map <expr> <f28> XTermPasteBegin("i")
+  imap <expr> <f28> XTermPasteBegin("")
+  vmap <expr> <f28> XTermPasteBegin("c")
+  cmap <f28> <nop>
+  cmap <f29> <nop>
+" }}}
 
-" {{{ comment in out
-" lhs comments
-vnoremap ,# :s/^/#/<CR>:nohlsearch<CR>
-vnoremap ,/ :s/^/\/\//<CR>:nohlsearch<CR>
-vnoremap ,> :s/^/> /<CR>:nohlsearch<CR>
-vnoremap ," :s/^/\"/<CR>:nohlsearch<CR>
-vnoremap ,% :s/^/%/<CR>:nohlsearch<CR>
-vnoremap ,! :s/^/!/<CR>:nohlsearch<CR>
-vnoremap ,; :s/^/;/<CR>:nohlsearch<CR>
-vnoremap ,- :s/^/--/<CR>:nohlsearch<CR>
-vnoremap ,c :s/^\/\/\\|^--\\|^> \\|^[#"%!;]//<CR>:nohlsearch<CR>
+" {{{ ctag jump
+  " thanks. https://qiita.com/aratana_tamutomo/items/59fb4c377863a385e032
+  set tags=.tags;$HOME
 
-" wrapping comments
-vnoremap ,* :s/^\(.*\)$/\/\* \1 \*\//<CR>:nohlsearch<CR>
-vnoremap ,( :s/^\(.*\)$/\(\* \1 \*\)/<CR>:nohlsearch<CR>
-vnoremap ,< :s/^\(.*\)$/<!-- \1 -->/<CR>:nohlsearch<CR>
-vnoremap ,d :s/^\([/(]\*\\|<!--\) \(.*\) \(\*[/)]\\|-->\)$/\2/<CR>:nohlsearch<CR> 
+  function! s:execute_ctags() abort
+    let tag_name = '.tags'
+    let tags_path = findfile(tag_name, '.;')
+    if tags_path ==# ''
+      return
+    endif
 
-" block comments
-vnoremap ,b v`<I<CR><esc>k0i/*<ESC>`>j0i*/<CR><esc><ESC>
-vnoremap ,h v`<I<CR><esc>k0i<!--<ESC>`>j0i--><CR><esc><ESC>
+    let tags_dirpath = fnamemodify(tags_path, ':p:h')
+    execute 'silent !cd' tags_dirpath '&& ctags -R -f' tag_name '2> /dev/null &'
+  endfunction
+
+  augroup ctags
+    autocmd!
+    autocmd BufWritePost * call s:execute_ctags()
+  augroup END
+
+  nnoremap <F11> :vsp<CR> :exe("tjump ".expand('<cword>'))<CR>
 " }}}
 
 call plug#begin('~/.vim/plugged')
   Plug 'mechatroner/rainbow_csv'
+  
+  Plug 'itchyny/lightline.vim'
+    let g:lightline = { 'colorscheme': 'wombat', }
+  
+  Plug 'thinca/vim-quickrun'
+
+  " Press v over and over again to expand selection
+  Plug 'terryma/vim-expand-region'
+    vmap v <Plug>(expand_region_expand)
+    vmap <C-v> <Plug>(expand_region_shrink)
+
   Plug 'tyru/caw.vim'
+    imap <silent> <C-_> <ESC><Plug>(caw:zeropos:toggle)I
+    nmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
+    vmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
+
   Plug 'Shougo/neosnippet.vim'
   Plug 'Shougo/neosnippet-snippets'
+    " {{{ Neosnipet User Snippet directory Setting
+    imap <C-i>     <Plug>(neosnippet_expand_or_jump)
+    smap <C-i>     <Plug>(neosnippet_expand_or_jump)
+    xmap <C-i>     <Plug>(neosnippet_expand_target)
+
+    " SuperTab like snippets behavior.
+    "imap <expr><TAB>
+    " \ pumvisible() ? "\<C-n>" :
+    " \ neosnippet#expandable_or_jumpable() ?
+    " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+    smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+    \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+    " For conceal markers.
+    if has('conceal')
+      set conceallevel=2 concealcursor=niv
+    endif
+
+    "set snippet file dir
+    let g:neosnippet#snippets_directory='~/.vim/neosnippets/'
+    " }}}
+
+  "Plug 'junegunn/fzf', { 'dir': '~/.local', 'do': './install --bin' }
   Plug 'junegunn/fzf.vim'
+    let g:fzf_command_prefix = 'Fzf'
+    command! -bang -nargs=* Rg
+      \ call fzf#vim#grep(
+      \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+      \   <bang>0 ? fzf#vim#with_preview('up:60%')
+      \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+      \   <bang>0)
+    noremap <silent><F1> :FzfHelptags
+    noremap! <silent><F1> <ESC>:FzfHelptags
+
 call plug#end()
 
-" {{{ caw.setting
-imap <silent> <C-_> <ESC><Plug>(caw:zeropos:toggle)I
-nmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
-vmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
-" }}}
 
-" {{{ ctag jump
-" thanks. https://qiita.com/aratana_tamutomo/items/59fb4c377863a385e032
-set tags=.tags;$HOME
-
-function! s:execute_ctags() abort
-  let tag_name = '.tags'
-  let tags_path = findfile(tag_name, '.;')
-  if tags_path ==# ''
-    return
-  endif
-
-  let tags_dirpath = fnamemodify(tags_path, ':p:h')
-  execute 'silent !cd' tags_dirpath '&& ctags -R -f' tag_name '2> /dev/null &'
-endfunction
-
-augroup ctags
-  autocmd!
-  autocmd BufWritePost * call s:execute_ctags()
-augroup END
-
-nnoremap <F11> :vsp<CR> :exe("tjump ".expand('<cword>'))<CR>
-" }}}
-
-" {{{ Neosnipet User Snippet directory Setting
-" Plugin key-mappings.
-imap <C-i>     <Plug>(neosnippet_expand_or_jump)
-smap <C-i>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-i>     <Plug>(neosnippet_expand_target)
-
-" SuperTab like snippets behavior.
-"imap <expr><TAB>
-" \ pumvisible() ? "\<C-n>" :
-" \ neosnippet#expandable_or_jumpable() ?
-" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
-" For conceal markers.
-if has('conceal')
-  set conceallevel=2 concealcursor=niv
-endif
-
-"set snippet file dir
-let g:neosnippet#snippets_directory='~/.vim/neosnippets/'
-" }}}
-
-" Fzf.vim {{{
-let g:fzf_command_prefix = 'Fzf'
-
-let g:fzf_action = {
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
-
-" - down / up / left / right
-let g:fzf_layout = { 'down': '~40%' }
-
-" Customize fzf colors to match your color scheme
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
-  
-" [Buffers] Jump to the existing window if possible
-let g:fzf_buffers_jump = 1
-
-" [[B]Commits] Customize the options used by 'git log':
-let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
-
-" [Tags] Command to generate tags file
-let g:fzf_tags_command = 'ctags -R'
-
-" [Commands] --expect expression for directly executing the command
-let g:fzf_commands_expect = 'alt-enter,ctrl-x'
-
-" }}}
-
-" }}}
 " }}}
 
