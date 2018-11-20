@@ -250,9 +250,9 @@ fi
 if valid fzf; then
   if valid fd; then
     #alias fd='fd -L'
-    export FZF_DEFAULT_COMMAND='fd -L --type f --ignore-case --follow -E .git -E .svn -E old -E bak'
+    export FZF_DEFAULT_COMMAND='fd -L --type f --ignore-case -E .git -E .svn -E old -E bak'
   else
-    export FZF_DEFAULT_COMMAND='find * -L -type d \( -name ".git" -o -name ".svn"  -o -name "old" -o -name "bak" \) -prune -o -type f -print'
+    export FZF_DEFAULT_COMMAND='find * -type d \( -name ".git" -o -name ".svn"  -o -name "old" -o -name "bak" \) -prune -o -type f -print'
   fi
   export FZF_DEFAULT_OPTS="--no-mouse --layout=reverse --height=70% --border --preview 'preview {}' --preview-window down:wrap"
   export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"

@@ -202,6 +202,29 @@ autocmd! QuickfixCmdPost *grep* cwindow
 noremap n nzzzv
 noremap N Nzzzv
 
+cabbr w!! w !sudo tee > /dev/null %
+noremap <Leader>so :source expand('<sfile>:p')<CR>
+
+" 自然な正規表現検索にするため
+nnoremap / /\v
+
+" {{{ Useful Search and Replace
+" word Highlight
+nnoremap <silent> <Space><Space> "zyiw:let @/ = '\<' . @z . '\>'<CR>:set hlsearch<CR>
+" word Replacement
+nmap # <Space><Space>:%s/<C-r>///g<Left><Left>
+" for Visual mode
+xnoremap <silent> <Space> mz:call <SID>set_vsearch()<CR>:set hlsearch<CR>`z
+xnoremap * :<C-u>call <SID>set_vsearch()<CR>/<C-r>/<CR>
+xmap # <Space>:%s/<C-r>///g<Left><Left>
+
+function! s:set_vsearch()
+    silent normal gv"zy
+    let @/ = '\V' . substitute(escape(@z, '/\'), '\n', '\\n', 'g')
+endfunction
+" }}}
+
+" {{{ Key Mapping Setting
 if LINUX()
     map <silent> <ESC>OA <UP>
     map <silent> <ESC>OB <DOWN>
@@ -218,7 +241,6 @@ if LINUX()
     " set term=xterm
 endif
 
-" {{{ Key Mapping Setting
 "カーソル表示状態変更制御シーケンス
 "ESC [ ? 25 h	カーソルを表示状態にする
 "ESC [ ? 25 l	カーソルを非表示状態にする
@@ -353,28 +375,6 @@ if has("gui")
     cnoremap <M-Space> <C-C>:simalt ~<CR>
 endif
 
-cabbr w!! w !sudo tee > /dev/null %
-noremap <Leader>so :source expand('<sfile>:p')<CR>
-
-
-" 自然な正規表現検索にするため
-nnoremap / /\v
-
-" {{{ Useful Search and Replace
-" word Highlight
-nnoremap <silent> <Space><Space> "zyiw:let @/ = '\<' . @z . '\>'<CR>:set hlsearch<CR>
-" word Replacement
-nmap # <Space><Space>:%s/<C-r>///g<Left><Left>
-" for Visual mode
-xnoremap <silent> <Space> mz:call <SID>set_vsearch()<CR>:set hlsearch<CR>`z
-xnoremap * :<C-u>call <SID>set_vsearch()<CR>/<C-r>/<CR>
-xmap # <Space>:%s/<C-r>///g<Left><Left>
-
-function! s:set_vsearch()
-    silent normal gv"zy
-    let @/ = '\V' . substitute(escape(@z, '/\'), '\n', '\\n', 'g')
-endfunction
-" }}}
 
 " Insert datetime Now
 inoremap <silent><C-;> <C-R>=strftime('%Y/%m/%d')<CR>
@@ -449,7 +449,6 @@ nnoremap <C-j> "zdd"zp
 vnoremap <C-k> "zx<Up>"zP`[V`]
 vnoremap <C-j> "zx"zp`[V`]
 
-
 " Space Settings
 vmap <Leader>y "+y
 vmap <Leader>d "+d
@@ -461,8 +460,6 @@ nmap <Leader><Leader> V
 nmap <Leader>b :make<CR>
 nnoremap <Leader><Tab> <C-^>
 nnoremap <Leader>y :!annotate expand('%:p') " what?
-
-nnoremap <Leader>o :FZF<CR>
 
 vnoremap <silent> y y`]
 vnoremap <silent> p p`]
@@ -561,18 +558,23 @@ call plug#begin('~/.vim/plugged')
     let g:neosnippet#snippets_directory='~/.vim/neosnippets/'
     " }}}
 
-  "Plug 'junegunn/fzf', { 'dir': '~/.local', 'do': './install --bin' }
-  Plug 'junegunn/fzf.vim'
+  if executable('fzf')
+    Plug 'junegunn/fzf.vim'
     let g:fzf_command_prefix = 'Fzf'
-    command! -bang -nargs=* Rg
-      \ call fzf#vim#grep(
-      \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-      \   <bang>0 ? fzf#vim#with_preview('up:60%')
-      \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-      \   <bang>0)
+    if executable('rg')
+      command! -bang -nargs=* Rg
+        \ call fzf#vim#grep(
+        \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+        \   <bang>0 ? fzf#vim#with_preview('up:60%')
+        \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+        \   <bang>0)
+    endif
     noremap <silent><F1> :FzfHelptags
-    noremap! <silent><F1> <ESC>:FzfHelptags
-
+    cnoremap <silent><F1> :FzfHelptags
+    inoremap <silent><F1> <ESC>:FzfHelptags
+    
+    noremap <Leader>o :FZF<CR>
+  endif
 call plug#end()
 
 
