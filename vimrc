@@ -280,6 +280,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'itchyny/lightline.vim'
     let g:lightline = { 'colorscheme': 'wombat', }
   
+  Plug 'rhysd/vim-gfm-syntax'
+  
   Plug 'thinca/vim-quickrun'
 
   " Press v over and over again to expand selection

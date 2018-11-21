@@ -11,12 +11,14 @@ if [ $_SHELL = "bash" ];then
     0)
       PS1='\[\033[31m\]${PWD}\$\[\033[0m\] '
       PS2='\[\033[31m\]>\[\033[0m\] '
-      [ -n "${REMOTEHOST:-}${SSH_CONNECTION:-}" ] && PS1='\[\033[31m\]\u@\h'" ${PS1}"
+      #[ -n "${REMOTEHOST:-}${SSH_CONNECTION:-}" ] && PS1='\[\033[31m\]\u@\h'" ${PS1}"
+      PS1='\[\033[31m\]\u@\h'" ${PS1}"
       ;;
     *)
       PS1='\[\033[37m\]\w:\$\[\033[0m\] '
       PS2='\[\033[37m\]$\[\033[0m\] '
-      [ -n "${REMOTEHOST:-}${SSH_CONNECTION:-}" ] && PS1='\[\033[36m\]\u@\h'" ${PS1}"
+      #[ -n "${REMOTEHOST:-}${SSH_CONNECTION:-}" ] && PS1='\[\033[36m\]\u@\h'" ${PS1}"
+      PS1='\[\033[36m\]\u@\h'" ${PS1}"
       ;;
   esac
 
@@ -110,6 +112,8 @@ export EDITOR=vim
 export PROMPT_DIRTRIM=2
 export PAGER='less -r'
 export LANG=ja_JP.UTF-8
+export LC_ALL=ja_JP.UTF-8
+export LANGUAGE=ja_JP.UTF-8
 export HISTSIZE=10000
 export HISTFILESIZE=10000
 export HISTCONTROL=ignoredups    #ignoredups,ignorespace,erasedups
@@ -117,6 +121,9 @@ export HISTIGNORE=cd:ls:ll:la:lla:pwd:exit  #you can use wild cart(*,?)
 export TIMEFORMAT='real: %Rs  user: %Us  system: %Ss'
 export LSCOLORS=ExFxCxdxBxegedabagacad
 export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+
+export MANPATH=/usr/local/man/ja:/usr/local/share/man/ja:/usr/share/man/ja:/usr/X11R6/man/ja:$HOME/.local/share/man
+alias updatemandb='mandb -uc ~/.local/share/man'
 
 BIN=$HOME/bin:$HOME/.local/bin:$HOME/usr/bin:$HOME/usr/local/bin
 
@@ -129,6 +136,7 @@ if [ -d $HOME/usr/local/python ]; then
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PYTHONPATH/lib
   fi
 fi
+
 
 if valid python3 && [[ ${PYTHONPATH:-} != "" ]]; then
   alias python="$PYTHONPATH/bin/python3"
@@ -144,14 +152,15 @@ fi
 
 if [ -d "${1:-}" ]; then
   WORKDIR=$1
-  _PATH=$BIN:$PATH
+  _PATH=$BIN:$HOME/usr/bin:$HOME/usr/local/bin:$HOME/local/bin:$PATH
 else
   WORKDIR=$HOME
-  _PATH=$WORKDIR/bin:$WORKDIR/usr/bin:$WORKDIR/usr/local/bin:$WORKDIR/local/bin:$BIN:$PATH
+  _PATH=$BIN:$WORKDIR/usr/bin:$WORKDIR/usr/local/bin:$WORKDIR/local/bin:$PATH
 fi
 export PATH=$(echo $_PATH | tr ":" "\n" | cat -n | sort -uk 2 | sort -n | sed "s/^.*\t//g" | tr "\n" ":" | sed "s/:*$//g")
 unset _PATH
 unset BIN
+
 
 export WORKCDHISTFILE=$WORKDIR/.cd_history
 export WORKBOOKMARKFILE=$WORKDIR/.bookmark
@@ -213,15 +222,29 @@ alias llx='ls -lX'
 alias l='ls -F'
 alias p='pwd'
 alias 400='chmod 400'
+alias 440='chmod 440'
+alias 444='chmod 444'
+alias 600='chmod 600'
 alias 640='chmod 640'
 alias 644='chmod 644'
+alias 664='chmod 664'
 alias 666='chmod 666'
+alias 700='chmod 700'
 alias 750='chmod 750'
 alias 754='chmod 754'
 alias 755='chmod 755'
 alias 775='chmod 775'
 alias 777='chmod 777'
-alias orebackup='cd ~;tar czfh portable_linux_64.tgz bin dotfile usr'
+if [ "$USER" = "yellow" ]; then
+  alias backupore='\cd ~;tar czfh portable_linux_64.tgz dotfile usr; \cd -'
+  alias backuplocal='\cd ~; tar czf ~/dotfile/local.tar.gz .local; \cd -'
+fi
+
+if valid yum; then
+  alias yum='sudo yum'
+elif valid apt-get; then
+  alias apt-get='sudo apt-get'
+fi
 
 if [ $_SHELL = "bash" ]; then
   alias rr='. ~/.bashrc'
@@ -286,7 +309,7 @@ function opener {       #file or directory automatic open
       cd $fn
   else
       echo "File or Directory Not Found.."
-      retun 1
+      return 1
   fi
 }
 
@@ -377,7 +400,29 @@ function cleanhist { #clean .cd_history
 }
 
 ########################################
-alias abspath='readlink -f'
+#alias abspath='readlink -f'
+if ! valid realpath; then
+  alias realpath='python -c "import sys, os.path;[sys.stdout.write(os.path.abspath(a) + \"\\n\") for a in sys.argv[1:] if not a.startswith(\"-\") ]"'
+fi
+
+function abspath {
+  typeset org=$PWD
+  typeset pth
+  for pth in "$@"; do
+    if [ -d $pth ]; then
+      \cd $pth
+      echo $PWD
+    elif [ -f $pth ]; then
+      \cd $(dirname $pth)
+      echo $PWD/$(basename $pth)
+    else
+      realpath --no-symlinks $pth
+    fi
+    \cd $org
+  done
+  \cd $org
+  return 0
+}
 
 if valid fzf; then
   function grep_goto {    # ripgrep & opener
@@ -428,7 +473,7 @@ if valid fzf; then
   alias b=bookmark
 
   function fzf_select_history {
-    READLINE_LINE=$(HISTTIMEFORMAT= history|sort -uk 2|sort -nr|sed -E 's/^[ \t0-9]+//g'| fzf --query "$READLINE_LINE")
+    READLINE_LINE=$(HISTTIMEFORMAT= history|sort -uk 2|sort -nr|sed -E 's/^[ \t0-9]+//g'| fzf --no-sort --query "$READLINE_LINE")
     READLINE_POINT=${#READLINE_LINE}
   }
   bind -x '"\C-r": fzf_select_history' > /dev/null 2>&1
@@ -456,25 +501,25 @@ if valid fzf; then
   alias lb='locbasename'
 
   function histcd {  # fzf : recently Changed directory
-    opener $(catuniq $WORKCDHISTFILE | xargs ls -d 2> /dev/null | fzf)
+    opener $(catuniq $WORKCDHISTFILE | xargs -n 100 \ls --sort=none -d 2> /dev/null | fzf --no-sort)
   }
   bind '"\C-x\C-x": "histcd\C-m"' > /dev/null 2>&1
 
   function histvi {  # fzf : recently vim opened file
-    opener $(grep "^> " $HOME/.viminfo | cut -c 3- | tacuniq | sed "s:~:$HOME:g" | xargs ls -d 2> /dev/null | fzf)
+    opener $(grep "^> " $HOME/.viminfo | cut -c 3- | tacuniq | sed "s:~:$HOME:g" | xargs -n 100 \ls --sort=none -d 2> /dev/null | fzf --no-sort)
   }
   bind '"\C-x\C-v": "histvi\C-m"' > /dev/null 2>&1
 
   function hist {  # fzf : recently bash cmd or Changed directory
     typeset ret
-    ret=`(uniq $WORKCDHISTFILE && grep "^> " $HOME/.viminfo | uniq | cut -b 3- | sed "s:~:$HOME:g") | sort | uniq -c | sort -nr | cut -b 9- | xargs ls -d 2> /dev/null | fzf`
+    ret=`(uniq $WORKCDHISTFILE && grep "^> " $HOME/.viminfo | uniq | cut -b 3- | sed "s:~:$HOME:g") | sort | uniq -c | sort -nr | cut -b 9- | xargs -n 100 \ls --sort=none -d 2> /dev/null | fzf --no-sort`
     opener $ret
   }
   bind '"\C-x\C-a": "hist\C-m"' > /dev/null 2>&1
 fi
 
 function save_bookmark {   # save bookmark
-  echo $PWD >> $WORKBOOKMARKFILE
+  abspath $PWD >> $WORKBOOKMARKFILE
 }
 alias s=save_bookmark
 
@@ -606,7 +651,7 @@ bind '"\C-x\C-g": "vimgrep\C-m"' > /dev/null 2>&1
 #thanks https://github.com/faif/shell-utils/blob/master/shell-utils.sh
 
 # Arguments: $1 -> the file
-function bkup { # simple way to keep a backup of a file
+function bak { # simple way to keep a backup of a file
     if [ $# -ne 1 ]
     then
         puse "bkup file"
@@ -715,3 +760,12 @@ function file_to_upper { # convert the input files to upper case
     done
 }
 
+alias delblankline="sed '/^$/d'"
+alias tolf='tr -d "\r"'
+alias tocrlf='sed "s/$/\r/g"'
+alias encoding='iconv -t'
+if valid xsv; then
+  alias totsv='xsv fmt -t "\t"'
+  alias tocsv='xsv fmt -t ","'
+  alias csvtable='xsv table'
+fi

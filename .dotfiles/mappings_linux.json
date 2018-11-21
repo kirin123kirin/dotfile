@@ -1,0 +1,7 @@
+{
+ "vimrc": "~/.vimrc",
+ "vim": "~/.vim",
+ "bashrc": "~/.bashrc",
+ "ctags": "~/.ctags",
+ "gitattribute": "~/.gitattribute"
+}

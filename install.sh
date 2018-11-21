@@ -2,6 +2,20 @@
 
 OWNDIR=$(cd $(dirname $0); pwd)
 
+#.local/bin making
+if [ ! -e ~/.local/bin ]; then
+  mkdir -p ~/.local/bin
+fi
+tar zxf $OWNDIR/local.tar.gz -C ~/
+chmod -R a+x ~/.local/bin
+
+# dotfiles linking
+~/.local/bin/dotfiles clean $OWNDIR
+~/.local/bin/dotfiles link $OWNDIR
+#ret=$(~/.local/bin/dotfiles link $OWNDIR|grep Exist | sed -E "s/Exist: '(.+)' -> '(.+)'/\1\t\2/g")
+
+exit 0
+
 # .bashrc linking
 if [ -f ~/.bashrc ]; then
   if grep -qs ". $OWNDIR/bashrc" ~/.bashrc; then
@@ -41,14 +55,6 @@ else
   ln -s $OWNDIR/vim ~/.vim
 fi
 
-#.local/bin making
-if [ ! -e ~/.local/bin ]; then
-  mkdir -p ~/.local/bin
-fi
-cp -R $OWNDIR/local/bin/* ~/.local/bin/
-cd ~/.local/bin
-tar zxf *.tar.gz && rm -f *.tar.gz
-chmod -R a+x ~/.local/bin/*
 
 # .ctags linking
 if [ -f ~/.ctags ]; then
