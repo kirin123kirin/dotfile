@@ -124,6 +124,7 @@ export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30
 
 export MANPATH=/usr/local/man/ja:/usr/local/share/man/ja:/usr/share/man/ja:/usr/X11R6/man/ja:$HOME/.local/share/man
 alias updatemandb='mandb -uc ~/.local/share/man'
+alias sort="LANG=C sort"
 
 BIN=$HOME/bin:$HOME/.local/bin:$HOME/usr/bin:$HOME/usr/local/bin
 
@@ -138,18 +139,6 @@ if [ -d $HOME/usr/local/python ]; then
 fi
 
 
-if valid python3 && [[ ${PYTHONPATH:-} != "" ]]; then
-  alias python="$PYTHONPATH/bin/python3"
-  alias pip="$PYTHONPATH/bin/pip3"
-  
-  function topy3 {          # python2 source is convert to python3 source (overrite)
-    ret=$(find $1 -type f -exec file {} \; | grep ": Python script" | cut -d ":" -f 1 | grep -v "\.md$")
-    for x in $ret; do
-        2to3 -wn $x
-    done
-  }
-fi
-
 if [ -d "${1:-}" ]; then
   WORKDIR=$1
   _PATH=$BIN:$HOME/usr/bin:$HOME/usr/local/bin:$HOME/local/bin:$PATH
@@ -161,9 +150,21 @@ export PATH=$(echo $_PATH | tr ":" "\n" | cat -n | sort -uk 2 | sort -n | sed "s
 unset _PATH
 unset BIN
 
-
 export WORKCDHISTFILE=$WORKDIR/.cd_history
 export WORKBOOKMARKFILE=$WORKDIR/.bookmark
+
+
+if valid python3 && [[ ${PYTHONPATH:-} != "" ]]; then
+  alias python="$PYTHONPATH/bin/python3"
+  alias pip="$PYTHONPATH/bin/pip3"
+  
+  function topy3 {          # python2 source is convert to python3 source (overrite)
+    ret=$(find $1 -type f -exec file {} \; | grep ": Python script" | cut -d ":" -f 1 | grep -v "\.md$")
+    for x in $ret; do
+        2to3 -wn $x
+    done
+  }
+fi
 
 # Ore option
 set -o emacs
@@ -192,12 +193,17 @@ alias mv='mv -i'
 
 if valid git; then
   alias diff='git diff --no-index'
+  
+  alias gitgc='git reflog expire --expire=now --all && git gc --aggressive --prune=now'
+  alias gitname='git config --global user.name'
+  alias gitemail='git config --global user.email'
+  alias gitpass="git config --global credential.helper 'cache --timeout=3600'"
 else
   alias diff='diff -u'
 fi
 
 ### Default to human readable figures ###
-alias df='df -h'
+alias df='df -iTh'
 alias du='du -h'
 alias dusort='du -d 1 | sort -n'
 alias less='less -r'                          # raw control characters
@@ -692,6 +698,7 @@ function os_name { # print the system's name
     printf "\n"
 }
 
+alias os_version='\cd /etc; cat redhat-release lsb-release debian_version fedora-release 2>/dev/null; uname -or; \cd -'
 
 # Arguments: $1 -> the process name to search for
 function get_pid { # print a list of process id(s) matching $1
@@ -769,3 +776,11 @@ if valid xsv; then
   alias tocsv='xsv fmt -t ","'
   alias csvtable='xsv table'
 fi
+
+alias uniqcount='sort | uniq -c | sort -n'
+alias pings='xargs -P30 -n1 ping -s1 -c1 -W1 | grep ttl'
+alias psls='ps auxwwf'
+alias free='free -mt'
+alias netstatp='sudo netstat -ap | grep -E "(SYN|ESTABLISHED)"'
+valid nslookup && alias nslookup='nslookup -query=any'
+

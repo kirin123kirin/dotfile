@@ -6,10 +6,10 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-sudo yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
+sudo yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel uuid-devel
 
 version=$1
-minerversion=${version::3}
+minerversion=${version:3}
 
 mkdir ~/src
 cd ~/src
