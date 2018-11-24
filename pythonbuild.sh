@@ -25,10 +25,9 @@ pybasename=$(basename $PWD | sed "s/[-\.]//g" | tr [A-Z] [a-z])
 
 ./configure --prefix=/usr/local/lib/${pybasename} --enable-shared --enable-optimizations --with-openssl=/usr/local/ssl
 
-sed -i "s/^BLDLIBRARY=.*/BLDLIBRARY=     libpython\$\(LDVERSION\)\.a/g" Makefile
+sed -Ei "s/^BLDLIBRARY=.*/BLDLIBRARY=     libpython\$\(LDVERSION\)\.a/g" Makefile
 
-make -s -j2
-
+make -s
 make altinstall
 
 cd /usr/local/lib/${pybasename}/lib

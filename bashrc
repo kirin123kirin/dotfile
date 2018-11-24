@@ -109,6 +109,7 @@ alias vi='vim'
 ### Ore Environment ###
 export TERM=xterm-256color 
 export EDITOR=vim
+export FCEDIT=$EDITOR
 export PROMPT_DIRTRIM=2
 export PAGER='less -r'
 export LANG=ja_JP.UTF-8
@@ -126,7 +127,7 @@ export MANPATH=/usr/local/man/ja:/usr/local/share/man/ja:/usr/share/man/ja:/usr/
 alias updatemandb='mandb -uc ~/.local/share/man'
 alias sort="LANG=C sort"
 
-BIN=$HOME/bin:$HOME/.local/bin:$HOME/usr/bin:$HOME/usr/local/bin
+BIN=$HOME/bin:$HOME/.local/bin:$HOME/.local/sbin:$HOME/usr/bin:$HOME/usr/sbin:$HOME/usr/local/bin:$HOME/usr/local/sbin
 
 if [ -d $HOME/usr/local/python ]; then
   export PYTHONPATH=$HOME/usr/local/python
@@ -146,7 +147,7 @@ else
   WORKDIR=$HOME
   _PATH=$BIN:$WORKDIR/usr/bin:$WORKDIR/usr/local/bin:$WORKDIR/local/bin:$PATH
 fi
-export PATH=$(echo $_PATH | tr ":" "\n" | cat -n | sort -uk 2 | sort -n | sed "s/^.*\t//g" | tr "\n" ":" | sed "s/:*$//g")
+export PATH=$(echo $_PATH | tr ":" "\n" | xargs \ls -d 2>/dev/null | cat -n | sort -uk 2 | sort -n | sed "s/^.*\t//g" | tr "\n" ":" | sed "s/:*$//g")
 unset _PATH
 unset BIN
 
@@ -203,7 +204,7 @@ else
 fi
 
 ### Default to human readable figures ###
-alias df='df -iTh'
+alias df='df -Th'
 alias du='du -h'
 alias dusort='du -d 1 | sort -n'
 alias less='less -r'                          # raw control characters
@@ -242,8 +243,8 @@ alias 755='chmod 755'
 alias 775='chmod 775'
 alias 777='chmod 777'
 if [ "$USER" = "yellow" ]; then
-  alias backupore='\cd ~;tar czfh portable_linux_64.tgz dotfile usr; \cd -'
-  alias backuplocal='\cd ~; tar czf ~/dotfile/local.tar.gz .local; \cd -'
+  alias backupore='\cd ~;tar czfh tmp/portable_linux_64.tgz .local dotfile usr; \cd -'
+  alias backuplocal='\cd ~; tar czfh ~/dotfile/local.tar.gz .local; \cd -'
 fi
 
 if valid yum; then
@@ -478,11 +479,25 @@ if valid fzf; then
   }
   alias b=bookmark
 
-  function fzf_select_history {
-    READLINE_LINE=$(HISTTIMEFORMAT= history|sort -uk 2|sort -nr|sed -E 's/^[ \t0-9]+//g'| fzf --no-sort --query "$READLINE_LINE")
-    READLINE_POINT=${#READLINE_LINE}
-  }
-  bind -x '"\C-r": fzf_select_history' > /dev/null 2>&1
+  if [ $_SHELL = "bash" ]; then
+    function fzf_select_history {
+      READLINE_LINE=$(HISTTIMEFORMAT= history|sort -uk 2|sort -nr|sed -E 's/^[ \t0-9]+//g'| fzf --no-sort --preview=':' --preview-window="hidden" --query "$READLINE_LINE")
+      READLINE_POINT=${#READLINE_LINE}
+    }
+    bind -x '"\C-r": fzf_select_history'
+  elif [ $_SHELL = "zsh" ]; then
+    function fzf_select_history {
+      BUFFER=$(HISTTIMEFORMAT= history|sort -uk 2|sort -nr|sed -E 's/^[ \t0-9]+//g'| fzf --no-sort --preview=':' --preview-window="hidden" --query "$BUFFER")
+      CURSOR=${#BUFFER}
+      zle reset-prompt
+    }
+    zle -N fzf_select_history
+    bindkey '^r' fzf_select_history
+  else
+    function fzf_select_history {
+      history |sort -uk 2|sort -nr|sed -E 's/^[ \t0-9]+//g'| fzf --no-sort --preview=':' --preview-window="hidden"
+    }
+  fi
 
   function loc {    # fzf: locate & open
     typeset pth
@@ -522,6 +537,61 @@ if valid fzf; then
     opener $ret
   }
   bind '"\C-x\C-a": "hist\C-m"' > /dev/null 2>&1
+
+  function _tips {
+    typeset oneliner_f
+    oneliner_f="${1:-$HOME/.local/tips.txt}"
+
+    [[ ! -f $oneliner_f || ! -s $oneliner_f ]] && return
+
+    typeset cmd q k res accept
+    while accept=0; cmd="$(
+      cat <$oneliner_f \
+        | sed -e '/^#/d;/^$/d' \
+        | perl -pe 's/^(\[.*?\]) (.*)$/$1\t$2/' \
+        | perl -pe 's/(\[.*?\])/\033[31m$1\033[m/' \
+        | perl -pe 's/^(: ?)(.*)$/$1\033[30;47;1m$2\033[m/' \
+        | perl -pe 's/^(.*)([[:blank:]]#[[:blank:]]?.*)$/$1\033[30;1m$2\033[m/' \
+        | perl -pe 's/(!)/\033[31;1m$1\033[m/' \
+        | perl -pe 's/(\|| [A-Z]+ [A-Z]+| [A-Z]+ )/\033[35;1m$1\033[m/g' \
+        | fzf --ansi --multi --no-sort --tac --query="$q" --preview='echo "[Command Example]"; echo {} | cut -d "]" -f 2- | cut -c 2-' --print-query --expect=ctrl-v --exit-0
+        )"; do
+      q="$(head -1 <<< "$cmd")"
+      k="$(head -2 <<< "$cmd" | tail -1)"
+      res="$(sed '1,2d;/^$/d;s/[[:blank:]]#.*$//' <<< "$cmd")"
+      [ -z "$res" ] && continue
+      if [ "$k" = "ctrl-v" ]; then
+        vim "$oneliner_f" < /dev/tty > /dev/tty
+      else
+        cmd="$(perl -pe 's/^(\[.*?\])\t(.*)$/$2/' <<<"$res")"
+        if [[ $cmd =~ "!$" || $cmd =~ "! *#.*$" ]]; then
+          accept=1
+          cmd="$(sed -e 's/!.*$//' <<<"$cmd")"
+        fi
+        break
+      fi
+    done
+    tr -d '@' <<<"$cmd" | perl -pe 's/\n/; /' | sed -e 's/; $//'
+  }
+
+  if [ $_SHELL = "bash" ]; then
+    function tips {
+      READLINE_LINE=$(_tips "$@")
+      READLINE_POINT=${#READLINE_LINE}
+    }
+    bind -x '"\C-r": tips'
+  elif [ $_SHELL = "zsh" ]; then
+    function tips {
+      BUFFER=$(_tips "$@")
+      CURSOR=${#BUFFER}
+      zle reset-prompt
+    }
+    zle -N tips
+    bindkey '^r' tips
+  else
+    alias tips=_tips
+  fi
+
 fi
 
 function save_bookmark {   # save bookmark
@@ -555,10 +625,8 @@ function h {
 
 bind '"\C-t": "\C-atime "' > /dev/null 2>&1 #time command shortcut
 
-function rep {          # firster replace function
-  typeset arg
-  arg="$(cat -)"
-  echo "$arg" | rg "$1" -r "$2" -C 9999999999999999999
+function rep {          # replace function
+  sed -Ei "s%$1%$2%g" $3
 }
 
 function between {     # between cat lines
