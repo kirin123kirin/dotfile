@@ -294,7 +294,8 @@ if valid docker; then
   if [ "$USER" = "root" ]; then
     alias d='docker'
   else
-    alias d='sudo docker'
+    alias docker='sudo docker'
+    alias d='docker'
   fi
   alias dpa='d ps -a'
   alias di='d images'
