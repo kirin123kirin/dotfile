@@ -193,12 +193,17 @@ alias cp='cp -i'
 alias mv='mv -i'
 
 if valid git; then
-  alias diff='git diff --no-index'
+  alias diff='git diff --color --no-index'
   
   alias gitgc='git reflog expire --expire=now --all && git gc --aggressive --prune=now'
   alias gitname='git config --global user.name'
   alias gitemail='git config --global user.email'
   alias gitpass="git config --global credential.helper 'cache --timeout=3600'"
+  function gitpush {
+    git add .
+    git commit -m "$1"
+    git push origin master
+  }
 else
   alias diff='diff -u'
 fi

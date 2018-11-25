@@ -1,0 +1,18 @@
+[user]
+  name = kirin123kirin
+  email = 3436009+kirin123kirin@users.noreply.github.com
+
+[push]
+  default = current
+
+[commit]
+  template = ~/.gitconfig.d/gitmessage
+
+[core]
+  editor = vim
+
+[color]
+  ui = true
+  
+[include]
+  path = ~/.gitconfig.d/gitalias.txt

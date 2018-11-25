@@ -3,5 +3,8 @@
  "vim": "~/.vim",
  "bashrc": "~/.bashrc",
  "ctags": "~/.ctags",
- "gitattribute": "~/.gitattribute"
+ "gitattribute": "~/.gitattribute",
+ "gitconfig": "~/.gitconfig",
+ "gitalias/gitalias.txt": "~/.gitconfig.d/gitalias.txt",
+ 
 }

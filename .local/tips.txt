@@ -53,9 +53,20 @@
 
 
 : git
+[編集内容を取り消したい] git checkout FILENAME #ファイル名のところを.にすると、ステージング前の全ての変更内容がなくなる。
+[ステージングを取り消したい] git reset FILENAME #ステージングを取り下げる。編集内容は残る
+[ステージしたファイルを最後にコミットした状態に戻す] git checkout HEAD -- FILENAME #つまり編集内容は残らない。
+[編集・ステージングいずれの変更内容を取り消し、最後にコミットした状態に戻す] git reset --hard HEAD
+#コミットidはgit logコマンドで調べて、戻りたいコミットのidを指定してあげる。
+[コミットIDを調べたい] git log
+[コミットのバージョンを戻したい] git reset --hard COMMITID
+#reset --hardが戻った以降のコミットをなかったことにする(コミットログが消える)のに対して、revertはコミットログを残したまま戻る。
+[戻す履歴も残しつつ元に戻す]git revert COMMITID
+[ファイルのコミットバージョンを戻したい] git checkout COMMITID FILEPATH
+#念のためバックアップを作成→リモートリポジトリを消す→ローカルのを反映させるということをする。
+[リモートリポジトリのコミットのバージョンを戻したい] git push origin master:master_bak && git push -f origin HEAD^:master && git push origin :master_bak
 [git rmを一括でやる] git status -s | awk '$1=="D"{print $2}' | xargs git rm
 [tracked file を列挙] git --git-dir "`git rev-parse --git-dir`" -C "`git config core.worktree || pwd`" ls-files
-[TORIAEZU!TORIAEZU!] cat -n ika_1125_120001_01.txt@ | awk -F, '{line[NR]=$0} NR>2000 && $10>4 {printf "%s\n%s\n%s\n%s\n", line[NR-3], line[NR-2], line[NR-1], line[NR]; exit}'
 
 :git lfs
 [Git LFS対象の設定] git lfs track "*.mp4" #これやると.gitattributeファイルが出来る
