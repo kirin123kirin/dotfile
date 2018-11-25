@@ -580,7 +580,7 @@ if valid fzf; then
       READLINE_LINE=$(_tips "$@")
       READLINE_POINT=${#READLINE_LINE}
     }
-    bind -x '"\C-r": tips'
+    bind -x '"\C-b\C-b": tips'
   elif [ $_SHELL = "zsh" ]; then
     function tips {
       BUFFER=$(_tips "$@")
@@ -588,7 +588,7 @@ if valid fzf; then
       zle reset-prompt
     }
     zle -N tips
-    bindkey '^r' tips
+    bindkey '^b^b' tips
   else
     alias tips=_tips
   fi
