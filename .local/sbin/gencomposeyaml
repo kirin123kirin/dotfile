@@ -1,0 +1,154 @@
+#!/usr/bin/env python3
+import sys, os, re
+from argparse import ArgumentParser
+import yaml
+
+usage="""Generate DockerCompose YAML string From docker run command line string.
+  Usage Example:
+    In : {} docker run -d --restart=always --name=hoge -e UID=110 -e GID=200 foo/hoge /bin/sh \-x
+    StdOut: hoge:
+              command: /bin/sh -x
+              container_name: hoge
+              environment:
+                  - UID: 110
+                  - GID: 200
+              image: foo/hoge
+              restart: always
+""".format(os.path.basename(sys.argv[0]).replace(".py", ""))
+
+
+def cleanup_item(a):
+    _k = re.split("[:=]", a)
+    try:
+        k, v = _k
+    except ValueError:
+        return a
+
+    if v.lower() == "true":
+        return {k : True}
+    if v.lower() == "false":
+        return {k: False}
+
+    try:
+        return {k: int(v)}
+    except:
+        return {k: v}
+
+def normalize(k, v):
+    if k in ["expose", "env_file", "extra_hosts", "ports", "security_opt", "mac_address", "links"] or isinstance(v, bool):
+        return (k, v)
+    if k == "command":
+        return (k, " ".join(v).replace("\\", ""))
+    if isinstance(v, list):
+        r = list(map(cleanup_item, v))
+        if len(r) == 1:
+            return (k, r[0])
+        return (k, r)
+    else:
+        return (k, cleanup_item(v))
+
+def dict2yml(dic, servicename=None):
+    if servicename is None:
+        servicename = os.path.basename(dic["image"])
+    d = {servicename: dic}
+    return yaml.dump(d, default_flow_style=False, default_style='')
+
+def args_v3():
+
+    ps = ArgumentParser(usage, add_help=False)
+    padd = ps.add_argument
+
+    padd("-s", "--servicename", type=str, dest="servicename", help="servicename of compose file")
+
+    padd("--name", type=str, dest="container_name")
+    padd("-c", "--cpu-shares",type=int, dest="cpu_shares")
+    padd("-e", "--environment",action="append")
+    padd("-h", "--hostname", type=str)
+    padd("-l", "--label", dest="labels", action="append")
+    padd("-m", "--memory",type=int, dest="mem_limit")
+    padd("-p", "--publish",dest="ports", action="append")
+    padd("-u", "--user",type=str)
+    padd("-v", "--volume", dest="volumes", action="append")
+    padd("-w", "--workdir",type=str, dest="working_dir")
+    padd("-P", "--publish-all", action='store_true')
+    padd("-t", "--tty", action="store_true")
+    padd("--link", action="append", dest="links")
+    padd("--dns", action="append")
+    padd("--device", dest="devices", action="append")
+    padd("--entrypoint", type=str)
+    padd("--expose", action="append")
+    padd("--ipc", type=str)
+    padd("--network", dest="networks", type=str)
+    padd("--pid", type=str)
+    padd("--restart", type=str)
+    padd("--tmpfs", action="append")
+    padd("--privileged", action="store_true")
+
+
+    padd("--net", type=str, dest="network_mode")
+    padd("--network-mode", type=str, dest="network_mode")
+    padd("--logging", type=str)
+    padd("--log-driver", type=str, dest="logging") # v2 TODO
+    padd("--log-opt", action="append", dest="logging") # v2 TODO
+
+    padd("--cap-add", action="append", dest="cap_add")
+    padd("--cap-drop", action="append", dest="cap_drop")
+    padd("--cgroup-parent", type=str, dest="cgroup_parent")
+    padd("--cpuset-cpus", type=str, dest="cpuset_cpus")
+    padd("--cpuset-mems", type=str, dest="cpuset_mems")
+    padd("--dns-option", action="append", dest="dns_option")
+    padd("--dns-search", action="append", dest="dns_search")
+    padd("--env-file", action="append", dest="env_file")
+    padd("--mac-address", type=str, dest="mac_address")
+    padd("--network-alias", dest="aliases", action="append")
+    padd("--pids-limit", type=int, dest="pids-limit")
+    padd("--security-opt", action="append", dest="security_opt")
+    padd("--stop-signal", type=str, dest="stop_signal")
+    padd("--volume-driver", type=str, dest="volume_driver")
+    padd("--volumes-from", action="append", dest="volumes_from")
+    padd("--read-only", action="store_true", dest="read_only")
+
+    # ignore Arguments
+    padd("-a", "--attach", action="store_const", const=None)
+    padd("-d", "--detach", action="store_const", const=None)
+    padd("-i", "--interactive", action="store_const", const=None)
+
+    padd("image", nargs=1)
+    padd("command", nargs="*", type=str)
+
+    # initial check
+    try:
+        pos = sys.argv.index("docker")
+        ["run", "exec"].index(sys.argv[pos+1])
+    except ValueError:
+        sys.stderr.write(usage + "\n\n")
+        sys.stderr.write("Please docker command full string\n\n")
+        sys.exit(1)
+
+    arg_dic = vars(ps.parse_args(sys.argv[pos + 2:]))
+    dic = dict(normalize(k, v) for k,v in arg_dic.items() if v)
+
+    return dict2yml(dic)
+
+args_v2 = args_v3 #TODO
+
+def args_v1():
+	# TODO
+    ret = args_v3()
+    item = [("logging", "log_driver"), ("network_mode", "net")]
+    for s, d in item:
+        ret = ret.replace(s, d)
+
+def test():
+    cmd = "docker run -d --restart=always --name=hoge -e UID=110 -e GID=200 foo/hoge /bin/sh \-x"
+    sys.argv.extend(cmd.split(" "))
+    sys.stdout.write(args_v3() + "\n")
+
+def main():
+    sys.stdout.write(args_v3() + "\n")
+
+
+if __name__ == "__main__":
+    #test()
+    main()
+

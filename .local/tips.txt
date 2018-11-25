@@ -1,0 +1,69 @@
+# ワンライナーお手軽実行するためのファイル
+#
+# {書き方}
+#     （例）
+#          [これはワンライナーです] oneliner | some-command | other-command
+#
+#     []のなかにそのワンライナーの説明を書きます（省いても構いません）
+#     []の後ろに1つ以上のスペースをあけてワンライナーを書きます
+#
+# {@マークについて}
+#     ワンライナー中に@マークを1つだけ記述することができます
+#     実行時にその@マークの位置にカーソルが置かれます
+#
+# {!マークについて}
+#     ワンライナーの行末に!マークを置くと、ワンライナーが即座に実行されます
+#
+# {#マークについて}
+#     2種類の使用方法があります
+#     行頭に置かれた場合、その行はfzfに表示されません
+#     行中に置いた場合、それ以降をコメントとみなし黒色表示します
+#     ただし、後者の場合#マークの前後にスペースを必要とします
+#
+# {:マークについて}
+#     セクションごとのタイトルに最適です
+#     シェルが無視してくれる記号には#と:があります
+#     #は行頭にあるとfzfが無視しますが、:は問題無いです
+#
+
+: 暗号関連
+[ファイルの暗号化] openssl aes-256-cbc -e -in normal_file@ -out encrypted_file
+[ファイルの復号] openssl aes-256-cbc -d -in encrypted_file@ -out decrypted_file
+[ディレクトリを圧縮] tar zcf - some_dir@ | openssl aes-256-cbc -e -out hogehoge.tgz.enc
+[ディレクトリから伸張] openssl aes-256-cbc -d -in hogehoge.tgz.enc@ | tar zxvf -
+
+: fzf イディオム
+[前方一致] ^word
+[後方一致] word$
+[部分完全一致] 'word
+[含まない] !word
+[あいまい一致が嫌な場合] fzf -e
+
+: tar
+[シンボリックリンクたどって圧縮] tar czfh test.tar.gz symlink
+[tar内の一部ファイルを標準出力] tar xOf test.tar inner.txt # x:一部ファイルを取り出す場合, Oは標準出力
+[findの結果をtarでアーカイブしたい] find -name "hoge*" -print0 | tar -cvz -T - --null -f hoges.tar.gz
+
+: その他
+[galiasの重複がないかチェック] cat ${DOTPATH:?not set}/.zsh/30_aliases.zsh G '[A-Z]\+' G 'alias -g' | sed -E '/^ *#.*$/d;s/^.*alias -g ([A-Z0-9]+)=.*$/\1/' S | uniq -c G -v "^ *1" A 2
+[tacがなければtail -rを出力] echo "${${${(M)${+commands[tac]}#1}:+tac}:-"tail -r"}"
+[git logで使った絵文字を列挙] git log --oneline | grep -o ':\w\+:' | sort -u | if has emojify; then emojify; else cat -; fi
+[テキストのコマンドの総行数] for file in $DOTPATH/bin/*; do file $file | grep -i "text" | cut -d: -f1 | xargs wc -l; done | awk '{m+=$1} END{print m}'
+[lsとsedによる簡易treeコマンド] ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
+
+
+: git
+[git rmを一括でやる] git status -s | awk '$1=="D"{print $2}' | xargs git rm
+[tracked file を列挙] git --git-dir "`git rev-parse --git-dir`" -C "`git config core.worktree || pwd`" ls-files
+[TORIAEZU!TORIAEZU!] cat -n ika_1125_120001_01.txt@ | awk -F, '{line[NR]=$0} NR>2000 && $10>4 {printf "%s\n%s\n%s\n%s\n", line[NR-3], line[NR-2], line[NR-1], line[NR]; exit}'
+
+:git lfs
+[Git LFS対象の設定] git lfs track "*.mp4" #これやると.gitattributeファイルが出来る
+[Git LFSで管理しているファイルの確認] git lfs ls-files
+[100MB以上のコミット場合] git reset --soft HEAD^ && git add . && git commit -m "git lfsを設定" && git push origin master
+[Git LFSを取り消す] git lfs uninstall
+
+: docker
+[none イメージを全部削除する] docker rmi $(docker images -f "dangling=true" -q)
+
+# vim:ft=sh
