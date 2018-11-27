@@ -52,6 +52,9 @@
 [テキストのコマンドの総行数] for file in $DOTPATH/bin/*; do file $file | grep -i "text" | cut -d: -f1 | xargs wc -l; done | awk '{m+=$1} END{print m}'
 [lsとsedによる簡易treeコマンド] ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
 
+: 性能トラブルシューティング
+# LANG設定をja_JP.UTF-8とかにしてると無駄な動きが多く10倍ぐらい遅くなったりする
+[なんかsortとかが遅い気がする] LC_ALL=C sort FILE
 
 : git
 [編集内容を取り消したい] git checkout FILENAME #ファイル名のところを.にすると、ステージング前の全ての変更内容がなくなる。
@@ -78,5 +81,8 @@
 : docker
 [コンテナ内の標準出力を表示したい] docker logs CONTAINER
 [none イメージを全部削除する] docker rmi $(docker images -f "dangling=true" -q)
+
+: bash only
+[スクリプト内でaliasを使いたい] shopt -s expand_aliases
 
 # vim:ft=sh

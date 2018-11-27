@@ -318,6 +318,23 @@ call plug#begin('~/.vim/plugged')
     let g:neosnippet#snippets_directory='~/.vim/neosnippets/'
     " }}}
 
+  " golang
+  if executable("go")
+    Plug 'fatih/vim-go'
+    Plug 'nsf/gocode', {'rtp': 'vim/'}
+      let g:go_fmt_command = "goimports"
+      let g:go_auto_sameids = 1
+  endif
+
+  " Markdown
+  Plug 'godlygeek/tabular'
+  Plug 'plasticboy/vim-markdown'
+    let g:vim_markdown_folding_style_pythonic = 1
+    " TableFormatはよく使うのでエイリアス
+    :command TF TableFormat
+    " list追加時のindentは行わない
+    let g:vim_markdown_new_list_item_indent = 0
+
   if executable('fzf')
     Plug 'junegunn/fzf.vim'
     let g:fzf_command_prefix = 'Fzf'

@@ -113,8 +113,18 @@ export FCEDIT=$EDITOR
 export PROMPT_DIRTRIM=2
 export PAGER='less -r'
 export LANG=ja_JP.UTF-8
-export LC_ALL=ja_JP.UTF-8
-export LANGUAGE=ja_JP.UTF-8
+export LC_CTYPE=$LANG
+export LC_NUMERIC=$LANG
+export LC_TIME=$LANG
+export LC_COLLATE=C # 重大な性能劣化起こすため最低限これだけはCにすべき
+export LC_MONETARY=$LANG
+export LC_MESSAGES=$LANG
+export LC_PAPER=$LANG
+export LC_NAME=$LANG
+export LC_ADDRESS=$LANG
+export LC_TELEPHONE=$LANG
+export LC_MEASUREMENT=$LANG
+export LC_IDENTIFICATION=$LANG
 export HISTSIZE=10000
 export HISTFILESIZE=10000
 export HISTCONTROL=ignoredups    #ignoredups,ignorespace,erasedups
@@ -125,7 +135,11 @@ export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30
 
 export MANPATH=/usr/local/man/ja:/usr/local/share/man/ja:/usr/share/man/ja:/usr/X11R6/man/ja:$HOME/.local/share/man
 alias updatemandb='mandb -uc ~/.local/share/man'
-alias sort="LANG=C sort"
+alias sort="LC_ALL=C sort"
+alias uniq="LC_ALL=C uniq"
+alias sed="LC_ALL=C sed"
+alias tr="LC_ALL=C tr"
+alias cut="LC_ALL=C cut"
 
 BIN=$HOME/bin:$HOME/.local/bin:$HOME/.local/sbin:$HOME/usr/bin:$HOME/usr/sbin:$HOME/usr/local/bin:$HOME/usr/local/sbin
 
@@ -167,6 +181,16 @@ if valid python3 && [[ ${PYTHONPATH:-} != "" ]]; then
   }
 fi
 
+if valid go; then
+  GOBASE=$HOME/.go
+  export GOWORK=$GOBASE/workspace
+  export GOPATH=$GOBASE/package:$GOWORK
+  export PATH=$PATH:$GOBASE/package/bin:$GOWORK/bin
+  if [ ! -d $GOBASE ]; then
+    mkdir -p $GOBASE/package $GOWORK
+  fi
+fi
+
 # Ore option
 set -o emacs
 
@@ -193,7 +217,7 @@ alias cp='cp -i'
 alias mv='mv -i'
 
 if valid git; then
-  alias diff='git diff --color --no-index'
+  alias diff='LC_ALL=C git diff --color --no-index'
   
   alias gitgc='git reflog expire --expire=now --all && git gc --aggressive --prune=now'
   alias gitname='git config --global user.name'
@@ -205,7 +229,7 @@ if valid git; then
     git push origin master
   }
 else
-  alias diff='diff -u'
+  alias diff='LC_ALL=C diff -u'
 fi
 
 ### Default to human readable figures ###
@@ -214,25 +238,25 @@ alias du='du -h'
 alias dusort='du -d 1 | sort -n'
 alias less='less -r'                          # raw control characters
 alias whence='type -a'                        # where, of a sort
-alias grep='grep --color'                     # show differences in colour
-alias egrep='egrep --color=auto'              # show differences in colour
-alias fgrep='fgrep --color=auto'              # show differences in colour
+alias grep='LC_ALL=C grep --color'            # show differences in colour
+alias egrep='LC_ALL=C egrep --color=auto'     # show differences in colour
+alias fgrep='LC_ALL=C fgrep --color=auto'     # show differences in colour
 alias more='less'
 
 # Some shortcuts for different directory listings
-alias ls='ls --show-control-chars --color=always'
-#alias ls='ls -hF --color=tty'                 # classify files in colour
+alias ls='ls --show-control-chars --color=always --time-style=+%Y-%m-%d\ %H:%M:%S'
 alias dir='ls --color=auto --format=vertical'
 alias vdir='ls --color=auto --format=long'
 alias ll='ls -l'                              # long list
 alias la='ls -A'                              # all but . and ..
-alias lla='ls -lA'
-alias lld='ls -ld'
-alias llt='ls -ltr'
-alias lls='ls -lSr'
-alias llx='ls -lX'
+alias lla='ll -A'
+alias lld='ll -d'
+alias llt='ll -tr'
+alias lls='ll -Sr'
+alias llx='ll -X'
 alias l='ls -F'
 alias p='pwd'
+alias tree="pwd;find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'"
 alias 400='chmod 400'
 alias 440='chmod 440'
 alias 444='chmod 444'
@@ -265,15 +289,15 @@ elif [ $_SHELL = "ksh" ]; then
 fi
 
 if valid rg; then
-  alias rg='rg --no-heading'
+  alias rg='LC_ALL=C rg --no-heading'
 fi
-alias find='find -L'
+alias find='LC_ALL=C find -L'
 alias be='xxd -u -g 1'
 if [ $_SHELL = "bash" -o $_SHELL = "zsh" ]; then
-  alias history="fc -l -$HISTSIZE"
+  alias history="LC_ALL=C fc -l -$HISTSIZE"
 elif [ $_SHELL = "ksh" ]; then
   unalias fc 2>/dev/null
-  alias history="fc -lN $HISTSIZE"
+  alias history="LC_ALL=C fc -lN $HISTSIZE"
 fi
 
 if valid gtac; then
@@ -287,7 +311,7 @@ fi
 if valid fzf; then
   if valid fd; then
     #alias fd='fd -L'
-    export FZF_DEFAULT_COMMAND='fd -L --type f --ignore-case -E .git -E .svn -E old -E bak'
+    export FZF_DEFAULT_COMMAND='LC_ALL=C fd -L --type f --ignore-case -E .git -E .svn -E old -E bak'
   else
     export FZF_DEFAULT_COMMAND='find * -type d \( -name ".git" -o -name ".svn"  -o -name "old" -o -name "bak" \) -prune -o -type f -print'
   fi

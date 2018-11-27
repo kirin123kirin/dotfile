@@ -72,6 +72,7 @@ def args_v3():
     padd("-w", "--workdir",type=str, dest="working_dir")
     padd("-P", "--publish-all", action='store_true')
     padd("-t", "--tty", action="store_true")
+    padd("-i", "--interactive", dest="stdin_open", action="store_true")
     padd("--link", action="append", dest="links")
     padd("--dns", action="append")
     padd("--device", dest="devices", action="append")
