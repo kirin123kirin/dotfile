@@ -1,6 +1,7 @@
 {
  "vimrc": "~/.vimrc",
  "vim": "~/.vim",
+ "vim": "~/.config/nvim",
  "bashrc": "~/.bashrc",
  ".local": "~/.local",
  "ctags": "~/.ctags",

@@ -100,8 +100,15 @@ function prompt_yn { # ask a yes/no question
     unset def_arg
 }
 
+if [ -d $HOME/usr/local/nvim ]; then
+  export VIM=$HOME/usr/local/nvim/share/nvim/runtime
+  export PATH=$PATH:$HOME/usr/local/nvim/bin
+fi
+
 ### vi normalize
-if valid gvim; then
+if valid nvim; then
+  alias vim='nvim'
+elif valid gvim; then
   alias vim='gvim -v'
 fi
 alias vi='vim'
@@ -254,7 +261,7 @@ alias lld='ll -d'
 alias llt='ll -tr'
 alias lls='ll -Sr'
 alias llx='ll -X'
-alias l='ls -F'
+alias l='ls -1'
 alias p='pwd'
 alias tree="pwd;find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'"
 alias 400='chmod 400'

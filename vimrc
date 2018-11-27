@@ -125,9 +125,12 @@ endif
 " <Esc><Esc>: ハイライトの切り替え
 nnoremap <silent> <Esc><Esc> :<C-u>set nohlsearch!<CR>
 
-set maxmem=1000000
+if !has('nvim')
+    set maxmem=1000000
+    set maxmemtot=1000000
+endif
 set maxmempattern=1000000
-set maxmemtot=1000000
+
 if has('gvim')
     set ambiwidth=auto
 endif
@@ -183,13 +186,15 @@ command! -bang -complete=file -nargs=? WDos write<bang> ++fileformat=dos <args> 
 
 " クリップボード連携
 if has('unnamedplus') && !WINDOWS()
-    if has('autoselectplus')
-        set clipboard=unnamedplus,autoselectplus
-    else
-        set clipboard=unnamedplus,autoselect
-    endif
+    set clipboard+=unnamedplus
 else
-    set clipboard=unnamed,autoselect
+    set clipboard+=unnamed
+endif
+
+if has('autoselectplus')
+    set clipboard+=autoselectplus
+elseif has('autoselect')
+    set clipboard+=autoselect
 endif
 
 " 自動でプレビューウィンドウを閉じる
