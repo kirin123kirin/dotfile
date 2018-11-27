@@ -31,6 +31,7 @@
 [ファイルの復号] openssl aes-256-cbc -d -in encrypted_file@ -out decrypted_file
 [ディレクトリを圧縮] tar zcf - some_dir@ | openssl aes-256-cbc -e -out hogehoge.tgz.enc
 [ディレクトリから伸張] openssl aes-256-cbc -d -in hogehoge.tgz.enc@ | tar zxvf -
+[.netrcを暗号化する] gpg --gen-key && gpg -e -r <email> ~/.netrc && rm .netrc
 
 : fzf イディオム
 [前方一致] ^word
@@ -75,6 +76,7 @@
 [Git LFSを取り消す] git lfs uninstall
 
 : docker
+[コンテナ内の標準出力を表示したい] docker logs CONTAINER
 [none イメージを全部削除する] docker rmi $(docker images -f "dangling=true" -q)
 
 # vim:ft=sh

@@ -1,0 +1,7 @@
+{
+  "vimrc": "~/_vimrc"
+  "vim": "~/vimfiles",
+  "gitconfig": "~/.gitconfig",
+  "gitattribute": "~/.gitattribute",
+  "gitalias/gitalias.txt": "~/.gitconfig.d/gitalias.txt",
+}

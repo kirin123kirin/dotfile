@@ -300,7 +300,9 @@ if valid docker; then
     alias d='docker'
   else
     alias docker='sudo docker'
+    alias docker-compose='sudo docker-compose'
     alias d='docker'
+    alias dcompose='docker-compose'
   fi
   alias dpa='d ps -a'
   alias di='d images'
@@ -308,6 +310,7 @@ if valid docker; then
   alias drmi='d rmi'
   alias dpl='d pull'
   alias dx='d exec'
+  alias='sudo docker-machine ip'
 fi
 
 ### Ore function ###
