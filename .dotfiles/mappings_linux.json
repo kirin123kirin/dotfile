@@ -7,5 +7,6 @@
  "ctags": "~/.ctags",
  "gitattribute": "~/.gitattribute",
  "gitconfig": "~/.gitconfig",
- "gitalias/gitalias.txt": "~/.gitconfig.d/gitalias.txt"
+ "gitalias/gitalias.txt": "~/.gitconfig.d/gitalias.txt",
+ "Xdefaults": "~/.Xdefaults"
 }

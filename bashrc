@@ -36,6 +36,12 @@ $ " ;;
   esac
 fi
 
+if [ -d /etc/X11 ]; then
+  if [ -z "$DISPLAY" ]; then
+    export DISPLAY=$(echo $SSH_CLIENT| cut -d " " -f1):0.0
+  fi
+fi
+
 # thanks. https://qiita.com/kawaz/items/1b61ee2dd4d1acc7cc94
 function valid {
   type "$@" > /dev/null 2>&1
@@ -134,7 +140,7 @@ export LC_MEASUREMENT=$LANG
 export LC_IDENTIFICATION=$LANG
 export HISTSIZE=10000
 export HISTFILESIZE=10000
-export HISTCONTROL=ignoredups    #ignoredups,ignorespace,erasedups
+#export HISTCONTROL=ignoredups    #ignoredups,ignorespace,erasedups
 export HISTIGNORE=cd:ls:ll:la:lla:pwd:exit  #you can use wild cart(*,?)
 export TIMEFORMAT='real: %Rs  user: %Us  system: %Ss'
 export LSCOLORS=ExFxCxdxBxegedabagacad
@@ -335,13 +341,32 @@ if valid docker; then
     alias d='docker'
     alias dcompose='docker-compose'
   fi
-  alias dpa='d ps -a'
-  alias di='d images'
+  alias dpa='d ps -a --format "table {{.ID}} {{.Names}}\t{{.Status}}\t{{.Command}}\t{{.Ports}}"'
+  alias di='d images --format "table {{.ID}}  {{.Repository}}:{{.Tag}}\t{{.Size}}\t{{.CreatedSince}}"'
   alias drm='d rm -f'
   alias drmi='d rmi'
   alias dpl='d pull'
   alias dx='d exec'
-  alias='sudo docker-machine ip'
+
+  alias dip="d inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'"
+
+  function dipa {
+    for x in $(d ps -a --format "{{.Names}}:{{.ID}}");do
+      echo $(dip $(echo $x | cut -d ":" -f 2)) $x
+    done | sort
+  }
+
+  function dclean {
+    typeset deadc=$(docker ps -qf "status=exited")
+    if [ -n "$deadc" ]; then
+      docker rm -f $deadc
+    fi
+
+    typeset deadi=$(docker images -f "dangling=true" -q)
+    if [ -n "$deadi" ]; then
+      docker rmi $deadi
+    fi
+  }
 fi
 
 ### Ore function ###
@@ -408,7 +433,7 @@ if valid fzf; then
       done
   }
 
-  alias sd='fzf_cd'
+  alias cdf='fzf_cd'
 fi
 
 if [ ! -f $WORKCDHISTFILE ]; then
@@ -564,11 +589,13 @@ if valid fzf; then
   function histcd {  # fzf : recently Changed directory
     opener $(catuniq $WORKCDHISTFILE | xargs -n 100 \ls --sort=none -d 2> /dev/null | fzf --no-sort)
   }
+  alias cdh=histcd
   bind '"\C-x\C-x": "histcd\C-m"' > /dev/null 2>&1
 
   function histvi {  # fzf : recently vim opened file
     opener $(grep "^> " $HOME/.viminfo | cut -c 3- | tacuniq | sed "s:~:$HOME:g" | xargs -n 100 \ls --sort=none -d 2> /dev/null | fzf --no-sort)
   }
+  alias vih=histvi
   bind '"\C-x\C-v": "histvi\C-m"' > /dev/null 2>&1
 
   function hist {  # fzf : recently bash cmd or Changed directory
@@ -576,6 +603,7 @@ if valid fzf; then
     ret=`(uniq $WORKCDHISTFILE && grep "^> " $HOME/.viminfo | uniq | cut -b 3- | sed "s:~:$HOME:g") | sort | uniq -c | sort -nr | cut -b 9- | xargs -n 100 \ls --sort=none -d 2> /dev/null | fzf --no-sort`
     opener $ret
   }
+  alias hh=hist
   bind '"\C-x\C-a": "hist\C-m"' > /dev/null 2>&1
 
   function _tips {
@@ -892,3 +920,5 @@ alias free='free -mt'
 alias netstatp='sudo netstat -ap | grep -E "(SYN|ESTABLISHED)"'
 valid nslookup && alias nslookup='nslookup -query=any'
 
+
+# vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :

@@ -10,6 +10,11 @@ augroup MyAutoCmd
     autocmd!
 augroup END
 
+augroup vimrcEx
+  au BufRead * if line("'\"") > 0 && line("'\"") <= line("$") |
+  \ exe "normal g`\"" | endif
+augroup END
+
 augroup BinaryXXD
   autocmd!
   autocmd BufReadPre  *.bin let &binary =1
@@ -295,16 +300,16 @@ call plug#begin('~/.vim/plugged')
     vmap <C-v> <Plug>(expand_region_shrink)
 
   Plug 'tyru/caw.vim'
-    imap <silent> <C-_> <ESC><Plug>(caw:zeropos:toggle)I
-    nmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
-    vmap <silent> <C-_> <Plug>(caw:zeropos:toggle)
+    imap <silent> <C-\> <ESC><Plug>(caw:zeropos:toggle)I
+    nmap <silent> <C-\> <Plug>(caw:zeropos:toggle)
+    vmap <silent> <C-\> <Plug>(caw:zeropos:toggle)
 
   Plug 'Shougo/neosnippet.vim'
   Plug 'Shougo/neosnippet-snippets'
     " {{{ Neosnipet User Snippet directory Setting
-    imap <C-i>     <Plug>(neosnippet_expand_or_jump)
-    smap <C-i>     <Plug>(neosnippet_expand_or_jump)
-    xmap <C-i>     <Plug>(neosnippet_expand_target)
+    imap <C-e>     <Plug>(neosnippet_expand_or_jump)
+    smap <C-e>     <Plug>(neosnippet_expand_or_jump)
+    xmap <C-e>     <Plug>(neosnippet_expand_target)
 
     " SuperTab like snippets behavior.
     "imap <expr><TAB>
@@ -410,8 +415,12 @@ behave mswin
 
 " 削除キーでyankしない
 nnoremap x "_x
+nnoremap s "_s
 "nnoremap d "_d
 "nnoremap D "_D
+
+" Right shift ESC
+inoremap <C-]> <Esc><Right>
 
 " backspace in Visual mode deletes selection
 noremap <nowait> <BS> hx

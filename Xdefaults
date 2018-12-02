@@ -1,0 +1,72 @@
+! rxvt ##
+
+*rxvt*geometry: 72x24
+*rxvt*saveLines: 512
+*rxvt*scrollBar: false
+*rxvt*termName: rxvt
+*rxvt*font: xft:Courier 10 Pitch:size=14:antialias=true:hinting=true:autohint:true
+*rxvt*letterSpace: -1
+*rxvt*fading: 30
+*rxvt*depth: 32
+
+! color ##
+*rxvt*foreground: #dcdccd
+*rxvt*background: #2c2c2c
+*rxvt*color0:  #3f3f3f
+*rxvt*color1:  #ff6666
+*rxvt*color2:  #66ff66
+*rxvt*color3:  #ffd30a
+*rxvt*color4:  #1e95fd
+*rxvt*color5:  #ff13ff
+*rxvt*color6:  #1bc8c8
+*rxvt*color7:  #c0c0c0
+*rxvt*color8:  #383838
+*rxvt*color9:  #ff4444
+*rxvt*color10:  #44ff44
+*rxvt*color11:  #ffb30a
+*rxvt*color12:  #6699ff
+*rxvt*color13:  #f820ff
+*rxvt*color14:  #4ae2e2
+*rxvt*color15:  #ffffff
+*rxvt*perl-ext-common: selection-to-clipboard
+
+! rxvt-unicode ##
+
+*rxvt-unicode*geometry: 72x24
+*rxvt-unicode*saveLines: 512
+*rxvt-unicode*scrollBar: false
+*rxvt-unicode*termName: rxvt-unicode
+*rxvt-unicode*font: xft:Courier 10 Pitch:size=14:antialias=true:hinting=true:autohint:true
+*rxvt-unicode*letterSpace: -1
+*rxvt-unicode*fading: 30
+*rxvt-unicode*depth: 32
+
+! color ##
+*rxvt-unicode*foreground: #dcdccd
+*rxvt-unicode*background: #2c2c2c
+*rxvt-unicode*color0:  #3f3f3f
+*rxvt-unicode*color1:  #ff6666
+*rxvt-unicode*color2:  #66ff66
+*rxvt-unicode*color3:  #ffd30a
+*rxvt-unicode*color4:  #1e95fd
+*rxvt-unicode*color5:  #ff13ff
+*rxvt-unicode*color6:  #1bc8c8
+*rxvt-unicode*color7:  #c0c0c0
+*rxvt-unicode*color8:  #383838
+*rxvt-unicode*color9:  #ff4444
+*rxvt-unicode*color10:  #44ff44
+*rxvt-unicode*color11:  #ffb30a
+*rxvt-unicode*color12:  #6699ff
+*rxvt-unicode*color13:  #f820ff
+*rxvt-unicode*color14:  #4ae2e2
+*rxvt-unicode*color15:  #ffffff
+*rxvt-unicode*perl-ext-common: selection-to-clipboard
+
+! xft ##
+Xft.dpi: 96
+Xft.antialias: true
+Xft.hinting: true
+Xft.rgba: rgb
+Xft.autohint: false
+Xft.hintstyle: hintslight
+Xft.lcdfilter: lcddefault
