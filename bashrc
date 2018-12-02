@@ -111,6 +111,12 @@ if [ -d $HOME/usr/local/nvim ]; then
   export PATH=$PATH:$HOME/usr/local/nvim/bin
 fi
 
+if [ -d /usr/local/lib/neovim ]; then
+  export VIM=/usr/local/lib/neovim/share/nvim/runtime
+  export PATH=$PATH:/usr/local/lib/neovim/bin
+fi
+
+
 ### vi normalize
 if valid nvim; then
   alias vim='nvim'
