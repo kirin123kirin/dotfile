@@ -354,23 +354,25 @@ if valid docker; then
   alias dpl='d pull'
   alias dx='d exec'
 
-  alias dip="d inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'"
+  function dip {
+    sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
+  }
 
   function dipa {
-    for x in $(d ps -a --format "{{.Names}}:{{.ID}}");do
+    for x in $(sudo docker ps -a --format "{{.Names}}:{{.ID}}");do
       echo $(dip $(echo $x | cut -d ":" -f 2)) $x
     done | sort
   }
 
   function dclean {
-    typeset deadc=$(docker ps -qf "status=exited")
+    typeset deadc=$(sudo docker ps -qf "status=exited")
     if [ -n "$deadc" ]; then
-      docker rm -f $deadc
+      sudo docker rm -f $deadc
     fi
 
-    typeset deadi=$(docker images -f "dangling=true" -q)
+    typeset deadi=$(sudo docker images -f "dangling=true" -q)
     if [ -n "$deadi" ]; then
-      docker rmi $deadi
+      sudo docker rmi $deadi
     fi
   }
 fi
@@ -925,6 +927,6 @@ alias psls='ps auxwwf'
 alias free='free -mt'
 alias netstatp='sudo netstat -ap | grep -E "(SYN|ESTABLISHED)"'
 valid nslookup && alias nslookup='nslookup -query=any'
-
+alias killzombie="sudo kill -9 $(ps -A -ostat,ppid | awk '/[zZ]/ && !a[$2]++ {print $2}')"
 
 # vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :

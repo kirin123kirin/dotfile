@@ -56,6 +56,11 @@
 # LANG設定をja_JP.UTF-8とかにしてると無駄な動きが多く10倍ぐらい遅くなったりする
 [なんかsortとかが遅い気がする] LC_ALL=C sort FILE
 
+: 管理系
+[サービス一覧] systemctl list-unit-files
+[自動起動設定] systemctl enable サービス名.service
+[自動起動解除] systemctl disable サービス名.service
+
 : git
 [編集内容を取り消したい] git checkout FILENAME #ファイル名のところを.にすると、ステージング前の全ての変更内容がなくなる。
 [ステージングを取り消したい] git reset FILENAME #ステージングを取り下げる。編集内容は残る
