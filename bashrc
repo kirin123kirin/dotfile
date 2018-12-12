@@ -352,7 +352,7 @@ if valid docker; then
   alias drm='d rm -f'
   alias drmi='d rmi'
   alias dpl='d pull'
-  alias dx='d exec'
+  alias dx='d exec -it'
 
   function dip {
     sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
