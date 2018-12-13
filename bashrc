@@ -929,4 +929,58 @@ alias netstatp='sudo netstat -ap | grep -E "(SYN|ESTABLISHED)"'
 valid nslookup && alias nslookup='nslookup -query=any'
 alias killzombie="sudo kill -9 $(ps -A -ostat,ppid | awk '/[zZ]/ && !a[$2]++ {print $2}')"
 
+function repo_reindex {
+  set -eu
+  sudo -i << "  EOF"
+  if \cd $1; then
+    if grep -iqs 'NAME=(centos|fedora|redhat)' /etc/os-release;then
+      createrepo .
+    elif grep -iqs 'NAME=ubuntu' /etc/os-release;then
+      apt-ftparchive packages . | gzip > Packages.gz
+      apt-ftparchive sources . | gzip > Sources.gz
+    else
+      echo "Unknown Distribution" > /dev/stderr
+      exit 1
+    fi
+  fi
+  EOF
+  set +eu
+}
+
+function offlinerepo {
+  set -eu
+  sudo -i << "  EOF"
+  if \cd $1; then
+    if grep -iqs 'NAME=(centos|fedora|redhat)' /etc/os-release;then
+      typeset outrepo=/etc/yum.repos.d/OfflineRepo.repo
+      if grep -qs $PWD $outrepo; then
+        :
+      else
+        echo "[local-myrepository]" >> $outrepo
+        echo "name=Offline Local repository" >> $outrepo
+        echo "baseurl=file://$PWD" >> $outrepo
+        echo "gpgcheck=0" >> $outrepo
+        echo "enabled=1" >> $outrepo
+      for f in $(grep -l enabled=1 *.repo);do
+        mv $f $f.org
+      done
+      yum clean all
+    elif grep -iqs 'NAME=ubuntu' /etc/os-release;then
+      typeset outrepo=/etc/apt/sources.lst
+      if [ ! -f $outrepo.org ]; then
+        mv $outrepo{.org}
+      fi
+      if grep -qs $PWD $outrepo; then
+        :
+      else
+        echo "deb file://$PWD ./" >> $outrepo
+      fi
+    else
+      echo "Unknown Distribution" > /dev/stderr
+      exit 1
+    fi
+  fi
+  EOF
+  set +eu
+}
 # vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :
