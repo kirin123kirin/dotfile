@@ -1,0 +1,67 @@
+#!/bin/bash
+PYPI=https://pypi.org
+SIMPLE=$PYPI/simple/
+PROCESS=${3:-20}
+
+function innertext {
+  grep '<a href="' | cut -d ">" -f2 | cut -d "<" -f1
+}
+
+function currentdownload {
+  curl -sL $SIMPLE | innertext | \
+  sed -E "s;^;$SIMPLE;g" | xargs -L 1 -P $PROCESS curl -sL | \
+  python -c $'import sys, re\ninner = re.compile(" +<a *href=\\"([^\\"]+)\\"[^>]*>([^<]+)<.+")\nhead = re.compile("<h1>Links for (.*)</h1>")\nret = {}\ni = 0\nfor line in sys.stdin:\n    hd = head.search(line)\n    if hd:\n        h = hd.group(1)\n        if i > 0 and ret:\n            print("\\n".join(["{} -P {}".format(v,h) for v in ret.values()]))\n            ret.clear()\n        i += 1\n    txt = inner.search(line)\n    if txt:\n        ret[txt.group(2).split(".")[-1]] = txt.group(1)\n' | \
+  xargs -L 1 -P $PROCESS wget -nv -nc
+}
+
+function extracturl {
+  grep -E '^ +<a *href="([^"]+)"[^>]*>.*' $1 | \
+    sed -E 's;^ +<a *href="([^"]+)"[^>]*>.*;\1;g'
+}
+
+function sync {
+  if [ -z "$1" ]; then
+    echo "Error  Please set Argument download directory path" > /dev/stderr
+    return 1
+  fi
+  if \cd $1; then
+    currentdownload
+    \cd -
+  else
+    return 1
+  fi
+  return 0
+}
+
+RETVAL=0
+
+case "$1" in
+
+  sync)
+    sync $2
+    ;;
+
+  archive)
+    tar cf piprepo.tar $2
+    ;;
+
+  conf)
+    echo this is sample pip.conf > /dev/stderr
+    echo Linux ~/.config/.pip/pip.conf > /dev/stderr
+    echo Windows %APPDATA%/pip/pip.ini > /dev/stderr
+    echo [global]
+    echo index-url = http://download.zope.org/simple
+    echo trusted-host = download.zope.org
+    echo                pypi.org
+    echo                secondary.extra.host
+    echo extra-index-url= http://pypi.org/simple
+    echo                  http://secondary.extra.host/simple
+    ;;
+  *)
+    echo "Invalid or excess argument" > /dev/stderr
+    RETVAL=2  # Invalid or excess argument(s)
+    ;;
+
+esac
+
+exit $RETVAL

@@ -925,6 +925,8 @@ alias uniqcount='sort | uniq -c | sort -n'
 alias pings='xargs -P30 -n1 ping -s1 -c1 -W1 | grep ttl'
 alias psls='ps auxwwf'
 alias free='free -mt'
+
+# for administrator function
 alias netstatp='sudo netstat -ap | grep -E "(SYN|ESTABLISHED)"'
 valid nslookup && alias nslookup='nslookup -query=any'
 alias killzombie="sudo kill -9 $(ps -A -ostat,ppid | awk '/[zZ]/ && !a[$2]++ {print $2}')"
