@@ -10,7 +10,7 @@ function innertext {
 function currentdownload {
   curl -sL $SIMPLE | innertext | \
   sed -E "s;^;$SIMPLE;g" | xargs -L 1 -P $PROCESS curl -sL | \
-  python -c $'import sys, re\ninner = re.compile(" +<a *href=\\"([^\\"]+)\\"[^>]*>([^<]+)<.+")\nhead = re.compile("<h1>Links for (.*)</h1>")\nret = {}\ni = 0\nfor line in sys.stdin:\n    hd = head.search(line)\n    if hd:\n        h = hd.group(1)\n        if i > 0 and ret:\n            print("\\n".join(["{} -P {}".format(v,h) for v in ret.values()]))\n            ret.clear()\n        i += 1\n    txt = inner.search(line)\n    if txt:\n        ret[txt.group(2).split(".")[-1]] = txt.group(1)\n' | \
+  python -c $'import sys, re\ninner = re.compile(" +<a *href=\\"([^\\"]+)\\"[^>]*>([^<]+)<.+")\nhead = re.compile("<h1>Links *for *(.*)</h1>")\nret = {}\nfor line in sys.stdin:\n    hd = head.search(line)\n    txt = inner.search(line)\n    if hd:\n        h = hd.group(1)\n    if txt:\n        ret[txt.group(2).split(".")[-1]] = txt.group(1)\n    if ret and h:\n        print("\\n".join(["{} -P ./{}".format(v,h) for v in ret.values()]))\n        ret.clear()\n' | \
   xargs -L 1 -P $PROCESS wget -nv -nc
 }
 
@@ -64,4 +64,3 @@ case "$1" in
 
 esac
 
-exit $RETVAL
