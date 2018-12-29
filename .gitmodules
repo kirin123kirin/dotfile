@@ -1,0 +1,42 @@
+[submodule "gitalias"]
+	path = gitalias
+	url = https://github.com/GitAlias/gitalias
+[submodule "vim/plugged/caw.vim"]
+	path = vim/plugged/caw.vim
+	url = https://github.com/tyru/caw.vim.git
+[submodule "vim/plugged/fzf.vim"]
+	path = vim/plugged/fzf.vim
+	url = https://github.com/junegunn/fzf.vim.git
+[submodule "vim/plugged/gocode"]
+	path = vim/plugged/gocode
+	url = https://github.com/nsf/gocode.git
+[submodule "vim/plugged/lightline.vim"]
+	path = vim/plugged/lightline.vim
+	url = https://github.com/itchyny/lightline.vim.git
+[submodule "vim/plugged/neosnippet-snippets"]
+	path = vim/plugged/neosnippet-snippets
+	url = https://github.com/Shougo/neosnippet-snippets.git
+[submodule "vim/plugged/neosnippet.vim"]
+	path = vim/plugged/neosnippet.vim
+	url = https://github.com/Shougo/neosnippet.vim.git
+[submodule "vim/plugged/rainbow_csv"]
+	path = vim/plugged/rainbow_csv
+	url = https://github.com/mechatroner/rainbow_csv.git
+[submodule "vim/plugged/tabular"]
+	path = vim/plugged/tabular
+	url = https://github.com/godlygeek/tabular.git
+[submodule "vim/plugged/vim-expand-region"]
+	path = vim/plugged/vim-expand-region
+	url = https://github.com/terryma/vim-expand-region.git
+[submodule "vim/plugged/vim-gfm-syntax"]
+	path = vim/plugged/vim-gfm-syntax
+	url = https://github.com/rhysd/vim-gfm-syntax.git
+[submodule "vim/plugged/vim-go"]
+	path = vim/plugged/vim-go
+	url = https://github.com/fatih/vim-go.git
+[submodule "vim/plugged/vim-markdown"]
+	path = vim/plugged/vim-markdown
+	url = https://github.com/plasticboy/vim-markdown.git
+[submodule "vim/plugged/vim-quickrun"]
+	path = vim/plugged/vim-quickrun
+	url = https://github.com/thinca/vim-quickrun.git

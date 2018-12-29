@@ -70,7 +70,7 @@ def main():
             sys.stdout.flush()
 
 if __name__ == "__main__":
-    sys.argv.append("<a href=/simple/pandas/>pandas</a>")
+    #sys.argv.append("<a href=/simple/pandas/>pandas</a>")
     main()
 
 
