@@ -1,0 +1,10 @@
+#go
+GOBASE=$HOME/.go
+export GOWORK=$GOBASE/workspace
+export GOPATH=$GOBASE/package:$GOWORK
+export PATH=$PATH:$GOBASE/package/bin:$GOWORK/bin
+if [ ! -d $GOBASE ]; then
+  mkdir -p $GOBASE/package $GOWORK
+fi
+
+# vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :

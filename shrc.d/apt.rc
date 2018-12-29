@@ -1,0 +1,32 @@
+#apt
+alias apt-get='sudo apt-get'
+alias apt-get='sudo apt'
+
+function repo_reindex {
+  sudo -i << "  EOF"
+  if \cd $1; then
+      apt-ftparchive packages . | gzip -c9 > Packages.gz && \
+      apt-ftparchive sources . | gzip -c9 > Sources.gz && \
+      apt-ftparchive release . | gzip -c9 > Release.gz
+  fi
+  EOF
+}
+
+function offlinerepo {
+  sudo -i << "  EOF"
+  if \cd $1; then
+      typeset outrepo=/etc/apt/sources.lst
+      if [ ! -f $outrepo.org ]; then
+        mv $outrepo{.org}
+      fi
+      if grep -qs $PWD $outrepo; then
+        :
+      else
+        echo "deb file://$PWD ./" >> $outrepo
+      fi
+      \cd -
+  fi
+  EOF
+}
+
+# vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :

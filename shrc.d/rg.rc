@@ -1,0 +1,4 @@
+#rg
+alias rg='LC_ALL=C rg --no-heading'
+
+# vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :

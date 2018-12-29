@@ -1,0 +1,33 @@
+#yum
+alias yum='sudo yum'
+
+function repo_reindex {
+  sudo -i << "  EOF"
+  if \cd $1; then
+    createrepo .
+  fi
+  EOF
+}
+
+function offlinerepo {
+  sudo -i << "  EOF"
+  if \cd $1; then
+      typeset outrepo=/etc/yum.repos.d/OfflineRepo.repo
+      if grep -qs $PWD $outrepo; then
+        :
+      else
+        echo "[local-myrepository]" >> $outrepo
+        echo "name=Offline Local repository" >> $outrepo
+        echo "baseurl=file://$PWD" >> $outrepo
+        echo "gpgcheck=0" >> $outrepo
+        echo "enabled=1" >> $outrepo
+      for f in $(grep -l enabled=1 *.repo);do
+        mv $f $f.org
+      done
+      yum clean all
+      \cd -
+  fi
+  EOF
+}
+
+# vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :

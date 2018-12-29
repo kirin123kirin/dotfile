@@ -1,0 +1,624 @@
+# OreOre shell rc ######################
+# Description: Posix Policy rc file
+#      you can use .bashrc .kshrc .zshrc
+# Version: 0.2
+# Author: m.yama
+#
+# Relate Files:
+#   shrc.d/*(option)...if exists "type *" auto loading
+##################################
+
+#set -eu
+
+## this shell only environ
+CUR=$(cd $(dirname $(readlink ${BASH_SOURCE:-$0})); pwd)
+_SHELL=$(ps -p $$ | tail -n 1 | sed "s/^.* //g")
+
+## common environs
+export TERM=xterm-256color 
+export EDITOR=vim
+export FCEDIT=$EDITOR
+export PROMPT_DIRTRIM=2
+export PAGER='less -r'
+export LANG=ja_JP.UTF-8
+export LC_CTYPE=$LANG
+export LC_NUMERIC=$LANG
+export LC_TIME=$LANG
+export LC_COLLATE=C # Because 'C'? UTF8 LANG is very bad performance
+export LC_MONETARY=$LANG
+export LC_MESSAGES=$LANG
+export LC_PAPER=$LANG
+export LC_NAME=$LANG
+export LC_ADDRESS=$LANG
+export LC_TELEPHONE=$LANG
+export LC_MEASUREMENT=$LANG
+export LC_IDENTIFICATION=$LANG
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+#export HISTCONTROL=ignoredups    #ignoredups,ignorespace,erasedups
+export HISTIGNORE=cd:ls:ll:la:lla:pwd:exit  #you can use wild cart(*,?)
+export TIMEFORMAT='real: %Rs  user: %Us  system: %Ss'
+export LSCOLORS=ExFxCxdxBxegedabagacad
+export LS_COLORS='di=01;34:ln=01;35:so=01;32:ex=01;31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+export MANPATH=/usr/local/man/ja:/usr/local/share/man/ja:/usr/share/man/ja:/usr/X11R6/man/ja:$HOME/.local/share/man
+if [ -d /etc/X11 ]; then
+  if [ -z "$DISPLAY" ]; then
+    export DISPLAY=$(echo $SSH_CLIENT| cut -d " " -f1):0.0
+  fi
+fi
+
+## special setting
+export WORKCDHISTFILE=$HOME/.cd_history
+export WORKBOOKMARKFILE=$HOME/.bookmark
+if [ ! -f $WORKCDHISTFILE ]; then
+  echo $HOME > $WORKCDHISTFILE
+fi
+
+if [ ! -f $WORKBOOKMARKFILE ]; then
+  touch $WORKBOOKMARKFILE
+fi
+
+## functions
+
+function valid {
+  type "$@" > /dev/null 2>&1
+}
+
+function sourceif {
+  [[ -e $1 ]] && source $1
+}
+
+function opener {       #file or directory automatic open
+  if [ "$1" = "" ];then
+    return 1
+  fi
+  typeset fn=$(readlink -f "$1")
+  if [ -f $fn ]; then
+      $EDITOR $fn
+  elif [ -d $fn ]; then
+      cd $fn
+  else
+      echo "File or Directory Not Found.."
+      return 1
+  fi
+}
+
+function cd_func { # cd with histories
+  if \cd "$@"; then
+    if ! head -n 2 $WORKCDHISTFILE | grep -qs ${PWD}$; then
+      sed -i "1s:^:$PWD\n:" $WORKCDHISTFILE
+    fi
+    echo "Changed: " `ls -d $PWD`
+    echo ""
+  else
+    return 1
+  fi
+}
+alias cd=cd_func
+
+function cleanhist { #clean .cd_history
+  if [ -f $WORKCDHISTFILE ];then
+    grep -v "^$HOME$" $WORKCDHISTFILE | uniq > ${WORKCDHISTFILE}.unq
+    if [ $(printf "%d" $(cat $WORKCDHISTFILE |wc -l)) -ne 0 ]; then
+      mv -f ${WORKCDHISTFILE}.unq $WORKCDHISTFILE
+    else
+      rm -f ${WORKCDHISTFILE}.unq
+      echo $HOME > $WORKCDHISTFILE
+    fi
+  else
+    echo $HOME > $WORKCDHISTFILE
+  fi
+}
+
+function save_bookmark {   # save bookmark
+  abspath $PWD >> $WORKBOOKMARKFILE
+}
+alias s=save_bookmark
+
+function open_bookmark {    # open edit bookmark
+  opener $WORKBOOKMARKFILE
+}
+alias bo=open_bookmark
+
+function h {
+  if [ $_SHELL = "bash" -o $_SHELL = "zsh" ];then
+    (alias ; bind -s | sed 's/\C-m//g' | sed 's/^/bind /g' ; for fc in $(declare -F | sed "s/^declare -f //g"); do grep -h "^function $fc" $HOME/.bashrc $HOME/dotfile/bashrc 2>/dev/null; done) | sort -u | less
+  elif [ $_SHELL = "ksh" ]; then
+    (alias | sed 's/^/alias /g'; functions | grep "^function ") | sort | less
+  else
+    echo "Unknown shell" $_SHELL
+    return 1
+  fi
+}
+
+
+### thanks. https://github.com/faif/shell-utils/blob/master/shell-utils.sh
+function perr { # prints an error message to STDERR
+    printf "ERROR: ${@}\n" >&2
+}
+
+function pwarn { # print a warning nessage to STDERR
+    printf "WARNING: ${@}\n" >&2
+}
+
+function puse { # print a usage message and then exits
+    printf "USAGE: ${@}\n" >&2
+}
+
+### Arguments: $1 -> The prompt
+###            $2 -> The default answer (optional)
+### Variables: yesno -> set to the user response (y for yes, n for no)
+function prompt_yn { # ask a yes/no question
+    if [ $# -lt 1 ]
+    then
+  puse "prompt_yn prompt [default answer]"
+  return 1
+    fi
+
+    def_arg=""
+    yesno=""
+
+    case "${2}" in
+  [yY]|[yY][eE][sS])
+      def_arg=y ;;
+  [nN]|[nN][oO])
+      def_arg=n ;;
+    esac
+
+    while :
+    do
+  printf "${1} (y/n)? "
+  test -n "${def_arg}" && printf "[${def_arg}] "
+
+  read yesno
+  test -z "${yesno}" && yesno="${def_arg}"
+
+  case "${yesno}" in
+      [yY]|[yY][eE][sS])
+    yesno=y ; break ;;
+      [nN]|[nN][oO])
+    yesno=n ; break ;;
+      *)
+    yesno="" ;;
+  esac
+    done
+
+    export yesno
+    unset def_arg
+}
+
+function treesize { # Directory Tree & sort by file size
+    du -chx --max-depth=3 "$@" | sort -h
+}
+
+function isbinary {
+  [ $(file --mime-encoding -b "$1") = "binary" ]
+}
+
+function iscompress {
+  file "$1" | grep -qs "compressed data"
+}
+
+#alias abspath='readlink -f'
+if ! valid realpath; then
+  alias realpath='python -c "import sys, os.path;[sys.stdout.write(os.path.abspath(a) + \"\\n\") for a in sys.argv[1:] if not a.startswith(\"-\") ]"'
+fi
+
+function abspath {
+  typeset org=$PWD
+  typeset pth
+  for pth in "$@"; do
+    if [ -d $pth ]; then
+      \cd $pth
+      echo $PWD
+    elif [ -f $pth ]; then
+      \cd $(dirname $pth)
+      echo $PWD/$(basename $pth)
+    else
+      realpath --no-symlinks $pth
+    fi
+    \cd $org
+  done
+  \cd $org
+  return 0
+}
+
+function catuniq {
+  cat -n "$@" | sort -uk 2 | sort | sed "s/^.*\t//g"
+}
+
+function tacuniq {
+  tac "$@" | cat -n | sort -uk 2 | sort | sed "s/^.*\t//g"
+}
+
+function rep {          # replace function
+  sed -Ei "s%$1%$2%g" $3
+}
+
+function between {     # between cat lines
+  awk "$1<=NR && NR<=$2"
+}
+alias bt='between'
+
+function extract {   # extract any archived file
+  if [ -z "$1" ]; then
+      # display usage if no parameters given
+      echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+      echo "       extract <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
+  else
+      for n in "$@"
+      do
+        if [ -f "$n" ] ; then
+            case "${n%,}" in
+              *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar) 
+                           tar xvf "$n"       ;;
+              *.lzma)      unlzma ./"$n"      ;;
+              *.bz2)       bunzip2 ./"$n"     ;;
+              *.rar)       unrar x -ad ./"$n" ;;
+              *.gz)        gunzip ./"$n"      ;;
+              *.zip)       unzip ./"$n"       ;;
+              *.z)         uncompress ./"$n"  ;;
+              *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
+                           7z x ./"$n"        ;;
+              *.xz)        unxz ./"$n"        ;;
+              *.exe)       cabextract ./"$n"  ;;
+              *.cpio)      cpio -id < ./"$n"  ;;
+              *)
+                           echo "extract: '$n' - unknown archive method"
+                           return 1
+                           ;;
+            esac
+        else
+            echo "'$n' - file does not exist"
+            return 1
+        fi
+      done
+  fi
+}
+
+function compress {
+  typeset FILE=$1
+  shift
+  case $FILE in
+      *.tar.bz2|*.tbz2) tar cjfh $FILE $*  ;;
+      *.tar.gz|*.tgz)   tar czfh $FILE $*  ;;
+      *.tar)            tar cfh $FILE $*   ;;
+      *.zip)            zip -r $FILE $*    ;;
+      *.rar)            rar $FILE $*       ;;
+      *.gz)             gzip $FILE         ;;
+      *.bz2)            bzip2 $FILE        ;;
+      *.xz)             xz $FILE           ;;
+      *)    echo "Filetype not recognized"
+            return 1 ;;
+  esac
+}
+
+function lscompress {   # lscompress any archived file
+  if [ -z "$1" ]; then
+    echo "Usage: lscompress <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+  else
+    for n in $(ls $@); do
+      if [ -f "$n" ] ; then
+          case "${n%,}" in
+            *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar|*.zip) 
+                          less "$n"       ;;
+            *.bz2)        bzless ./"$n"     ;;
+            *.gz|*.z|*.Z) zless ./"$n"      ;;
+            *.xz)         xzless ./"$n"        ;;
+            *)
+                         echo "lscompress: '$n' - unknown archive method"
+                         return 1
+                         ;;
+          esac
+      else
+          echo "'$n' - file does not exist"
+          return 1
+      fi
+    done
+  fi
+}
+
+## thanks https://github.com/faif/shell-utils/blob/master/shell-utils.sh
+### Arguments: $1 -> the file
+function bak { # simple way to keep a backup of a file
+    if [ $# -ne 1 ]
+    then
+        puse "bkup file"
+        return 1
+    fi
+
+    file_copy=${1}.$(date +%Y%m%d.%H%M.ORIG)
+    mv -f ${1} ${file_copy}
+    printf "Backing up ${1} to ${file_copy}\n"
+    cp -p "${file_copy}" "${1}"
+
+    unset file_copy
+}
+
+
+function os_name { # print the system's name
+    case $(uname -s) in
+        *BSD)
+            printf BSD ;;
+        Darwin)
+            printf macOS ;;
+        SunOS)
+            case $(uname -r) in
+                5.*) printf Solaris ;;
+                *) printf SunOS ;;
+            esac
+            ;;
+        Linux)
+            printf GNU/Linux ;;
+        MINIX*)
+            printf MINIX ;;
+        HP-UX)
+            echo HPUX ;;
+        AIX)
+            echo AIX ;;
+        *) echo unknown ;;
+    esac
+    printf "\n"
+}
+
+alias os_version='\cd /etc; cat redhat-release lsb-release debian_version fedora-release 2>/dev/null; uname -or; \cd -'
+
+### Arguments: $1 -> the process name to search for
+function get_pid { # print a list of process id(s) matching $1
+    if [ $# -lt 1 ]
+    then
+  perr "Insufficient Arguments."
+        return 1
+    fi
+
+    ps -ef | grep "${1}" | grep -v grep | awk '{ print $2; }'
+
+    unset psopts
+}
+
+
+### Arguments: $1 -> the user name
+function get_uid { # print the numeric user id
+    if [ $# -lt 1 ]
+    then
+  perr "Insufficient Arguments."
+        return 1
+    fi
+
+    user_id=$(id ${1} 2>/dev/null)
+
+    if [ $? -ne 0 ]
+    then
+  perr "No such user: ${1}"
+  return 1
+    fi
+
+    printf "${user_id}\n" | sed -e 's/(.*$//' -e 's/^uid=//'
+
+    unset user_id
+}
+
+
+### Arguments: $@ -> the string
+function to_lower { # print an input string to lower case
+    printf "${@}\n" | tr '[A-Z]' '[a-z]'
+}
+
+
+### Arguments: $@ -> the string
+function to_upper { # print an input string to upper case
+    printf "${@}\n" | tr '[a-z]' '[A-Z]'
+}
+
+
+### Arguments: $@ -> files to convert
+function file_to_lower { # convert the input files to lower case
+    for file in "${@}"
+    do
+  mv -f "${file}" "$(printf "${file}\n" | tr '[A-Z]' '[a-z]')" \
+      2>/dev/null || perr "File ${file} does not exist"
+    done
+}
+
+
+### Arguments: $@ -> files to convert
+function file_to_upper { # convert the input files to upper case
+    for file in "${@}"
+    do
+  mv -f "${file}" "$(printf "${file}\n" | tr '[a-z]' '[A-Z]')" \
+      2>/dev/null || perr "File ${file} does not exist"
+    done
+}
+alias rr=". ~/.${_SHELL}rc"
+alias tree="pwd;find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'"
+alias delblankline="sed '/^$/d'"
+alias tolf='tr -d "\r"'
+alias tocrlf='sed "s/$/\r/g"'
+alias encoding='iconv -t'
+alias uniqcount='sort | uniq -c | sort -n'
+alias pings='xargs -P30 -n1 ping -s1 -c1 -W1 | grep ttl'
+alias psls='ps auxwwf'
+alias updatemandb='mandb -uc ~/.local/share/man'
+
+### for administrator
+alias netstatp='sudo netstat -ap | grep -E "(SYN|ESTABLISHED)"'
+alias killzombie="sudo kill -9 $(ps -A -ostat,ppid | awk '/[zZ]/ && !a[$2]++ {print $2}')"
+
+## aliases
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
+alias cd.='cd ..'
+alias cd..='cd ..'
+alias dc='cd'
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias diff='LC_ALL=C diff -u'
+
+### Default to human readable figures ###
+alias df='df -Th'
+alias du='du -h'
+alias dusort='du -d 1 | sort -n'
+alias less='less -r'                          # raw control characters
+alias whence='type -a'                        # where, of a sort
+alias grep='LC_ALL=C grep --color'            # show differences in colour
+alias egrep='LC_ALL=C egrep --color=auto'     # show differences in colour
+alias fgrep='LC_ALL=C fgrep --color=auto'     # show differences in colour
+alias more='less'
+
+### Some shortcuts for different directory listings
+alias ls='ls --show-control-chars --color=always --time-style=+%Y-%m-%d\ %H:%M:%S'
+alias dir='ls --color=auto --format=vertical'
+alias vdir='ls --color=auto --format=long'
+alias ll='ls -l'                              # long list
+alias la='ls -A'                              # all but . and ..
+alias lla='ll -A'
+alias lld='ll -d'
+alias llt='ll -tr'
+alias lls='ll -Sr'
+alias llx='ll -X'
+alias l='ls -1'
+alias p='pwd'
+alias 400='chmod 400'
+alias 440='chmod 440'
+alias 444='chmod 444'
+alias 600='chmod 600'
+alias 640='chmod 640'
+alias 644='chmod 644'
+alias 664='chmod 664'
+alias 666='chmod 666'
+alias 700='chmod 700'
+alias 750='chmod 750'
+alias 754='chmod 754'
+alias 755='chmod 755'
+alias 775='chmod 775'
+alias 777='chmod 777'
+alias free='free -mt'
+alias sort="LC_ALL=C sort"
+alias uniq="LC_ALL=C uniq"
+alias sed="LC_ALL=C sed"
+alias tr="LC_ALL=C tr"
+alias cut="LC_ALL=C cut"
+alias find='LC_ALL=C find -L'
+alias be='xxd -u -g 1'
+alias vi='vim'
+if valid gtac; then
+  alias tac="gtac"
+elif ! valid tac; then
+  alias tac="tail -r"
+else
+  :
+fi
+
+## common setting
+set -o emacs
+set +o allexport
+set +o physical
+stty start undef
+stty stop undef
+
+## shell setting
+if [ $_SHELL = "bash" ];then
+  case ${UID} in
+    0)
+      PS1='\[\033[31m\]${PWD}\$\[\033[0m\] '
+      PS2='\[\033[31m\]>\[\033[0m\] '
+      #[ -n "${REMOTEHOST:-}${SSH_CONNECTION:-}" ] && PS1='\[\033[31m\]\u@\h'" ${PS1}"
+      PS1='\[\033[31m\]\u@\h'" ${PS1}"
+      ;;
+    *)
+      PS1='\[\033[37m\]\w:\$\[\033[0m\] '
+      PS2='\[\033[37m\]$\[\033[0m\] '
+      #[ -n "${REMOTEHOST:-}${SSH_CONNECTION:-}" ] && PS1='\[\033[36m\]\u@\h'" ${PS1}"
+      PS1='\[\033[36m\]\u@\h'" ${PS1}"
+      ;;
+  esac
+  shopt -s autocd
+  shopt -u histappend
+  shopt -s histreedit
+  shopt -u lithist
+  shopt -s cmdhist
+  bind '"\C-t": "\C-atime "' > /dev/null 2>&1 #time command shortcut
+  alias history="LC_ALL=C fc -l -$HISTSIZE"
+elif [ $_SHELL = "ksh" ]; then
+  case $USER in
+    root)
+      export PS1="
+$LOGNAME@$(hostname) \$PWD
+# " ;;
+    *)
+      export PS1="
+$LOGNAME@$(hostname) \$PWD
+$ " ;;
+  esac
+  unalias fc 2>/dev/null
+  alias history="LC_ALL=C fc -lN $HISTSIZE"
+elif [ $_SHELL = "zsh" ]; then
+  alias history="LC_ALL=C fc -l -$HISTSIZE"
+fi
+
+## private setting ######
+PATH=$HOME/bin:$HOME/.local/bin:$HOME/.local/sbin:$HOME/usr/bin:$HOME/usr/sbin:$HOME/usr/local/bin:$HOME/usr/local/sbin:$PATH
+
+for x in $CUR/shrc.d/*; do
+  if type $(basename $x | sed -E "s:\..*::g") > /dev/null 2>&1; then
+    source $x
+  fi
+done
+
+### python environ
+if [ -d $HOME/usr/local/python ]; then
+  export PYTHONPATH=$HOME/usr/local/python
+  PATH=$PATH:$PYTHONPATH/bin
+  if [ -z "$LD_LIBRARY_PATH" ]; then
+    export LD_LIBRARY_PATH=$PYTHONPATH/lib
+  else
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PYTHONPATH/lib
+  fi
+fi
+
+## repare PATH
+export PATH=$(echo $PATH | tr ":" "\n" | xargs \ls -d 2>/dev/null | cat -n | sort -uk 2 | sort -n | sed "s/^.*\t//g" | tr "\n" ":" | sed "s/:*$//g")
+
+## force python3
+if valid python3 && [[ ${PYTHONPATH:-} != "" ]]; then
+  alias python="$PYTHONPATH/bin/python3"
+  alias pip="$PYTHONPATH/bin/pip3"
+  
+  function topy3 {          # python2 source is convert to python3 source (overrite)
+    ret=$(find $1 -type f -exec file {} \; | grep ": Python script" | cut -d ":" -f 1 | grep -v "\.md$")
+    for x in $ret; do
+        2to3 -wn $x
+    done
+  }
+fi
+
+### neovim environ
+if [ -d $HOME/usr/local/nvim ]; then
+  export VIM=$HOME/usr/local/nvim/share/nvim/runtime
+  PATH=$PATH:$HOME/usr/local/nvim/bin
+fi
+
+if [ -d /usr/local/lib/neovim ]; then
+  export VIM=/usr/local/lib/neovim/share/nvim/runtime
+  PATH=$PATH:/usr/local/lib/neovim/bin
+fi
+
+if valid nvim; then
+  alias vim='nvim'
+elif valid gvim; then
+  alias vim='gvim -v'
+fi
+
+## location func
+if [ "$USER" = "yellow" ]; then
+  alias backupore='\cd ~;tar czfh tmp/portable_linux_64.tgz .local dotfile usr; \cd -'
+  alias backuplocal='\cd ~; tar czfh ~/dotfile/local.tar.gz .local; \cd -'
+fi
+
+## End of file #####
+unset CUR
+# vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :

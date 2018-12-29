@@ -7,13 +7,6 @@ function innertext {
   grep '<a href="' | cut -d ">" -f2 | cut -d "<" -f1
 }
 
-function currentdownload {
-  curl -sL $SIMPLE | innertext | \
-  sed -E "s;^;$SIMPLE;g" | xargs -L 1 -P $PROCESS curl -sL | \
-  python -c $'import sys, re\ninner = re.compile(" +<a *href=\\"([^\\"]+)\\"[^>]*>([^<]+)<.+")\nhead = re.compile("<h1>Links *for *(.*)</h1>")\nret = {}\ni = 0\nfor line in sys.stdin:\n    hd = head.search(line)\n    txt = inner.search(line)\n    if hd:\n        if i == 0:\n            h = hd.group(1)\n        elif ret:\n            print("\\n".join(["{} -P {}".format(v,h) for v in ret.values()]))\n            ret.clear()\n            h = hd.group(1)\n    if txt:\n        ret[txt.group(2).split(".")[-1]] = txt.group(1)\n        i += 1\nelse:\n    if ret:\n        print("\\n".join(["{} -P {}".format(v,h) for v in ret.values()]))' | \
-  xargs -L 1 -P $PROCESS wget -nv -nc
-}
-
 function extracturl {
   grep -E '^ +<a *href="([^"]+)"[^>]*>.*' $1 | \
     sed -E 's;^ +<a *href="([^"]+)"[^>]*>.*;\1;g'
@@ -25,7 +18,10 @@ function sync {
     return 1
   fi
   if \cd $1; then
-    currentdownload
+    curl -sL $SIMPLE | \
+    xargs -L 1 -P $PROCESS pypiattr.py | \
+    xargs -L 1 -P $PROCESS wget -nv -nc
+    
     \cd -
   else
     return 1

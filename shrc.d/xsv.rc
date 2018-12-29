@@ -1,0 +1,6 @@
+#xsv
+alias totsv='xsv fmt -t "\t"'
+alias tocsv='xsv fmt -t ","'
+alias csvtable='xsv table'
+
+# vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :

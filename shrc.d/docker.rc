@@ -1,0 +1,39 @@
+#docker
+if [ "$USER" = "root" ]; then
+  alias d='docker'
+else
+  alias docker='sudo docker'
+  alias docker-compose='sudo docker-compose'
+  alias d='docker'
+  alias dcompose='docker-compose'
+fi
+alias dpa='d ps -a --format "table {{.ID}} {{.Names}}\t{{.Status}}\t{{.Command}}\t{{.Ports}}"'
+alias di='d images --format "table {{.ID}}{{.Repository}}:{{.Tag}}\t{{.Size}}\t{{.CreatedSince}}"'
+alias drm='d rm -f'
+alias drmi='d rmi'
+alias dpl='d pull'
+alias dx='d exec -it'
+
+function dip {
+  sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
+}
+
+function dipa {
+  for x in $(sudo docker ps -a --format "{{.Names}}:{{.ID}}");do
+    echo $(dip $(echo $x | cut -d ":" -f 2)) $x
+  done | sort
+}
+
+function dclean {
+  typeset deadc=$(sudo docker ps -qf "status=exited")
+  if [ -n "$deadc" ]; then
+    sudo docker rm -f $deadc
+  fi
+
+  typeset deadi=$(sudo docker images -f "dangling=true" -q)
+  if [ -n "$deadi" ]; then
+    sudo docker rmi $deadi
+  fi
+}
+
+# vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :

@@ -1,0 +1,245 @@
+#fzf
+_SHELL=$(ps -p $$ | tail -n 1 | sed "s/^.* //g")
+#export WORKCDHISTFILE=$HOME/.cd_history
+#export WORKBOOKMARKFILE=$HOME/.bookmark
+
+function valid {
+  type "$@" > /dev/null 2>&1
+}
+
+function opener {       #file or directory automatic open
+  if [ "$1" = "" ];then
+    return 1
+  fi
+  typeset fn=$(readlink -f "$1")
+  if [ -f $fn ]; then
+      $EDITOR $fn
+  elif [ -d $fn ]; then
+      cd $fn
+  else
+      echo "File or Directory Not Found.."
+      return 1
+  fi
+}
+
+if valid fd; then
+  #alias fd='fd -L'
+  export FZF_DEFAULT_COMMAND='LC_ALL=C fd -L --type f --ignore-case -E .git -E .svn -E old -E bak'
+else
+  export FZF_DEFAULT_COMMAND='find * -type d \( -name ".git" -o -name ".svn"  -o -name "old" -o -name "bak" \) -prune -o -type f -print'
+fi
+export FZF_DEFAULT_OPTS="--no-mouse --layout=reverse --height=70% --border --preview 'preview {}' --preview-window down:wrap"
+export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+
+
+# Thanks! http://bio-eco-evo.hatenablog.com/entry/2017/04/30/044703
+function fzf_cd {
+  typeset sw="1" list slct
+  while [ "$sw" != "0" ]
+    do
+      if [ "$sw" = "1" ];then
+        list=$(echo -e "---$PWD\n../\n$( /bin/ls -LF | grep / )\n---Show hidden directory\n---Show files, $(echo $(/bin/ls -LF | grep -v / ))\n---HOME DIRECTORY")
+      elif [ "$sw" = "2" ];then
+        list=$(echo -e "---$PWD\n$( /bin/ls -a -LF | grep / | sed 1d )\n---Hide hidden directory\n---Show files, $(echo $(/bin/ls -LF | grep -v / ))\n---HOME DIRECTORY")
+      else
+        list=$(echo -e "---BACK\n$( /bin/ls -LF | grep -v / )")
+      fi
+      
+      slct=$(echo -e "$list" | fzf )
+      
+      if [ "$slct" = "---$PWD" ];then
+        sw="0"
+      elif [ "$slct" = "---Hide hidden directory" ];then
+        sw="1"
+      elif [ "$slct" = "---Show hidden directory" ];then
+        sw="2"
+      elif [ "$slct" = "---Show files, $(echo $(/bin/ls -LF | grep -v / ))" ];then
+        sw=$(($sw+2))
+      elif [ "$slct" = "---HOME DIRECTORY" ];then
+        cd "$HOME"
+      elif [[ "$slct" =~ / ]];then
+        cd "$slct"
+      elif [ "$slct" = "" ];then
+        :
+      else
+        sw=$(($sw-2))
+      fi
+    done
+}
+
+alias cdf='fzf_cd'
+
+function grep_goto {    # ripgrep & opener
+  typeset ret pth
+  
+  if [ "$1" = "" ]; then
+    kw=.
+  else
+    kw=$1
+  fi
+  
+  if valid rg; then
+    ret=$(rg --hidden "$kw" | fzf )
+  else
+    ret=$(grep -rl "$kw" * | fzf )
+  fi
+  
+  if [ ! -z "$ret" -a "$ret" != " " ]; then
+    opener $(echo $ret | cut -d ":" -f 1)
+  fi
+}
+alias gg=grep_goto
+bind '"\C-g\C-g": "grep_goto\C-m"' > /dev/null 2>&1
+
+function change_direcoty_goto {  # recursive directory search & jump
+  if valid fd; then
+    opener $(fd . -L --type d | fzf)
+  else
+    opener $(find . -L -type d | fzf)
+  fi
+}
+alias cdgo=change_direcoty_goto
+bind '"\C-x\C-e": "change_direcoty_goto\C-m"' > /dev/null 2>&1
+
+function find_open {  # recursive find & open
+  if valid fd; then
+    opener $(fd -L | fzf)
+  else
+    opener $(find -L | fzf)
+  fi
+}
+alias fo=find_open
+bind '"\C-o\C-o": "find_open\C-m"' > /dev/null 2>&1
+
+function bookmark {   #lookup bookmark
+  opener $(cat $WORKBOOKMARKFILE | fzf)
+}
+alias b=bookmark
+
+if [ $_SHELL = "bash" ]; then
+  function fzf_select_history {
+    READLINE_LINE=$(HISTTIMEFORMAT= history|sort -uk 2|sort -nr|sed -E 's/^[ \t0-9]+//g'| fzf --no-sort --preview=':' --preview-window="hidden" --query "$READLINE_LINE")
+    READLINE_POINT=${#READLINE_LINE}
+  }
+  bind -x '"\C-r": fzf_select_history'
+elif [ $_SHELL = "zsh" ]; then
+  function fzf_select_history {
+    BUFFER=$(HISTTIMEFORMAT= history|sort -uk 2|sort -nr|sed -E 's/^[ \t0-9]+//g'| fzf --no-sort --preview=':' --preview-window="hidden" --query "$BUFFER")
+    CURSOR=${#BUFFER}
+    zle reset-prompt
+  }
+  zle -N fzf_select_history
+  bindkey '^r' fzf_select_history
+else
+  function fzf_select_history {
+    history |sort -uk 2|sort -nr|sed -E 's/^[ \t0-9]+//g'| fzf --no-sort --preview=':' --preview-window="hidden"
+  }
+fi
+
+function loc {    # fzf: locate & open
+  typeset pth
+  if [ "$*" = "" ]; then
+    pth=/
+  else
+    pth=$*
+  fi
+  opener $(locate $pth | fzf)
+}
+bind '"\C-x\C-f": "\C-aloc \C-m"' > /dev/null 2>&1
+
+function locbasename {  # fzf: locate basename only & open
+  typeset pth
+  if [ "$@" = "" ]; then
+    pth=/
+  else
+    pth=$*
+  fi
+  opener $(locate -b $pth | fzf)
+}
+alias lb='locbasename'
+
+function histcd {  # fzf : recently Changed directory
+  opener $(catuniq $WORKCDHISTFILE | xargs -n 100 \ls --sort=none -d 2> /dev/null | fzf --no-sort)
+}
+alias cdh=histcd
+bind '"\C-x\C-x": "histcd\C-m"' > /dev/null 2>&1
+
+function histvi {  # fzf : recently vim opened file
+  opener $(grep "^> " $HOME/.viminfo | cut -c 3- | tacuniq | sed "s:~:$HOME:g" | xargs -n 100 \ls --sort=none -d 2> /dev/null | fzf --no-sort)
+}
+alias vih=histvi
+bind '"\C-x\C-v": "histvi\C-m"' > /dev/null 2>&1
+
+function hist {  # fzf : recently bash cmd or Changed directory
+  typeset ret
+  ret=`(uniq $WORKCDHISTFILE && grep "^> " $HOME/.viminfo | uniq | cut -b 3- | sed "s:~:$HOME:g") | sort | uniq -c | sort -nr | cut -b 9- | xargs -n 100 \ls --sort=none -d 2> /dev/null | fzf --no-sort`
+  opener $ret
+}
+alias hh=hist
+bind '"\C-x\C-a": "hist\C-m"' > /dev/null 2>&1
+
+function _tips {
+  typeset oneliner_f
+  oneliner_f="${1:-$HOME/.local/tips.txt}"
+
+  [[ ! -f $oneliner_f || ! -s $oneliner_f ]] && return
+
+  typeset cmd q k res accept
+  while accept=0; cmd="$(
+    cat <$oneliner_f \
+      | sed -e '/^#/d;/^$/d' \
+      | perl -pe 's/^(\[.*?\]) (.*)$/$1\t$2/' \
+      | perl -pe 's/(\[.*?\])/\033[31m$1\033[m/' \
+      | perl -pe 's/^(: ?)(.*)$/$1\033[30;47;1m$2\033[m/' \
+      | perl -pe 's/^(.*)([[:blank:]]#[[:blank:]]?.*)$/$1\033[30;1m$2\033[m/' \
+      | perl -pe 's/(!)/\033[31;1m$1\033[m/' \
+      | perl -pe 's/(\|| [A-Z]+ [A-Z]+| [A-Z]+ )/\033[35;1m$1\033[m/g' \
+      | fzf --ansi --multi --no-sort --tac --query="$q" --preview='echo "[Command Example]"; echo {} | cut -d "]" -f 2- | cut -c 2-' --print-query --expect=ctrl-v --exit-0
+      )"; do
+    q="$(head -1 <<< "$cmd")"
+    k="$(head -2 <<< "$cmd" | tail -1)"
+    res="$(sed '1,2d;/^$/d;s/[[:blank:]]#.*$//' <<< "$cmd")"
+    [ -z "$res" ] && continue
+    if [ "$k" = "ctrl-v" ]; then
+      vim "$oneliner_f" < /dev/tty > /dev/tty
+    else
+      cmd="$(perl -pe 's/^(\[.*?\])\t(.*)$/$2/' <<<"$res")"
+      if [[ $cmd =~ "!$" || $cmd =~ "! *#.*$" ]]; then
+        accept=1
+        cmd="$(sed -e 's/!.*$//' <<<"$cmd")"
+      fi
+      break
+    fi
+  done
+  tr -d '@' <<<"$cmd" | perl -pe 's/\n/; /' | sed -e 's/; $//'
+}
+
+if [ $_SHELL = "bash" ]; then
+  function tips {
+    READLINE_LINE=$(_tips "$@")
+    READLINE_POINT=${#READLINE_LINE}
+  }
+  bind -x '"\C-b\C-b": tips'
+elif [ $_SHELL = "zsh" ]; then
+  function tips {
+    BUFFER=$(_tips "$@")
+    CURSOR=${#BUFFER}
+    zle reset-prompt
+  }
+  zle -N tips
+  bindkey '^b^b' tips
+else
+  alias tips=_tips
+fi
+
+function vimgrep {
+typeset ret=`rg --vimgrep $@ | fzf`
+if [ "$ret" = "" ];then
+  return 1
+fi
+vim -p `echo $ret | cut -d ":" -f 1,2 | sed "s/:/ +/g"`
+}
+alias vg='vimgrep'
+bind '"\C-x\C-g": "vimgrep\C-m"' > /dev/null 2>&1
+
+# vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :

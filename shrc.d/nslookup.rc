@@ -1,0 +1,4 @@
+#nslookup
+alias nslookup='nslookup -query=any'
+
+# vim: set ft=sh ff=unix fileencoding=utf-8 expandtab ts=2 sw=2 :
