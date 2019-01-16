@@ -90,4 +90,38 @@
 : bash only
 [スクリプト内でaliasを使いたい] shopt -s expand_aliases
 
+: db2 command
+[ライセンスの確認] db2licm -l
+[コンプライアンスチェック結果をファイル出力] db2licm -g
+[インストール済み製品の確認] db2ls
+[インスタンスのリスト] db2ilist
+[インスタンスポートの確認] db2 "GET DBM CFG"
+[純粋にポート番号だけ確認したいとき] db2 "GET DBM CFG" | grep SVCENAME
+[メモリ上の値とディスク上の値を確認] db2pd -dbm
+[データベースの一覧] db2 "LIST DB DIRECTORY"
+[特定のローカルデータベースの情報] db2 "LIST DB DIRECTORY ON /path/to/database"
+[データベース接続] db2 CONNECT TO
+[データベース切断] db2 DISCONNECT
+[ストレージグループ名とストレージパスのみ取得] db2 "SELECT VARCHAR(storage_group_name,15) AS NAME, VARCHAR(db_storage_path, 20) AS STORAGE_PATH FROM TABLE(ADMIN_GET_STORAGE_PATHS('', -1)) AS T"
+[使用状況をファイルにエクスポート] db2 "EXPORT TO storagepaths.csv OF DEL SELECT * FROM TABLE(ADMIN_GET_STORAGE_PATHS('',-1)) AS T"
+[全アクティブDB確認] db2pd -alldbs -storage
+[表スペースの確認] db2 "LIST TABLESPACES"
+[全アクティブDB表スペースの確認] db2pd -alldbs -tablespaces
+[表スペースを構成するコンテナの物理パス特定] db2 "SELECT TBSP_ID,CONTAINER_ID,CONTAINER_NAME,CONTAINER_TYPE FROM TABLE(MON_GET_CONTAINER(NULL,NULL)) AS T"
+[表スペースの使用状況の確認] db2 "SELECT * FROM SYSIBMADM.TBSP_UTILIZATION"
+[画面上見やすい範囲で有益な情報を出力] db2 "SELECT TBSP_ID, VARCHAR(TBSP_NAME,16) AS TBSP_NAME, TBSP_TYPE, TBSP_CONTENT_TYPE, TBSP_TOTAL_SIZE_KB, TBSP_USED_SIZE_KB, TBSP_UTILIZATION_PERCENT, TBSP_PAGE_SIZE, TBSP_EXTENT_SIZE, TBSP_USING_AUTO_STORAGE, TBSP_NUM_CONTAINERS FROM SYSIBMADM.TBSP_UTILIZATION"
+[バッファープールの確認] db2 "SELECT VARCHAR(BPNAME,20) AS BP_NAME,BUFFERPOOLID,PAGESIZE FROM SYSCAT.BUFFERPOOLS"
+[表スペースとバッファプール確認] db2 "SELECT a.TBSPACEID,a.TBSPACETYPE,a.PAGESIZE,a.EXTENTSIZE,a.DATATYPE,a.BUFFERPOOLID,VARCHAR(b.BPNAME,16) AS BUFFERPOOL_NAME"
+[メモリ上の値とディスク上の値を確認] db2pd -db DBNAME -dbcfg
+[ログの使用状況確認] db2pd -db DBNAME -logs
+[テーブル一覧] db2 "LIST TABLES"
+[カタログ表] db2 "LIST TABLES FOR SYSTEM"
+[全テーブル一覧] db2 "LIST TABLES FOR ALL"
+[表の内容（列情報など）を取得] db2 DESCRIBE TABLE
+[CREATE DATABASEステートメント] dblook -d DBNAME -createdb
+[DBを複製するのに必要なDDLを生成] db2look -d DBNAME -e
+[テーブルの物理位置とバッファープール] db2 "SELECT VARCHAR(a.tabschema,10) AS schema, VARCHAR(a.tabname,50) AS name, b.sgid AS stoid, VARCHAR(b.sgname,15) AS stogroup, VARCHAR(b.tbspace,15) AS tbspname, b.bufferpoolid AS bpid, VARCHAR(c.bpname,15) AS bpname, VARCHAR(d.container_name,100) AS container FROM SYSCAT.Tables AS a LEFT OUTER JOIN SYSCAT.Tablespaces AS b ON a.tbspaceid = b.tbspaceid LEFT OUTER JOIN SYSCAT.Bufferpools AS c ON b.bufferpoolid = c.bufferpoolid LEFT OUTER JOIN TABLE(MON_GET_CONTAINER(NULL,NULL)) AS d ON a.tbspaceid = d.tbsp_id ORDER BY schema, name, container"
+[インデックスの物理位置とバッファープール] db2 "SELECT VARCHAR(a.indschema,10) AS schema, VARCHAR(a.indname,50) AS name, b.sgid AS stoid, VARCHAR(b.sgname,15) AS stogroup, VARCHAR(b.tbspace,15) AS tbspname, b.bufferpoolid AS bpid, VARCHAR(c.bpname,15) AS bpname, VARCHAR(d.container_name,100) AS container FROM SYSCAT.Indexes AS a LEFT OUTER JOIN SYSCAT.Tablespaces AS b ON a.tbspaceid = b.tbspaceid LEFT OUTER JOIN SYSCAT.Bufferpools AS c ON b.bufferpoolid = c.bufferpoolid LEFT OUTER JOIN TABLE(MON_GET_CONTAINER(NULL,NULL)) AS d ON a.tbspaceid = d.tbsp_id ORDER BY schema, name, container"
+[DBの作成] db2 CREATE DB DBNAME
+
 # vim:ft=sh

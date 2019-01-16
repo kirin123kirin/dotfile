@@ -8,7 +8,7 @@ else
   alias dcompose='docker-compose'
 fi
 alias dpa='d ps -a --format "table {{.ID}} {{.Names}}\t{{.Status}}\t{{.Command}}\t{{.Ports}}"'
-alias di='d images --format "table {{.ID}}{{.Repository}}:{{.Tag}}\t{{.Size}}\t{{.CreatedSince}}"'
+alias di='d images --format "table {{.ID}} {{.Repository}}:{{.Tag}}\t{{.Size}}\t{{.CreatedSince}}"'
 alias drm='d rm -f'
 alias drmi='d rmi'
 alias dpl='d pull'

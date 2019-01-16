@@ -1,0 +1,72 @@
+alias udb2lcl='db2licm -l'
+alias udb2lcout='db2licm -g'
+alias udb2icfg='db2 GET DBM CFG'
+alias udb2iport='db2 GET DBM CFG | grep SVCENAME'
+alias udb2size='db2pd -dbm'
+alias udb2lsdb='db2 LIST DB DIRECTORY'
+alias udb2con='db2 CONNECT TO'
+alias udb2quit='db2 DISCONNECT'
+alias udb2disk='db2 "SELECT VARCHAR\(storage_group_name,15\) AS NAME, VARCHAR\(db_storage_path, 20\) AS STORAGE_PATH FROM TABLE\(ADMIN_GET_STORAGE_PATHS\('', -1\)\) AS T"'
+alias udb2info='db2 "EXPORT TO storagepaths.csv OF DEL SELECT * FROM TABLE\(ADMIN_GET_STORAGE_PATHS\('',-1\)\) AS T"'
+alias udb2dbact='db2pd -alldbs -storage'
+alias udb2ts='db2 LIST TABLESPACES'
+alias udb2tsall='db2pd -alldbs -tablespaces'
+alias udb2ctfind='db2 "SELECT TBSP_ID,CONTAINER_ID,CONTAINER_NAME,CONTAINER_TYPE FROM TABLE\(MON_GET_CONTAINER\(NULL,NULL\)\) AS T"'
+alias udb2ctinfo='db2 "SELECT * FROM SYSIBMADM.TBSP_UTILIZATION"'
+alias udb2info='db2 "SELECT TBSP_ID, VARCHAR\(TBSP_NAME,16\) AS TBSP_NAME, TBSP_TYPE, TBSP_CONTENT_TYPE, TBSP_TOTAL_SIZE_KB, TBSP_USED_SIZE_KB, TBSP_UTILIZATION_PERCENT, TBSP_PAGE_SIZE, TBSP_EXTENT_SIZE, TBSP_USING_AUTO_STORAGE, TBSP_NUM_CONTAINERS FROM SYSIBMADM.TBSP_UTILIZATION"'
+alias udb2buf='db2 "SELECT VARCHAR\(BPNAME,20\) AS BP_NAME,BUFFERPOOLID,PAGESIZE FROM SYSCAT.BUFFERPOOLS"'
+alias udb2tsbuf='db2 "SELECT a.TBSPACEID,a.TBSPACETYPE,a.PAGESIZE,a.EXTENTSIZE,a.DATATYPE,a.BUFFERPOOLID,VARCHAR\(b.BPNAME,16\) AS BUFFERPOOL_NAME"'
+alias udb2lstables='db2 LIST TABLES'
+alias udb2lscat='db2 LIST TABLES FOR SYSTEM'
+alias udb2lstablesall='db2 LIST TABLES FOR ALL'
+alias udb2desc='db2 DESCRIBE TABLE'
+alias udb2infotable='db2 "SELECT VARCHAR\(a.tabschema,10\) AS schema, VARCHAR\(a.tabname,50\) AS name, b.sgid AS stoid, VARCHAR\(b.sgname,15\) AS stogroup, VARCHAR\(b.tbspace,15\) AS tbspname, b.bufferpoolid AS bpid, VARCHAR\(c.bpname,15\) AS bpname, VARCHAR\(d.container_name,100\) AS container FROM SYSCAT.Tables AS a LEFT OUTER JOIN SYSCAT.Tablespaces AS b ON a.tbspaceid = b.tbspaceid LEFT OUTER JOIN SYSCAT.Bufferpools AS c ON b.bufferpoolid = c.bufferpoolid LEFT OUTER JOIN TABLE\(MON_GET_CONTAINER\(NULL,NULL\)\) AS d ON a.tbspaceid = d.tbsp_id ORDER BY schema, name, container"'
+alias udb2infoidx='db2 "SELECT VARCHAR\(a.indschema,10\) AS schema, VARCHAR\(a.indname,50\) AS name, b.sgid AS stoid, VARCHAR\(b.sgname,15\) AS stogroup, VARCHAR\(b.tbspace,15\) AS tbspname, b.bufferpoolid AS bpid, VARCHAR\(c.bpname,15\) AS bpname, VARCHAR\(d.container_name,100\) AS container FROM SYSCAT.Indexes AS a LEFT OUTER JOIN SYSCAT.Tablespaces AS b ON a.tbspaceid = b.tbspaceid LEFT OUTER JOIN SYSCAT.Bufferpools AS c ON b.bufferpoolid = c.bufferpoolid LEFT OUTER JOIN TABLE\(MON_GET_CONTAINER\(NULL,NULL\)\) AS d ON a.tbspaceid = d.tbsp_id ORDER BY schema, name, container"'
+alias udb2mkdb='db2 CREATE DB'
+alias udb2rmdb='db2 DROP DB'
+
+function udb2head { #テーブル先頭10行表示
+	db2 "SELECT * from ${1} FETCH FIRST 10 ROWS ONLY FOR READ ONLY"
+}
+
+function udb2tail { #テーブル末尾10行表示
+	db2 "SELECT * from ${1} FETCH LAST 10 ROWS ONLY FOR READ ONLY"
+}
+
+function udb2import {
+	db2 IMPORT FROM $1 OF DEL MODIFIED BY chardel"" INSERT INTO $2
+}
+
+function udb2dump {
+	db2 "export to ${2}.tmp of DEL select * from $1"
+	db2 "select * from $1 where 1 = 0" | awk 'NR==2' | awk -v IFS=' ' -v OFS=',' '{$1=$1;print $0}' > $2
+	cat ${2}.tmp >> $2 && rm -f ${2}.tmp
+}
+
+function udb2csv {
+	db2 "select * from $1 where 1 = 0" | awk 'NR==2' | awk -v IFS=' ' -v OFS='","' '{$1=$1;print $0}' | sed -E "s/^|$/\"/g"
+	db2 -x "select * from act" | awk -v IFS=' ' -v OFS='","' '{$1=$1;print $0}' | sed -E "s/^|$/\"/g"
+}
+
+function udb2tsv {
+	db2 "select * from $1 where 1 = 0" | awk 'NR==2' | awk -v IFS=' ' -v OFS='\t' '{$1=$1;print $0}'
+	db2 -x "select * from act" | awk -v IFS=' ' -v OFS='\t' '{$1=$1;print $0}'
+}
+
+alias udb2count='db2 -x SELECT COUNT\(*\) FROM'
+
+function udb2cfg { #メモリ上の値とディスク上の値を確認
+	db2pd -db $1 -dbcfg
+}
+
+function udb2loginfo { #ログの使用状況確認
+	db2pd -db $1 -logs
+}
+
+function udb2ddldb { #CREATE DATABASEステートメント
+	dblook -d $1 -createdb
+}
+
+function udb2ddlcpdb { #DBを複製するのに必要なDDLを生成
+	db2look -d $1 -e
+}
