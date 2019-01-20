@@ -516,7 +516,6 @@ fi
 ## common setting
 set -o emacs
 set +o allexport
-set +o physical
 stty start undef
 stty stop undef
 
@@ -536,6 +535,7 @@ if [ $_SHELL = "bash" ];then
       PS1='\[\033[36m\]\u@\h'" ${PS1}"
       ;;
   esac
+  set +o physical
   shopt -s autocd
   shopt -u histappend
   shopt -s histreedit
