@@ -3,6 +3,7 @@ cython
 ipython
 pandas
 matplotlib
+plotly
 dask
 dateutils
 xlrd

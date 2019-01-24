@@ -13,7 +13,7 @@ alias sqldba="sqlplus -S sys/$ORACLE_PWD@$ORACLE_SID as sysdba"
 
 function startdb {
 lsnrctl status || lsnrctl start
-sqlplus / as sysdba << EOF
+cat <<EOF | sqlplus / as sysdba
   STARTUP;
   exit;
 EOF
@@ -27,7 +27,7 @@ EOF
 lsnrctl status && lsnrctl stop
 }
 
-function abortdb {
+function killdb {
    sqlplus / as sysdba <<EOF
    shutdown abort;
    exit;
@@ -77,7 +77,7 @@ function create_sqlnetora {
 }
 
 function alter_pdbautoopen {
-sqlplus / as sysdba << EOF
+cat <<EOF | sqlplus / as sysdba
    ALTER SYSTEM SET control_files='$ORACLE_BASE/oradata/$ORACLE_SID/control01.ctl' scope=spfile;
    ALTER SYSTEM SET local_listener='';
    ALTER PLUGGABLE DATABASE $ORACLE_PDB SAVE STATE;
@@ -96,8 +96,32 @@ CREATE USER $1
 EOF
 }
 
+function createuserpdb { # $1 username, $2 passwd, $3 pdbname
+cat <<EOF | sqldba
+
+alter session set container = $3;
+
+CREATE USER $1
+  IDENTIFIED BY "$2"
+  DEFAULT TABLESPACE users
+  TEMPORARY TABLESPACE temp;
+
+grant CREATE SESSION to $1;
+EOF
+}
+
 function grantdba { # $1 username
 cat <<EOF | sqldba
+
+GRANT DBA TO $1 ;
+GRANT UNLIMITED TABLESPACE TO $1 ;
+
+EOF
+}
+
+function grantdbapdb { # $1 username, $2 pdbname
+cat <<EOF | sqldba
+alter session set container = $2;
 
 GRANT DBA TO $1 ;
 GRANT UNLIMITED TABLESPACE TO $1 ;
@@ -112,7 +136,7 @@ EOF
 }
 
 function passwd_orasys {
-sqlplus / as sysdba << EOF
+cat <<EOF | sqlplus / as sysdba
   ALTER USER SYS IDENTIFIED BY "$ORACLE_PWD";
   ALTER USER SYSTEM IDENTIFIED BY "$ORACLE_PWD";
   ALTER SESSION SET CONTAINER=$ORACLE_PDB;
@@ -185,6 +209,10 @@ where
 order by
   resource_type, resource_name;
 EOF
+}
+
+function lspdb {
+  echo show con_name | sqldba
 }
 
 function cptable { #$1 srctbl, $2 desttbl

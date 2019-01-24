@@ -1,6 +1,6 @@
 alias udb2lcl='db2licm -l'
 alias udb2lcout='db2licm -g'
-alias udb2icfg='db2 GET DBM CFG'
+alias udb2lscfg='db2 GET DBM CFG'
 alias udb2iport='db2 GET DBM CFG | grep SVCENAME'
 alias udb2size='db2pd -dbm'
 alias udb2lsdb='db2 LIST DB DIRECTORY'
@@ -24,6 +24,8 @@ alias udb2infotable='db2 "SELECT VARCHAR\(a.tabschema,10\) AS schema, VARCHAR\(a
 alias udb2infoidx='db2 "SELECT VARCHAR\(a.indschema,10\) AS schema, VARCHAR\(a.indname,50\) AS name, b.sgid AS stoid, VARCHAR\(b.sgname,15\) AS stogroup, VARCHAR\(b.tbspace,15\) AS tbspname, b.bufferpoolid AS bpid, VARCHAR\(c.bpname,15\) AS bpname, VARCHAR\(d.container_name,100\) AS container FROM SYSCAT.Indexes AS a LEFT OUTER JOIN SYSCAT.Tablespaces AS b ON a.tbspaceid = b.tbspaceid LEFT OUTER JOIN SYSCAT.Bufferpools AS c ON b.bufferpoolid = c.bufferpoolid LEFT OUTER JOIN TABLE\(MON_GET_CONTAINER\(NULL,NULL\)\) AS d ON a.tbspaceid = d.tbsp_id ORDER BY schema, name, container"'
 alias udb2mkdb='db2 CREATE DB'
 alias udb2rmdb='db2 DROP DB'
+alias udb2chcfg='db2 UPDATE DB CFG'
+alias udb2inializecfg='db2 RESET DB CFG'
 
 function udb2head { #テーブル先頭10行表示
 	db2 "SELECT * from ${1} FETCH FIRST 10 ROWS ONLY FOR READ ONLY"
