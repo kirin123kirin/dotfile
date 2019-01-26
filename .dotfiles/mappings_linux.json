@@ -1,7 +1,6 @@
 {
  "vimrc": "~/.vimrc",
  "vim": "~/.vim",
- "vim": "~/.config/nvim",
  "sh.rc": "~/.bashrc",
  "sh.rc": "~/.kshrc",
  ".local": "~/.local",

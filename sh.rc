@@ -11,7 +11,7 @@
 #set -eu
 
 ## this shell only environ
-CUR=$(cd $(dirname $(readlink ${BASH_SOURCE:-$0})); pwd)
+CUR=$(cd $(dirname $(readlink -f ${BASH_SOURCE:-$0})); pwd)
 _SHELL=$(ps -p $$ | tail -n 1 | sed "s/^.* //g")
 
 ## common environs
