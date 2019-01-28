@@ -12,7 +12,7 @@ alias di='d images --format "table {{.ID}} {{.Repository}}:{{.Tag}}\t{{.Size}}\t
 alias drm='d rm -f'
 alias drmi='d rmi'
 alias dpl='d pull'
-alias dx='d exec -it'
+alias dx='d exec -it -e COLUMNS=200 -e LINES=50 -e TERM=xterm'
 
 function dip {
   sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
