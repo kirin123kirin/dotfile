@@ -47,6 +47,7 @@ tornado==4.5.3
 joblib
 pyqt5
 spyder
+docker-registry-client
 #chartpy
 #jupyterlab
 #jupyterlab-widgets
