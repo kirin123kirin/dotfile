@@ -541,6 +541,8 @@ if [ $_SHELL = "bash" ];then
   shopt -s histreedit
   shopt -u lithist
   shopt -s cmdhist
+  shopt -s huponexit  # set auto nohup
+  #shopt -u huponexit  # unset auto nohup
   bind '"\C-t": "\C-atime "' > /dev/null 2>&1 #time command shortcut
   alias history="LC_ALL=C fc -l -$HISTSIZE"
 elif [ $_SHELL = "ksh" ]; then
