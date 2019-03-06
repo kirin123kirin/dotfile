@@ -1,0 +1,163 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import sys
+from os.path import basename
+import re
+from datetime import datetime, timedelta
+if sys.version_info[0] < (3, 7):
+    from collections import OrderedDict as dict
+    
+USAGE = """
+This Program is capture for /proc/stat, /proc/meminfo and /proc/diskstat.
+
+Usage: {0} interval times [output_columns...]
+
+<Example1:  1times all stats output>
+$ {0}
+from->,CPU,CPU,MEM,DISK
+timestamp,cpu:user,cpu:system........
+2019/02/07 19:44:00,10416351,3376625,2625800,1
+2019/02/07 19:44:01,10416382,3376638,2624664,1
+
+(notes. stat many outputs!)
+
+<Example2:  2times 1sec delay capture and output filtered>
+$ {0} 1 2 cpu:user cpu:system memfree sda1:ios0
+from->,CPU,CPU,MEM,DISK
+timestamp,cpu:user,cpu:system,memfree,sda1:ios0
+2019/02/07 19:44:00,51,5,2625800,1
+2019/02/07 19:44:01,82,8,2624664,1
+""".format(basename(sys.argv[0]))
+
+DELIM = ","
+LF="\n"
+MQ = " kB"
+TIMEFORMAT="%Y/%m/%d %H:%M:%S"
+sp = re.compile(":? +")
+
+#/proc/meminfo
+def mem(mi):
+    return dict(sp.split(x.strip(MQ).lower()) for x in mi)
+
+#/proc/stat
+ch = "user,nice,system,idle,iowait,irq,softirq,steal,guest,guest_nice".split(",")
+def _cpu(line):
+    ss = sp.split(line)
+    return dict(zip(map((ss[0] + ":{}").format, ch), ss[1:]))
+    
+def cpu(ci):
+    i = next(i for i, x in enumerate(ci) if x.startswith("intr"))
+    ret=dict(d for dic in map(_cpu, ci[:i]) for d in dic.items())
+    ret.update(dict(sp.split(x,1) for x in ci[i+1:]))
+    return ret
+
+#/proc/diskstats
+dh = "ios0,merges0,sectors0,ticks0,ios1,merges1,sectors1,ticks1,part_in_flight(hd),io_ticks,time_in_queue".split(",")
+def _disk(line):
+    ss = sp.split(line)[3:]
+    return dict(zip(map((ss[0] + ":{}").format, dh), ss[1]))
+
+def disk(di):
+    return dict(d for dic in map(_disk, di) for d in dic.items())
+
+HEAD = dict(timestamp="from->")
+def stats(ci=None, mi=None, di=None, header=True):
+    """getstats all
+        ci: list lines
+        mi: list lines
+        di: list lines
+    """
+    now = datetime.now().strftime(TIMEFORMAT)
+    ret = dict(timestamp=now)
+    
+    if ci:
+        rc = cpu(ci)
+        ret.update(rc)
+        if header:
+            HEAD.update(dict(zip(rc.keys(), ["CPU"] * len(rc))))
+    if mi:
+        rm = mem(mi)
+        ret.update(rm)
+        if header:
+            HEAD.update(dict(zip(rm.keys(), ["MEM"] * len(rm))))
+    if di:
+        rd = disk(di)
+        ret.update(rd)
+        if header:
+            HEAD.update(dict(zip(rd.keys(), ["DISK"] * len(rd))))
+    return ret
+
+def values_at(item, columns):
+    return dict((x, item[x]) for x in columns)
+            
+def render(header=True, columns=[]):
+    try:
+        with open("/proc/stat") as f:
+            ci = f.read().splitlines()
+    except FileNotFoundError:
+        ci = None
+    
+    try:
+        with open("/proc/meminfo") as f:
+            mi = f.read().splitlines()
+    except FileNotFoundError:
+        mi = None
+    
+    try:
+        with open("/proc/diskstats") as f:
+            di = f.read().splitlines()
+    except FileNotFoundError:
+        di = None
+    
+    if any([ci, mi, di]) is False:
+        raise RuntimeError("Nothing Stats file.\nCheck Linux Distribution")
+    
+    ret = values_at(stats(ci, mi, di, header), ["timestamp"] + columns) if columns else stats(ci, mi, di)
+    
+    if header:
+        sys.stdout.write(DELIM.join(map(HEAD.get, ret)) + LF)
+        sys.stdout.write(DELIM.join(ret.keys()) + LF)
+    
+    sys.stdout.write(DELIM.join(ret.values()) + LF)
+    
+def capture(delaysec=0, times=1, *columns):
+    import time
+    
+    if delaysec == 0 and times == 1:
+        render(True, list(columns))
+        return
+        
+    for i in range(int(times)):
+        render(i==0, list(columns))
+        time.sleep(int(delaysec))
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        sys.stderr.write(USAGE + LF)
+        sys.exit(1)
+        
+    try:
+        capture(*sys.argv[1:])
+        
+    except KeyboardInterrupt:
+        sys.stderr.write("Interrupted."+LF)
+        sys.exit(1)
+        
+    except KeyError as e:
+        help=dict(CPU="https://www.s-arcana.co.jp/tech/2011/12/linux-proc-stat-cpu-tenth-column.html",
+                   MEM="http://enakai00.hatenablog.com/entry/20110906/1315315488",
+                   DISK="http://itlabor.blogspot.com/2014/02/procdiskstats.html?m=1")
+        r = dict()
+        for k, v in HEAD.items():
+            if k == "timestamp":
+                continue
+            if v in r:
+                r[v].append(k)
+            else:
+                r[v] = [k]
+        for cat, val in r.items():
+            sys.stderr.write(cat + ":" + help[cat] + LF + "\t")
+            sys.stderr.write((LF + "\t").join(val) + LF)
+        sys.stderr.write(str(e) + " is Unknown column name." + LF))
+        sys.stderr.write("Please choice above names."+LF)
+        sys.exit(1)
