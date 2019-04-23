@@ -1,0 +1,9 @@
+function rust_run {
+	typeset binary
+    if rustc $1; then
+      binary=$(basename $1 .rs)
+      ./$binary "$@"
+    fi
+}
+
+alias rrun="rust_run"

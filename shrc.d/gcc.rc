@@ -1,0 +1,9 @@
+function cbuild {
+    typeset binary
+    binary=$(basename ${@:$#:1} .c)
+    if gcc -o $binary "$@" -static; then
+        if type x86_64-w64-mingw32-gcc-win32 > /dev/null; then
+            x86_64-w64-mingw32-gcc-win32 -o ${binary}.exe "$@" -static
+        fi
+    fi
+}
