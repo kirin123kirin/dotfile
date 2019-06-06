@@ -19,7 +19,7 @@ cytoolz
 xsorted
 more-itertools
 patool
-parse
+#parse #error
 bs4
 html5lib
 lxml
@@ -55,3 +55,4 @@ docker-registry-client
 #widgetsnbextension
 #ipywidgets
 #seaborn
+plocate
