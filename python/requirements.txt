@@ -55,4 +55,5 @@ docker-registry-client
 #widgetsnbextension
 #ipywidgets
 #seaborn
-plocate
+olefile
+https://github.com/kirin123kirin/mso-dumper.git
