@@ -14,7 +14,7 @@ xlsxwriter
 sqlparse
 lark-parser
 git+git://github.com/fumiyas/python-nkf@master#egg=python-nkf
-pyinstaller
+#pyinstaller
 cytoolz
 xsorted
 more-itertools
@@ -27,6 +27,8 @@ antlr4-python3-runtime
 cloudpickle
 psutil
 blockdiag
+blockdiagcontrib-excelshape
+reportlab
 seqdiag
 actdiag
 nwdiag

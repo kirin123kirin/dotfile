@@ -1,0 +1,12 @@
+.
+python37.zip
+python37.zip/site-packages
+Lib
+Lib/site-packages
+DLLs
+../bin
+Tools/scripts
+# Uncomment to run site.main() automatically
+import site
+site.main()
+
