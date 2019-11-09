@@ -19,7 +19,7 @@ cytoolz
 xsorted
 more-itertools
 patool
-#parse #error
+parse #error
 bs4
 html5lib
 lxml
@@ -33,23 +33,24 @@ seqdiag
 actdiag
 nwdiag
 japandas
-pymysql
-psycopg2
-cx_oracle
-sqlalchemy-vertica
-ibm_db_sa
-https://bitbucket.org/zzzeek/sqlalchemy-access/get/default.zip
 unlzw
 rarfile
 lhafile
+olefile
 python-pptx
 python-docx
 pdfminer3k
 multitasking
-tornado==4.5.3
+tornado
 joblib
 pyqt5
-spyder
+git+https://github.com/kirin123kirin/mso-dumper.git
+https://bitbucket.org/zzzeek/sqlalchemy-access/get/default.zip
+pymysql
+cx_oracle
+sqlalchemy-vertica
+ibm_db_sa
+psycopg2
 #docker-registry-client
 #chartpy
 #jupyterlab
@@ -57,5 +58,4 @@ spyder
 #widgetsnbextension
 #ipywidgets
 #seaborn
-olefile
-git+https://github.com/kirin123kirin/mso-dumper.git
+spyder
