@@ -51,6 +51,7 @@ cx_oracle
 sqlalchemy-vertica
 ibm_db_sa
 psycopg2
+liblnk-python
 #docker-registry-client
 #chartpy
 #jupyterlab
