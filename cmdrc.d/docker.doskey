@@ -1,0 +1,10 @@
+d=docker
+dcompose=docker-compose
+dpa=docker ps -a --format "table {{.ID}} {{.Names}}\t{{.Status}}\t{{.Command}}\t{{.Ports}}"
+di=docker images --format "table {{.ID}} {{.Repository}}:{{.Tag}}\t{{.Size}}\t{{.CreatedSince}}"
+drm=docker rm -f
+drmi=docker rmi
+dpl=docker pull
+dx=docker exec -it -e COLUMNS=200 -e LINES=50 -e TERM=xterm
+dip=docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}"
+
