@@ -67,7 +67,7 @@ def repair_zip():
                 print(line.replace("cp432", "cp932"), end="")
 
 if __name__ == "__main__":
-    from collections import Iterable
+    from collections.abc import Iterable
     def flatten(l):
         for el in l:
             if isinstance(el, Iterable) and not isinstance(el, str):
