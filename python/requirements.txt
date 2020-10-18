@@ -33,7 +33,7 @@ seqdiag
 actdiag
 nwdiag
 japandas
-unlzw
+unlzw3
 rarfile
 lhafile
 olefile
