@@ -16,12 +16,10 @@ xlsxwriter
 sqlparse
 lark-parser
 #git+https://github.com/fumiyas/python-nkf.git
-#pyinstaller
-cytoolz
-xsorted
+#cytoolz
+#xsorted
 more-itertools
 patool
-parse #error
 bs4
 html5lib
 lxml
