@@ -48,7 +48,7 @@ sqlalchemy-access
 pymysql
 cx_oracle
 sqlalchemy-vertica
-ibm_db_sa
+#ibm_db_sa
 psycopg2
 #liblnk-python
 #japandas
