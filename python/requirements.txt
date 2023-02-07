@@ -23,7 +23,7 @@ patool
 bs4
 html5lib
 lxml
-antlr4-python3-runtime
+#antlr4-python3-runtime
 cloudpickle
 psutil
 blockdiag
@@ -45,9 +45,10 @@ joblib
 sqlalchemy-access
 pymysql
 cx_oracle
-sqlalchemy-vertica
+#sqlalchemy-vertica
 #ibm_db_sa
-psycopg2
+#psycopg2-binary
+mecab-python3
 #liblnk-python
 #japandas
 #git+https://github.com/kirin123kirin/mso-dumper.git
@@ -57,3 +58,4 @@ psycopg2
 #jupyterlab-widgets
 #widgetsnbextension
 #ipywidgets
+nlplot
