@@ -48,7 +48,6 @@ cx_oracle
 #sqlalchemy-vertica
 #ibm_db_sa
 #psycopg2-binary
-mecab-python3
 #liblnk-python
 #japandas
 #git+https://github.com/kirin123kirin/mso-dumper.git
@@ -58,4 +57,6 @@ mecab-python3
 #jupyterlab-widgets
 #widgetsnbextension
 #ipywidgets
+mecab-python3
+WordCloud
 nlplot
