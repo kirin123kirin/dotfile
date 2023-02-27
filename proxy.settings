@@ -90,3 +90,10 @@ alias llx='ll -X'
 alias ls='ls --show-control-chars --color=always --time-style=+%Y-%m-%d\ %H:%M:%S'
 EOF > /etc/profile.d/alias.sh
 chmod a+x /etc/profile.d/alias.sh
+
+# vscode
+# settings.json
+#{
+#    "http.proxy": "@PROXY@",
+#    "http.proxyStrictSSL": false
+#}
