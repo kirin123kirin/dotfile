@@ -1,0 +1,92 @@
+@PROXY@ "sample.com:8888"
+@USER@ hogehoge
+add user @USER@
+
+cat <<EOF
+export HTTP_PROXY=@PROXY@
+export HTTPS_PROXY=@PROXY@
+export FTP_PROXY=@PROXY@
+export http_proxy=@PROXY@
+export https_proxy=@PROXY@
+export ftp_proxy=@PROXY@
+export NO_PROXY="10.0.0.0/8,192.168.0.0/16,127.0.0.1"
+EOF >  /etc/profile.d/proxy.sh
+chmod a+x /etc/profile.d/proxy.sh
+
+#echo "proxy=@PROXY@" >> /etc/yum/yum.conf
+echo "proxy=@PROXY@" >> /etc/dnf/dnf.conf
+echo "proxy=@PROXY@" >> ~/.curlrc
+
+cat <<EOF
+http_proxy=@PROXY@
+https_proxy=@PROXY@
+ftp_proxy=@PROXY@
+EOF >> /etc/wgetrc
+
+cat <<EOF
+http_proxy=@PROXY@
+https_proxy=@PROXY@
+EOF >> /etc/pip.conf
+
+cat <<EOF
+http_proxy=@PROXY@
+https_proxy=@PROXY@
+EOF >> ~/.gitconfig
+
+cp ~/.gitconfig /home/@USER@/
+cp ~/.curlrc /home/@USER@/
+
+echo -e "[Service]\nEnvironment=\"HTTP_PROXY=@PROXY@/\"" >> /etc/systemd/system/docker.service.d/http-proxy.conf
+
+#for docker install
+dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+dnf update
+dnf -y install docker-ce
+#dnf install docker-ce --allowerasing
+systemctl enable docker
+systemctl start docker
+usermod -aG docker @USER@
+systemctl restart docker
+docker run hello-world
+
+# vi ~/.docker/config.json
+#{
+# "proxies":
+# {
+#   "default":
+#   {
+#     "httpProxy": "@PROXY@",
+#     "httpsProxy": "@PROXY@",
+#     "noProxy": "10.0.0.0/8,192.168.0.0/16,127.0.0.1"
+#   }
+# }
+#}
+
+
+cat <<EOF
+alias diff='LC_ALL=C git diff --color --no-index'
+alias d='docker'
+alias dc='cd'
+alias dcompose='docker-compose'
+alias delblankline='sed '\''/^$/d'\'''
+alias df='df -Th'
+alias di='d images --format "table {{.ID}} {{.Repository}}:{{.Tag}}\t{{.Size}}\t{{.CreatedSince}}"'
+alias docker='sudo docker'
+alias docker-compose='sudo docker-compose'
+alias dpa='d ps -a --format "table {{.ID}} {{.Names}}\t{{.Status}}\t{{.Command}}\t{{.Ports}}"'
+alias dpl='d pull'
+alias drm='d rm -f'
+alias drmi='d rmi'
+alias du='du -h'
+alias l='ls -1'
+alias la='ls -A'
+alias less='less -r'
+alias ll='ls -l'
+alias lla='ll -A'
+alias lld='ll -d'
+alias lls='ll -Sr'
+alias llt='ll -tr'
+alias llx='ll -X'
+alias ls='ls --show-control-chars --color=always --time-style=+%Y-%m-%d\ %H:%M:%S'
+EOF > /etc/profile.d/alias.sh
+chmod a+x /etc/profile.d/alias.sh
