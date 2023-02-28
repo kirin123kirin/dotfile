@@ -60,3 +60,4 @@ cx_oracle
 mecab-python3
 WordCloud
 nlplot
+tabula-py
