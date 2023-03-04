@@ -2,7 +2,7 @@
 @USER@ hogehoge
 add user @USER@
 
-cat <<EOF
+cat <<EOF >  /etc/profile.d/proxy.sh
 export HTTP_PROXY=@PROXY@
 export HTTPS_PROXY=@PROXY@
 export FTP_PROXY=@PROXY@
@@ -10,28 +10,28 @@ export http_proxy=@PROXY@
 export https_proxy=@PROXY@
 export ftp_proxy=@PROXY@
 export NO_PROXY="10.0.0.0/8,192.168.0.0/16,127.0.0.1"
-EOF >  /etc/profile.d/proxy.sh
+EOF
 chmod a+x /etc/profile.d/proxy.sh
 
 #echo "proxy=@PROXY@" >> /etc/yum/yum.conf
 echo "proxy=@PROXY@" >> /etc/dnf/dnf.conf
 echo "proxy=@PROXY@" >> ~/.curlrc
 
-cat <<EOF
+cat <<EOF >> /etc/wgetrc
 http_proxy=@PROXY@
 https_proxy=@PROXY@
 ftp_proxy=@PROXY@
-EOF >> /etc/wgetrc
+EOF
 
-cat <<EOF
+cat <<EOF >> /etc/pip.conf
 http_proxy=@PROXY@
 https_proxy=@PROXY@
-EOF >> /etc/pip.conf
+EOF
 
-cat <<EOF
+cat <<EOF >> ~/.gitconfig
 http_proxy=@PROXY@
 https_proxy=@PROXY@
-EOF >> ~/.gitconfig
+EOF
 
 cp ~/.gitconfig /home/@USER@/
 cp ~/.curlrc /home/@USER@/
@@ -63,7 +63,7 @@ docker run hello-world
 #}
 
 
-cat <<EOF
+cat <<EOF > /etc/profile.d/alias.sh
 alias diff='LC_ALL=C git diff --color --no-index'
 alias d='docker'
 alias dc='cd'
@@ -88,7 +88,7 @@ alias lls='ll -Sr'
 alias llt='ll -tr'
 alias llx='ll -X'
 alias ls='ls --show-control-chars --color=always --time-style=+%Y-%m-%d\ %H:%M:%S'
-EOF > /etc/profile.d/alias.sh
+EOF
 chmod a+x /etc/profile.d/alias.sh
 
 # vscode
